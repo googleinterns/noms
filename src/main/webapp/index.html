@@ -4,17 +4,26 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-
-    <title></title>
-
-    <!--Custom Styles-->
+   
+    <!--Custom Styles and Scripts-->
     <link href="./style.css" type="text/css" rel="stylesheet">
+    <script src="./script.js"></script>
+
+    <title>Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDt6edQ6YTUBz315Ts1lnyp_7bzNijL5A&callback=initMap&libraries=&v=weekly"
+      async defer
+    ></script>
+
+
     
 </head>
 
 <body>
 
-  <div id="app">Hello world!</div>
+  <p>Here should be a map:</p>
+  <div id="map"></div>
 
 </body>
 
