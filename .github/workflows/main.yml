@@ -26,6 +26,6 @@ jobs:
       env:
         VALIDATE_ALL_CODEBASE: false
         VALIDATE_JAVASCRIPT_ES: true
-        JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.yml	
+        JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.js
         VALIDATE_CSS: true
         
