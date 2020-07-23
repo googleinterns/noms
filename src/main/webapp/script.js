@@ -12,7 +12,7 @@
  */
 
 /**
- * An object contain information contained in a post.
+ * An object containing information about a post.
  * @typedef {Object} PostInfo
  * @property {string} organizationName - The name of the organization making the post.
  * @property {Date} postDateTime - The date that the post was made.
@@ -25,62 +25,67 @@
  */
 
 //
-// Global "static" variables, attached to the window
+// Global objects
 //
 
-/* eslint-disable no-var */
-
 /** @type {LocationInfo} */
-var collegeLocation = null;
+let collegeLocation = null;
 
 /** @type {Array<PostInfo>} */
-var posts = null;
+let posts = null;
 
-/* eslint-enable no-var */
+/** @type {google.maps.Map} */
+let map;
+
+//
+// Event listener registration
+//
+
+// Hooks the onLoad function to the DOMContentLoaded event.
+document.addEventListener('DOMContentLoaded', onLoad);
 
 //
 // Functions
 //
 
 /**
- * Gets the college location for the page we are on.
- * @return {LocationInfo} - The college's location and information.
+ * Fires as soon as the DOM is loaded.
  */
-function getCollegeLocation() {
-  if (collegeLocation === null) {
-    const newLocation = {
-      name: 'Santa Clara University',
-      lat: 37.348545,
-      long: -121.9386406,
-    };
-    collegeLocation = newLocation;
-  }
-  return collegeLocation;
+function onLoad() {
+  // In the future, there will be real GET requests here, but for now, just fake ones.
+  // These global variables will be assigned here and never assigned again.
+  posts = fetchFakePosts();
+  collegeLocation = fetchFakeCollegeLocation();
+
+  // Add the embedded map to the page.
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB_iMemNeUtO8D7kGTmagTgluRlsiFTcDA&callback=initMap`;
+  script.defer = true;
+  script.async = true;
+  window.initMap = initMap;
+  document.head.appendChild(script);
 }
 
 /**
- * Get the all posts for the page we are on.
- * @return {array} all posts
+ * A fake implementation of a GET request for the college of the page we are on.
+ * This will be removed once our backend has actual college information.
+ * @return {LocationInfo} - The college's location and information.
  */
-function getPosts() {
-  // Only go to the effort of fetching posts if we haven't done so previously.
-  if (posts === undefined || posts === null) {
-    // In the future, we can get these values using the query string parameters.
-    const currentCollegeId = 2;
-
-    // In the future, there will be a real GET request here,
-    // but for now we use a fake one with hardcoded posts.
-    posts = fetchFakePosts(currentCollegeId);
-  }
-  return posts;
+function fetchFakeCollegeLocation() {
+  const newLocation = {
+    name: 'Santa Clara University',
+    lat: 37.348545,
+    long: -121.9386406,
+  };
+  return newLocation;
 }
 
 /**
  * A fake implementation of a GET request that fetches all posts.
- * @param {number} collegeId - The id of the college to get posts from
+ * This will be removed once our backend has actual posts.
  * @return {array} - The posts
  */
-function fetchFakePosts(collegeId) {
+function fetchFakePosts() {
   const fakePosts = [];
 
   for (let i = 0; i < 5; i++) {
@@ -103,15 +108,12 @@ function fetchFakePosts(collegeId) {
   return fakePosts;
 }
 
-let map;
-
-/* eslint-disable no-undef, no-unused-vars */
 /**
  * Initializes the embedded Google Maps map.
  */
 function initMap() {
-  const collegeLocation = getCollegeLocation();
-
+  /* eslint-disable no-undef */
+  // Get the college of the page and center the map on it.
   map = new google.maps.Map(document.getElementById('map'),
       {
         center: {lat: collegeLocation.lat, lng: collegeLocation.long},
@@ -119,8 +121,7 @@ function initMap() {
       },
   );
 
-  const posts = getPosts();
-
+  // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
     new google.maps.Marker({
       position: {lat: post.location.lat, lng: post.location.long},
@@ -129,7 +130,5 @@ function initMap() {
     });
   });
 
-
-  console.log(posts);
+/* eslint-enable no-undef */
 }
-/* eslint-enable no-undef, no-unused-vars */
