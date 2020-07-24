@@ -12,19 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
-// Selection of HTML objects
+/* Responsive navigation bar */
 const burger = document.querySelector('.burger i');
 const nav = document.querySelector('.nav');
-
-// Defining a function
 function toggleNav() {
     burger.classList.toggle('fa-bars');
     burger.classList.toggle('fa-times');
     nav.classList.toggle('nav-active');
 }
-
-// Calling the function after click event occurs
 burger.addEventListener('click', function() {
     toggleNav();
 });
