@@ -83,8 +83,8 @@ function onLoad() {
 }
 
 /**
- * Gets the secret from the secrets store for a given ID.
- * @param {string} secretid - The secret's id, as given in the secrets store.
+ * Gets the secret value corresponding to a secret id.
+ * @param {string} secretid - The secret's id, as defined in the secrets store.
  */
 async function getSecretFor(secretid) {
   try {
