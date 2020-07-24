@@ -1,0 +1,16 @@
+#create-post-button {
+  background-color: lightgray;
+  border: none;
+  border-radius: 50px;
+  font-family: "Roboto", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  height: 50px;
+  margin-left: 50%;
+  margin-right: auto;
+  min-width: 100px;
+  outline: none;
+  text-align: center;
+  transform: translate(-50%);
+  width: 50%;
+}
