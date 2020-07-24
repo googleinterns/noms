@@ -31,7 +31,10 @@ header {
   height: 5rem;
 }
 
-/* Nav bar across all pages */
+/* 
+ * Nav bar across all pages 
+ */
+ 
 .logo {
   letter-spacing: 1px;
   font-size: larger;
@@ -93,3 +96,13 @@ header {
     right: 0;
   }
 }
+
+/*
+ * The Map
+ */
+
+#map {
+  height: 500px;
+  width: 100%;
+}
+
