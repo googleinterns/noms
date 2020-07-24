@@ -14,26 +14,22 @@
 
 package com.google.sps.servlets;
 
-import com.google.cloud.language.v1.Document;
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that retrieves secrets for client-side use. */
+/** Servlet that retrieves secrets for client-side use. Keeps keys out of source control. */
 @WebServlet("/secret")
 public class SecretsManagerServlet extends HttpServlet {
 
-  /** POST a secret unique id and get it back. */
+  /** POST a secret unique id and get back the corresponding secret value. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
