@@ -1,6 +1,6 @@
 # noms
 
-noms 
+A full-stack web application that connects students and college organizations to post about free food events on campus.
 
 ## Context
 
@@ -19,6 +19,7 @@ To battle food insecurity and decrease food waste, we will build an app that eff
 6. Website will follow best practices for accessibility as described here, where possible
 
 Primary users:
+
 **College students**, who are primarily motivated to use this app to find free food near them. They may also occasionally post free food events if they see that an organization hasn’t done so. 
 
 **College organizations**, which are motivated to use this app in order to quickly distribute leftover food so that it doesn’t have to go to waste, which has both monetary ($ spent on food isn’t wasted), environmental (food doesn’t end up in landfill), humanitarian (disadvantaged college students get food), and a publicity (organizations can get more students at their events) benefits.
