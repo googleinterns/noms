@@ -19,7 +19,6 @@ public class User {
 
   /** Information from the user */
   private final String name;
-
   private final String email;
   private final String university;
   private final boolean subscribe;
