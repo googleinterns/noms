@@ -15,6 +15,9 @@
 package com.google.sps.servlets;
 
 import com.google.cloud.language.v1.Document;
+import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.maps.GaeRequestHandler;
@@ -47,11 +50,21 @@ public class TranslateLocationServlet extends HttpServlet {
       return;
     }
 
-    // Try to get the latitude and longitude
+    String projectId = "step186-2020";
+    String secretId = "geocoding-api-key";
+    String versionId = "latest";
+    String geocodingApiKey = "";
+
+    // Retrieve the secret key for the Geocoding API.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      SecretVersionName secretVersionName = SecretVersionName.of(projectId, secretId, versionId);
+      AccessSecretVersionResponse secretResponse = client.accessSecretVersion(secretVersionName);
+      geocodingApiKey = secretResponse.getPayload().getData().toStringUtf8();
+    }
+
+    // Try to get the latitude and longitude for the given address.
     try {
-      GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
-        .apiKey("AIzaSyD6_jS-A9GKh0TXLavLcWGYVprh1SnFUWQ")
-        .build();
+      GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder()).apiKey(geocodingApiKey).build();
       GeocodingResult[] results =  GeocodingApi.geocode(context, location).await();
       Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -61,7 +74,7 @@ public class TranslateLocationServlet extends HttpServlet {
       response.getWriter().println(gson.toJson(results[0]));
     }
     catch (Exception e) {
-      response.setStatus(500)
+      response.setStatus(500);
       return;
     }
   }
