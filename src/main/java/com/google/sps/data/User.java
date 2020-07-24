@@ -19,8 +19,9 @@ public class User {
 
   /** Information from the user */
   private final String name;
+
   private final String email;
-  private final String university;  
+  private final String university;
   private final boolean subscribe;
 
   public User(String name, String email, String university, boolean subscribe) {
