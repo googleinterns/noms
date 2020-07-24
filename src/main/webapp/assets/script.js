@@ -72,12 +72,32 @@ function onLoad() {
   collegeLocation = fetchFakeCollegeLocation();
 
   // Add the embedded map to the page.
-  const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB_iMemNeUtO8D7kGTmagTgluRlsiFTcDA&callback=initMap`;
-  script.defer = true;
-  script.async = true;
-  window.initMap = initMap;
-  document.head.appendChild(script);
+  getSecretFor('javascript-maps-api').then((key) => {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
+    script.defer = true;
+    script.async = true;
+    window.initMap = initMap;
+    document.head.appendChild(script);
+  });
+}
+
+/**
+ * Gets the secret from the secrets store for a given ID.
+ * @param {string} secretid - The secret's id, as given in the secrets store.
+ */
+async function getSecretFor(secretid) {
+  try {
+    const response = await fetch('/secret?id=' + secretid, {method: 'POST'});
+    if (!response.ok) {
+      throw new Error(response.status);
+    } else {
+      return await response.text();
+    }
+  } catch (err) {
+    console.warn(err);
+    return;
+  }
 }
 
 /**
