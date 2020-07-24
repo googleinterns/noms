@@ -1,0 +1,107 @@
+:root {
+  --auburn: #ce853f;
+  --dark-green: #667d51;
+  --dark-maroon: #955757;
+  --light-teal: #abcbbc;
+  --light-green: #b9c9a7;
+  --light-maroon: #a98585;
+  --off-white: #f2f0f0;
+  --peach: #f2ddc9;
+  --tan: #e4c492;
+}
+
+html,
+body {
+  background-color: var(--off-white);
+  color: #000;
+  font-family:
+    'Roboto',
+    sans-serif;
+  font-size: 1.2rem;
+  margin: 0;
+  min-width: 300px;
+  padding: 0;
+}
+
+/*
+ * Nav bar across all pages
+ */
+
+header {
+  align-items: center;
+  display: flex;
+  height: 5rem;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.logo {
+  font-size: larger;
+  letter-spacing: 1px;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+}
+
+.navlink {
+  list-style: none;
+  margin: 1rem;
+}
+
+.navlink a {
+  color: #000;
+  text-decoration: none;
+}
+
+.navlink a:hover {
+  color: var(--dark-green);
+}
+
+.burger {
+  display: none;
+  font-size: 1.2em;
+}
+
+@media screen and (max-width: 678px) {
+  .burger {
+    display: block;
+  }
+
+  .nav {
+    background: #a98585;
+    flex-direction: column;
+    height: calc(100% - 70px);
+    justify-content: space-around;
+    margin: 0;
+    position: absolute;
+    padding: 0;
+    right: -100%;
+    top: 70px;
+    transition: all 400ms;
+    width: 50%;
+  }
+
+  .navlink {
+    text-align: center;
+  }
+
+  .navlink a {
+    color: #fff;
+  }
+
+  .nav-active {
+    right: 0;
+  }
+}
+
+/*
+ * The Map
+ */
+
+#map {
+  height: 500px;
+  width: 100%;
+}
