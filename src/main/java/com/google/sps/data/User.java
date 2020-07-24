@@ -15,7 +15,7 @@
 package com.google.sps.data;
 
 /** Class representing a user. */
-public class Post {
+public class User {
 
   /** Information from the user */
   private final String name;
@@ -23,10 +23,10 @@ public class Post {
   private final String university;  
   private final boolean subscribe;
 
-  public Post(String name, String email, String university, boolean subscribe) {
+  public User(String name, String email, String university, boolean subscribe) {
     this.name = name;
     this.email = email;
-    this.name = university;
+    this.university = university;
     this.subscribe = subscribe;
   }
 
