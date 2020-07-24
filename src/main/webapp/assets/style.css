@@ -43,7 +43,7 @@ header {
 .nav {
   display: flex;
   justify-content: space-around;
-  padding: 0rem;
+  padding: 0;
 }
 
 .navlink {
