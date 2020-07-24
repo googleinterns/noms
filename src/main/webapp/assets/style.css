@@ -13,9 +13,9 @@
 html,
 body {
   background-color: var(--off-white);
-  color: #000000;
-  font-family: 
-    'Roboto', 
+  color: #000;
+  font-family:
+    'Roboto',
     sans-serif;
   font-size: 1.2rem;
   margin: 0;
@@ -23,8 +23,8 @@ body {
   padding: 0;
 }
 
-/* 
- * Nav bar across all pages 
+/*
+ * Nav bar across all pages
  */
 
 header {
@@ -34,7 +34,7 @@ header {
   justify-content: space-around;
   width: 100%;
 }
- 
+
 .logo {
   font-size: larger;
   letter-spacing: 1px;
@@ -43,7 +43,7 @@ header {
 .nav {
   display: flex;
   justify-content: space-around;
-  padding: 0px;
+  padding: 0rem;
 }
 
 .navlink {
@@ -52,7 +52,7 @@ header {
 }
 
 .navlink a {
-  color: #000000;
+  color: #000;
   text-decoration: none;
 }
 
@@ -89,7 +89,7 @@ header {
   }
 
   .navlink a {
-    color: #ffffff;
+    color: #fff;
   }
 
   .nav-active {
