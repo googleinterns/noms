@@ -1,7 +1,9 @@
+/* Create Posts */
 #create-post-button {
-  background-color: lightgray;
+  background-color: #f0f0f0;
   border: none;
   border-radius: 50px;
+  color: #545454;
   font-family: "Roboto", sans-serif;
   font-size: 18px;
   font-weight: 400;
@@ -17,10 +19,25 @@
   width: 50%;
 }
 
+/* Map */
 #map-placeholder {
+  background: #e4fff9;
   height: 500px;
-  width: 50%;
-  background-color: lightgreen;
-  margin-right: auto;
   margin-left: auto;
+  margin-right: auto;
+  min-width: 100px;
+  width: 50%;
+}
+
+/* Post Feed */
+.post-card {
+    border-radius: 15px;
+    box-shadow: 0px 1px 10px lightgrey, 0px -1px 10px lightgrey;
+    margin-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    min-height: 100px;
+    min-width: 100px;
+    width: 50%;
 }
