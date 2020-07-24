@@ -8,9 +8,19 @@
   height: 50px;
   margin-left: 50%;
   margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
   min-width: 100px;
   outline: none;
   text-align: center;
   transform: translate(-50%);
   width: 50%;
+}
+
+#map-placeholder {
+  height: 500px;
+  width: 50%;
+  background-color: lightgreen;
+  margin-right: auto;
+  margin-left: auto;
 }
