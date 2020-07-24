@@ -20,6 +20,4 @@ function toggleNav() {
     burger.classList.toggle('fa-times');
     nav.classList.toggle('nav-active');
 }
-burger.addEventListener('click', function() {
-    toggleNav();
-});
+burger.addEventListener('click', toggleNav);
