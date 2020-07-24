@@ -1,43 +1,43 @@
 :root {
+  --auburn: #ce853f;
   --dark-green: #667d51;
+  --dark-maroon: #955757;
   --light-teal: #abcbbc;
   --light-green: #b9c9a7;
   --light-maroon: #a98585;
-  --dark-maroon: #955757;
-  --peach: #f2ddc9;
-  --auburn: #ce853f;
-  --tan: #e4c492;
   --off-white: #f2f0f0;
+  --peach: #f2ddc9;
+  --tan: #e4c492;
 }
 
 html,
 body {
   background-color: var(--off-white);
+  color: #000000;
   font-family: 
     'Roboto', 
     sans-serif;
-  color: #000000;
   font-size: 1.2rem;
   margin: 0;
-  padding: 0;
   min-width: 300px;
-}
-
-header {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  height: 5rem;
+  padding: 0;
 }
 
 /* 
  * Nav bar across all pages 
  */
+
+header {
+  align-items: center;
+  display: flex;
+  height: 5rem;
+  justify-content: space-around;
+  width: 100%;
+}
  
 .logo {
-  letter-spacing: 1px;
   font-size: larger;
+  letter-spacing: 1px;
 }
 
 .nav {
@@ -52,8 +52,8 @@ header {
 }
 
 .navlink a {
-  text-decoration: none;
   color: #000000;
+  text-decoration: none;
 }
 
 .navlink a:hover {
@@ -61,8 +61,8 @@ header {
 }
 
 .burger {
-  font-size: 1.2em;
   display: none;
+  font-size: 1.2em;
 }
 
 @media screen and (max-width: 678px) {
@@ -71,17 +71,17 @@ header {
   }
 
   .nav {
-    margin: 0;
     background: #a98585;
+    flex-direction: column;
+    height: calc(100% - 70px);
+    justify-content: space-around;
+    margin: 0;
     position: absolute;
+    padding: 0;
     right: -100%;
     top: 70px;
-    width: 50%;
-    height: calc(100% - 70px);
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 0;
     transition: all 400ms;
+    width: 50%;
   }
 
   .navlink {
@@ -105,4 +105,3 @@ header {
   height: 500px;
   width: 100%;
 }
-
