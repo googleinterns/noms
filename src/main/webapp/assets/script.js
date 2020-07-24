@@ -150,9 +150,13 @@ function initMap() {
 /* Responsive navigation bar */
 const burger = document.querySelector('.burger i');
 const nav = document.querySelector('.nav');
+
+/**
+ * Toggles navigation bar to be responsive
+ */
 function toggleNav() {
-    burger.classList.toggle('fa-bars');
-    burger.classList.toggle('fa-times');
-    nav.classList.toggle('nav-active');
+  burger.classList.toggle('fa-bars');
+  burger.classList.toggle('fa-times');
+  nav.classList.toggle('nav-active');
 }
 burger.addEventListener('click', toggleNav);
