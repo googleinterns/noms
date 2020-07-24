@@ -11,3 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+/* Responsive navigation bar */
+const burger = document.querySelector('.burger i');
+const nav = document.querySelector('.nav');
+function toggleNav() {
+    burger.classList.toggle('fa-bars');
+    burger.classList.toggle('fa-times');
+    nav.classList.toggle('nav-active');
+}
+burger.addEventListener('click', function() {
+    toggleNav();
+});

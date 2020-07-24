@@ -17,83 +17,76 @@ body {
     'Roboto', 
     sans-serif;
   color: #000000;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   margin: 0;
   padding: 0;
 }
 
-nav {
+header {
   width: 100%;
-  background-color: #fff;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  position: relative;
+  justify-content: space-around;
 }
-span.nav-toggle {
-  font-size: 30px;
-  display: inline-block;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-}
+
 .logo {
-  margin: 40px 0 40px 0;
+  letter-spacing: 1px;
+  font-size: larger;
 }
 
-ul {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 0;
-}
-ul li {
-  list-style-type: none;
-  font-size: 15px;
-  cursor: pointer;
-  margin: 20px;
-  text-align: center;
-  border-bottom-style: solid;
-  border-bottom-color: #ccc;
-  border-bottom-width: 1px;
-  padding: 5px 50px;
-}
-ul li:first-child{
-  margin-top: 0;
-}
-ul li:hover {
-  opacity: 0.5;
-}
-
-.active{
+.nav {
   display: flex;
+  justify-content: space-around;
+  padding: 0px;
 }
 
-@media screen and (min-width: 800px) {
-  nav {
-    height: 100px;
-    flex-direction: row;
+.navlink {
+  list-style: none;
+  margin: 1rem;
+}
+
+.navlink a {
+  text-decoration: none;
+  color: #000000;
+}
+
+.navlink a:hover {
+  color: var(--dark-green);
+}
+
+.burger {
+  font-size: 1.2em;
+  display: none;
+}
+
+@media screen and (max-width: 678px) {
+  .burger {
+    display: block;
   }
-.logo {
-    padding-left: 50px;
+
+  .nav {
     margin: 0;
-    width: 20%;
-  }
-ul {
-    display: flex;
-    justify-content: flex-end;
-    width: 80%;
-    flex-direction: row;
-  }
-ul li {
-    display: inline-block;
-    margin: 0 70px 0 0;
-    text-align: left;
-    border-bottom-style: none;
+    background: #a98585;
+    position: absolute;
+    right: -100%;
+    top: 70px;
+    width: 50%;
+    height: calc(100% - 70px);
+    flex-direction: column;
+    justify-content: space-around;
     padding: 0;
+    transition: all 400ms;
   }
-span.nav-toggle {
-    display: none;
+
+  .navlink {
+    text-align: center;
+  }
+
+  .navlink a {
+    color: #ffffff;
+  }
+
+  .nav-active {
+    right: 0;
   }
 }

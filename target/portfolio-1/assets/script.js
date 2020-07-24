@@ -12,8 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let mainNav = document.getElementById("js-menu");
-let navBarToggle = document.getElementById("js-nav-toggle");
-navBarToggle.addEventListener("click", function() {
-  mainNav.classList.toggle("active");
+/* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+// Selection of HTML objects
+const burger = document.querySelector('.burger i');
+const nav = document.querySelector('.nav');
+
+// Defining a function
+function toggleNav() {
+    burger.classList.toggle('fa-bars');
+    burger.classList.toggle('fa-times');
+    nav.classList.toggle('nav-active');
+}
+
+// Calling the function after click event occurs
+burger.addEventListener('click', function() {
+    toggleNav();
 });
