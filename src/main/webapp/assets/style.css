@@ -129,7 +129,7 @@ header {
   border: 2px solid #f1f1f1;
   border-radius: 5px;
   color: #fff;
-  filter: drop-shadow(0px 4px 4px #00000040);
+  filter: drop-shadow(0 4px 4px #00000040);
   margin: 6%;
   min-width: 70%;
   padding: 1rem;
@@ -146,7 +146,7 @@ header {
 }
 
 /*
- * Form 
+ * Form
  */
 
 .subscription {
@@ -168,7 +168,8 @@ header {
 }
 
 input[type=text],
-input[type=email], select {
+input[type=email],
+select {
   background: rgba(27, 24, 24, 0.1);
   border: 1px solid #ccc;
   box-sizing: border-box;
