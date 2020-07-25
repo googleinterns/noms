@@ -45,6 +45,7 @@
   margin-right: 0;
   width: 45%;
 }
+
 .post-card {
   background: white;
   border-radius: 15px;
@@ -53,4 +54,26 @@
   margin-top: 20px;
   min-height: 100px;
   min-width: 100px;
+  padding: 10px;
+  padding-right: 30px;
+  padding-left: 30px;
+}
+
+.card-title {
+  color: #303030;
+  font-size: 32px;
+  margin-bottom: 0;
+}
+
+.card-subtitle {
+  color: grey;
+  font-size: 24px;
+  font-weight: 450;
+  margin-bottom: 0;
+  margin-top: 12px;
+}
+
+.card-description {
+  color:black;
+  margin-top: 20px;
 }
