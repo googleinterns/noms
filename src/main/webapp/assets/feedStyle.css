@@ -3,6 +3,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   width: 80%;
+  margin-bottom: 100px;
   margin-left: 10%;
   margin-right: 10%;
 }
@@ -37,10 +38,11 @@
 #map-placeholder {
   background: #e4fff9;
   height: 500px;
-  margin-left: 0;
-  margin-right: auto;
   min-width: 100px;
-  width: 45%;
+  position: fixed;
+  width: 40%;
+  top: 20%;
+  left: 7%;
 }
 
 /* Post Feed */
