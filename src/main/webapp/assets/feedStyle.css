@@ -15,7 +15,7 @@
   border-radius: 50px;
   box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
   color: white;
-  font-size: 24px;
+  font-size: 1.25rem;
   font-weight: 400;
   height: 60px;
   margin-left: auto;
@@ -69,13 +69,13 @@
 
 .card-title {
   color: #303030;
-  font-size: 24px;
+  font-size: 1.5rem;
   margin-bottom: 0;
 }
 
 .card-subtitle {
   color: grey;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 450;
   margin-bottom: 0;
   margin-top: 12px;
@@ -83,5 +83,5 @@
 
 .card-description {
   color: black;
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
