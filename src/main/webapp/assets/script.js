@@ -57,7 +57,7 @@ let map;
 //
 
 // Hooks the onLoad function to the DOMContentLoaded event.
-// document.addEventListener('DOMContentLoaded', onLoad);
+document.addEventListener('DOMContentLoaded', onLoad);
 
 //
 // Functions
@@ -71,6 +71,8 @@ function onLoad() {
   // These global variables will be assigned here and never assigned again.
   posts = fetchFakePosts();
   collegeLocation = fetchFakeCollegeLocation();
+
+  addPosts();
 
   // Add the embedded map to the page.
   const script = document.createElement('script');
