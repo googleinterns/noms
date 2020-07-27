@@ -67,10 +67,17 @@ public class TranslateLocationServlet extends HttpServlet {
       response.setStatus(200);
       response.setContentType("text/json; charset=UTF-8");
       response.setCharacterEncoding("UTF-8");
-      response.getWriter().println(gson.toJson(results[0]));
+      if (results.length > 0) {
+        response.getWriter().println(gson.toJson(results[0]));
+      }
+      else {
+        response.getWriter().println(gson.toJson(new Object()));
+      }
     }
     catch (Exception e) {
       response.setStatus(500);
+      response.setContentType("text; charset=UTF-8");
+      response.getWriter().println(e.toString());
       return;
     }
   }

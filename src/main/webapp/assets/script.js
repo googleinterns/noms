@@ -58,6 +58,8 @@ let map;
 // Hooks the onLoad function to the DOMContentLoaded event.
 document.addEventListener('DOMContentLoaded', onLoad);
 
+document.getElementById('location-form').addEventListener('submit', handleLocationForm);
+
 //
 // Functions
 //
@@ -83,7 +85,7 @@ function onLoad() {
 }
 
 /**
- * Gets the secret value corresponding to a secret id.
+ * Gets the secret value corresponding to a secret ID from GCP secrets store.
  * @param {string} secretid - The secret's id, as defined in the secrets store.
  */
 async function getSecretFor(secretid) {
@@ -98,6 +100,63 @@ async function getSecretFor(secretid) {
     console.warn(err);
     return;
   }
+}
+
+/**
+ * Translates a location from its name to a pair of latitude and longitudes.
+ * @param {string} address - The address to translate to lat/long.
+ * @return {LocationInfo} or null if no such location exists or an error occurs.
+ */
+async function translateLocationToLatLong(address) {
+  try {
+    const response = await fetch('/translateLocation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: createSearchParamsFromObject({location: address}),
+    });
+
+    // If we get a non-200 status response, then fail.
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(response.status + ' ' + error);
+    }
+
+    const result = await response.json();
+    console.log(result);
+
+    // If our result is empty, then we didn't have any results at all.
+    if (Object.keys(result).length === 0) {
+      throw new Error('No results returned with query');
+    }
+
+    // If our result doesn't have certain properties, then there's no valid lat/long.
+    if (!('geometry' in result) || !('location' in result.geometry)) {
+      throw new Error('No latitude/longitude was returned with that query.');
+    }
+
+    // If all of the above checks passed, we can return the lat/long to the caller.
+    return {
+      name: 'formattedAddress' in result ? result.formattedAddress : address,
+      lat: result.geometry.location.lat,
+      long: result.geometry.location.lng,
+    };
+  } catch (err) {
+    console.warn(err);
+    return null;
+  }
+}
+
+/**
+ * Creates search params for any object, to send fetch requests with.
+ * @param {any} obj - The generic object to create seachparams for.
+ * @return {string} - The searchparams.
+ */
+function createSearchParamsFromObject(obj) {
+  return Object.keys(obj).map((key) => {
+    return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
+  }).join('&');
 }
 
 /**
