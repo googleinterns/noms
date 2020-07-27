@@ -72,7 +72,7 @@ function onLoad() {
   posts = fetchFakePosts();
   collegeLocation = fetchFakeCollegeLocation();
 
-  addPosts();
+  addPosts(posts);
 
   // Add the embedded map to the page.
   const script = document.createElement('script');
@@ -118,7 +118,10 @@ function fetchFakePosts() {
       },
       numOfPeopleFoodWillFeed: (10 - i),
       foodType: 'Thai Food',
-      description: 'Hello! We have food.',
+      description: 'Come join the ACM for free burritos and to learn more' +
+        'about what our club does! All are welcome to join the club happenings, ' +
+        'regardless of major or year. ' +
+        'We have vegatarian and halal options available.',
     };
     fakePosts.push(post);
   }
@@ -167,16 +170,21 @@ burger.addEventListener('click', toggleNav);
 /**
  * Adds posts to the page (uses mock data).
  */
-function addPosts() {
-  const titleText = 'ACM @ Kenna Hall';
-  const subtitleText = 'Burritos | 6:00pm-8:00pm';
-  const descriptionText = 'Come join the ACM for free burritos and to learn more' +
-    'about what our club does! All are welcome to join the club happenings, ' +
-    'regardless of major or year. The event itself goes from 6:00pm - 7:00pm, ' +
-    'and leftovers will be available until 8:00pm. We have vegatarian and halal options available.';
+function addPosts(posts) {
+//   const titleText = 'ACM @ Kenna Hall';
+//   const subtitleText = 'Burritos | 6:00pm-8:00pm';
+//   const descriptionText = 'Come join the ACM for free burritos and to learn more' +
+//     'about what our club does! All are welcome to join the club happenings, ' +
+//     'regardless of major or year. The event itself goes from 6:00pm - 7:00pm, ' +
+//     'and leftovers will be available until 8:00pm. We have vegatarian and halal options available.';
 
   const allPosts = document.getElementById('all-posts');
-  for (let i = 0; i < 10; i++) {
+//   for (let i = 0; i < 10; i++) {
+  posts.forEach((post) => {
+    const titleText = post.organizationName + ' @ ' + post.location.name;
+    const subtitleText = post.foodType + ' | ' + post.eventStartTime + '-' + post.eventEndTime;
+    const descriptionText = post.description;
+
     // Create card.
     const postCard = document.createElement('div');
     postCard.setAttribute('class', 'post-card');
@@ -201,5 +209,5 @@ function addPosts() {
 
     // Add card to the page.
     allPosts.append(postCard);
-  }
+  });
 }
