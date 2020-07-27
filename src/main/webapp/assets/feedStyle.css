@@ -13,8 +13,8 @@
   background-color: #303030;
   border: none;
   border-radius: 50px;
-  box-shadow: 0px 1px 10px lightgrey, 0px -1px 10px lightgrey;
-  color: white; 
+  box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
+  color: white;
   font-size: 24px;
   font-weight: 400;
   height: 60px;
@@ -57,7 +57,7 @@
 .post-card {
   background: white;
   border-radius: 15px;
-  box-shadow: 0px 1px 10px lightgrey, 0px -1px 10px lightgrey;
+  box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
   margin-bottom: 5px;
   margin-top: 20px;
   min-height: 100px;
@@ -82,6 +82,6 @@
 }
 
 .card-description {
-  color:black;
+  color: black;
   margin-top: 20px;
 }
