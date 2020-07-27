@@ -58,8 +58,6 @@ let map;
 // Hooks the onLoad function to the DOMContentLoaded event.
 document.addEventListener('DOMContentLoaded', onLoad);
 
-document.getElementById('location-form').addEventListener('submit', handleLocationForm);
-
 //
 // Functions
 //
