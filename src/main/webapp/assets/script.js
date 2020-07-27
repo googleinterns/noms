@@ -59,6 +59,9 @@ let map;
 // Hooks the onLoad function to the DOMContentLoaded event.
 document.addEventListener('DOMContentLoaded', onLoad);
 
+const createPostButton = document.getElementById('create-post-button');
+createPostButton.addEventListener('click', showModal);
+
 //
 // Functions
 //
@@ -204,3 +207,9 @@ function addPosts(posts) {
     allPosts.append(postCard);
   });
 }
+
+function showModal() {
+  const modal = document.getElementById('create-post-modal');
+  modal.style.display = 'block';
+}
+
