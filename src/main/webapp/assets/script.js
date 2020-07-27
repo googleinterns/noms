@@ -169,17 +169,10 @@ burger.addEventListener('click', toggleNav);
 
 /**
  * Adds posts to the page (uses mock data).
+ * @param {array} posts
  */
 function addPosts(posts) {
-//   const titleText = 'ACM @ Kenna Hall';
-//   const subtitleText = 'Burritos | 6:00pm-8:00pm';
-//   const descriptionText = 'Come join the ACM for free burritos and to learn more' +
-//     'about what our club does! All are welcome to join the club happenings, ' +
-//     'regardless of major or year. The event itself goes from 6:00pm - 7:00pm, ' +
-//     'and leftovers will be available until 8:00pm. We have vegatarian and halal options available.';
-
   const allPosts = document.getElementById('all-posts');
-//   for (let i = 0; i < 10; i++) {
   posts.forEach((post) => {
     const titleText = post.organizationName + ' @ ' + post.location.name;
     const subtitleText = post.foodType + ' | ' + post.eventStartTime + '-' + post.eventEndTime;
