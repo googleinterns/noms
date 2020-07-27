@@ -53,14 +53,22 @@ let posts = null;
 let map;
 
 //
+// Elements
+//
+const createPostButton = document.getElementById('create-post-button');
+const modal = document.getElementById('create-post-modal');
+const closeModalButton = document.getElementById('close-modal');
+
+//
 // Event listener registration
 //
 
 // Hooks the onLoad function to the DOMContentLoaded event.
 document.addEventListener('DOMContentLoaded', onLoad);
 
-const createPostButton = document.getElementById('create-post-button');
 createPostButton.addEventListener('click', showModal);
+
+closeModalButton.addEventListener('click', closeModal);
 
 //
 // Functions
@@ -208,8 +216,18 @@ function addPosts(posts) {
   });
 }
 
+/* Create post modal. */
 function showModal() {
-  const modal = document.getElementById('create-post-modal');
   modal.style.display = 'block';
+}
+
+function closeModal() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        closeModal();
+    }
 }
 
