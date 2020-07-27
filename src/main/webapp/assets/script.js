@@ -89,7 +89,7 @@ function onLoad() {
  */
 async function getSecretFor(secretid) {
   try {
-    const response = await fetch('/secret?id=' + secretid, {method: 'POST'});
+    const response = await fetch('/secretsManager?id=' + secretid, {method: 'POST'});
     if (!response.ok) {
       throw new Error(response.status);
     } else {
