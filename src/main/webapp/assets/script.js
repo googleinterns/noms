@@ -219,10 +219,41 @@ function initMap() {
       position: {lat: post.location.lat, lng: post.location.long},
       map: map,
       title: post.organizationName,
+      opacity: calculateMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
     });
   });
 
 /* eslint-enable no-undef */
+}
+
+/**
+ * Calculates the opacity of a given map marker.
+ * @param {string} eventStartTime - The start time of the event.
+ * @param {string} eventEndTime - The end time of the event.
+ * @return {number} - The opacity to show the marker as.
+ */
+function calculateMapMarkerOpacity(eventStartTime, eventEndTime) {
+  const now = new Date();
+  const startTime = Date.today.at(eventStartTime);
+  const endTime = Date.today.at(eventEndTime);
+  console.log('now: ' + now.toString());
+  console.log(startTime.toString());
+  console.log(endTime.toString());
+
+  // If the date is in the future, our marker should have full opacity.
+  if (startTime > now) {
+    return 1;
+  }
+
+  // If the event is over, our marker should not be on the map at all.
+  if (endTime < now) {
+    return 0;
+  }
+
+  // Else, we need to map the full range of 1 to 0 to the range of time
+  // between eventStartTime and eventEndTime.
+  const diff = endTime - startTime;
+  return now.getMilliseconds * diff;
 }
 
 /* Responsive navigation bar */
