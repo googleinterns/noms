@@ -57,7 +57,7 @@ let map;
 //
 
 // Hooks the onLoad function to the DOMContentLoaded event.
-document.addEventListener('DOMContentLoaded', onLoad);
+// document.addEventListener('DOMContentLoaded', onLoad);
 
 //
 // Functions
