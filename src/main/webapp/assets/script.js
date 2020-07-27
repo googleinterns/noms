@@ -174,7 +174,6 @@ function addPosts() {
     'and leftovers will be available until 8:00pm. We have vegatarian and halal options available.';
 
   const allPosts = document.getElementById('all-posts');
-
   for (let i = 0; i < 10; i++) {
     // Create card.
     const postCard = document.createElement('div');
