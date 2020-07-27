@@ -29,20 +29,20 @@
 }
 
 #create-post-button:hover {
-    background-color: white;
-    border: 1px solid #303030;
-    color: #303030;
+  background-color: white;
+  border: 1px solid #303030;
+  color: #303030;
 }
 
 /* Map */
 #map-placeholder {
   background: #e4fff9;
   height: 500px;
+  left: 7%;
   min-width: 100px;
   position: fixed;
   width: 40%;
   top: 20%;
-  left: 7%;
 }
 
 /* Post Feed */
