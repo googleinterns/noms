@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+/* eslint-disable no-unused-vars */
 
 //
 // Types
@@ -165,38 +166,39 @@ burger.addEventListener('click', toggleNav);
  * Adds posts to the page (uses mock data).
  */
 function addPosts() {
-    const titleText = 'ACM @ Kenna Hall';
-    const subtitleText = 'Burritos | 6:00pm-8:00pm';
-    const descriptionText = 'Come join the ACM for free burritos and to learn more about what our club does! '
-        +  'All are welcome to join the club happenings, regardless of major or year. '
-        +  'The event itself goes from 6:00pm - 7:00pm, and leftovers will be available until 8:00pm. We have vegatarian and halal options available.';
+  const titleText = 'ACM @ Kenna Hall';
+  const subtitleText = 'Burritos | 6:00pm-8:00pm';
+  const descriptionText = 'Come join the ACM for free burritos and to learn more' +
+    'about what our club does! All are welcome to join the club happenings, ' +
+    'regardless of major or year. The event itself goes from 6:00pm - 7:00pm, ' +
+    'and leftovers will be available until 8:00pm. We have vegatarian and halal options available.';
 
-    let allPosts = document.getElementById('all-posts');
+  const allPosts = document.getElementById('all-posts');
 
-    for (let i = 0; i < 10; i++) {
-        // Create card.
-        let postCard = document.createElement('div');
-        postCard.setAttribute('class', 'post-card');
+  for (let i = 0; i < 10; i++) {
+    // Create card.
+    const postCard = document.createElement('div');
+    postCard.setAttribute('class', 'post-card');
 
-        // Create and add title.
-        let title = document.createElement('h2');
-        title.setAttribute('class', 'card-title');
-        title.innerText = titleText;
-        postCard.appendChild(title);
+    // Create and add title.
+    const title = document.createElement('h2');
+    title.setAttribute('class', 'card-title');
+    title.innerText = titleText;
+    postCard.appendChild(title);
 
-        // Create and add subtitle.
-        let subtitle = document.createElement('h3');
-        subtitle.setAttribute('class', 'card-subtitle');
-        subtitle.innerText = subtitleText;
-        postCard.appendChild(subtitle);
+    // Create and add subtitle.
+    const subtitle = document.createElement('h3');
+    subtitle.setAttribute('class', 'card-subtitle');
+    subtitle.innerText = subtitleText;
+    postCard.appendChild(subtitle);
 
-        // Create and add description.
-        let description = document.createElement('p');
-        description.setAttribute('class', 'card-description');
-        description.innerText = descriptionText;
-        postCard.appendChild(description);
+    // Create and add description.
+    const description = document.createElement('p');
+    description.setAttribute('class', 'card-description');
+    description.innerText = descriptionText;
+    postCard.appendChild(description);
 
-        // Add card to the page.
-        allPosts.append(postCard);
-    }
+    // Add card to the page.
+    allPosts.append(postCard);
+  }
 }
