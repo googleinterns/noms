@@ -74,6 +74,8 @@ function onLoad() {
 
   // Add the embedded map to the page.
   getSecretFor('javascript-maps-api').then((key) => {
+    // TODO: If the key returns null, we should show a placeholder div with error text.
+
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
     script.defer = true;

@@ -55,8 +55,7 @@ public class SecretsManagerServlet extends HttpServlet {
       response.setStatus(200);
       response.setCharacterEncoding("UTF-8");
       response.getWriter().println(secret);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       response.setStatus(400);
     }
   }
