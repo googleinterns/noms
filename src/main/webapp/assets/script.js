@@ -31,8 +31,8 @@
  * @typedef {Object} PostInfo
  * @property {string} organizationName - The name of the organization making the post.
  * @property {Date} postDateTime - The date that the post was made.
- * @property {string} eventStartTime - The starting time of the event described in the post.
- * @property {string} eventEndTime - The ending time of the event described in the post.
+ * @property {Date} eventStartTime - The starting time of the event described in the post.
+ * @property {Date} eventEndTime - The ending time of the event described in the post.
  * @property {LocationInfo} location - The location of the event.
  * @property {number} numOfPeopleFoodWillFeed - The number of people the event's food can feed.
  * @property {string} foodType - A short 1-3 word description of the type of food served.
@@ -174,24 +174,25 @@ function fetchFakeCollegeLocation() {
 
 /**
  * A fake implementation of a GET request that fetches all posts.
+ * One post's event hasn't started yet, one has ended, and the
+ * other three are in various stages of being completed.
  * This will be removed once our backend has actual posts.
- * @return {array} - The posts
+ * @return {array} - The posts.
  */
 function fetchFakePosts() {
   const fakePosts = [];
-
   for (let i = 0; i < 5; i++) {
     const post = {
       organizationName: `Organization ${i}`,
-      postDateTime: (new Date()).setHours((new Date()).getHours - i),
-      eventStartTime: '5:00pm',
-      eventEndTime: '7:00pm',
+      postDateTime: new Date(new Date().setHours(new Date().getHours() - i)),
+      eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
+      eventEndTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-0.5)*10)),
       location: {
         name: `Office ${i}`,
         lat: 37.348545 + (i + Math.random()*10 - 5) / 5000,
         long: -121.9386406 + (i + Math.random()*10 - 5)/ 5000,
       },
-      numOfPeopleFoodWillFeed: (10 - i),
+      numOfPeopleFoodWillFeed: (30 - i*5),
       foodType: 'Thai Food',
       description: 'Hello! We have food.',
     };
@@ -228,17 +229,14 @@ function initMap() {
 
 /**
  * Calculates the opacity of a given map marker.
- * @param {string} eventStartTime - The start time of the event.
- * @param {string} eventEndTime - The end time of the event.
+ * @param {Date} eventStartTime - The start time of the event.
+ * @param {Date} eventEndTime - The end time of the event.
  * @return {number} - The opacity to show the marker as.
  */
 function calculateMapMarkerOpacity(eventStartTime, eventEndTime) {
   const now = new Date();
-  const startTime = Date.today.at(eventStartTime);
-  const endTime = Date.today.at(eventEndTime);
-  console.log('now: ' + now.toString());
-  console.log(startTime.toString());
-  console.log(endTime.toString());
+  const startTime = eventStartTime;
+  const endTime = eventEndTime;
 
   // If the date is in the future, our marker should have full opacity.
   if (startTime > now) {
@@ -252,8 +250,8 @@ function calculateMapMarkerOpacity(eventStartTime, eventEndTime) {
 
   // Else, we need to map the full range of 1 to 0 to the range of time
   // between eventStartTime and eventEndTime.
-  const diff = endTime - startTime;
-  return now.getMilliseconds * diff;
+  const adjusted = 1 - ((now - startTime) / (endTime - startTime));
+  return adjusted;
 }
 
 /* Responsive navigation bar */
