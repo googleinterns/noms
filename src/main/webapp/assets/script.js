@@ -300,12 +300,12 @@ function getMapMarkerIconUrl(eventStartTime) {
  * @return {number} - The marker dimension.
  */
 function getMapMarkerIconSize(numOfPeopleFoodWillFeed, dimensionType) {
-  // Input check
+  // Sanity check input for invalid values.
   if (dimensionType !== 'width' && dimensionType !== 'height') {
     return null;
   }
 
-  // Calculation.
+  // Apply the logistic function to the input.
   const bounds = dimensionType === 'width' ? [28, 70] : [45, 113];
   return Math.round((bounds[1] - bounds[0])/
       (Math.exp(-((numOfPeopleFoodWillFeed - 25)/6)) + 1) +bounds[0]);
