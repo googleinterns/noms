@@ -223,10 +223,11 @@ function initMap() {
 
   // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
+    const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
+    const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
     const icon = {
       url: getMapMarkerIconUrl(post.eventStartTime),
-      scaledSize: new google.maps.Size(getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width'),
-          getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height')),
+      scaledSize: new google.maps.Size(width, height),
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(0, 0),
     };
@@ -279,29 +280,33 @@ function getMapMarkerOpacity(eventStartTime, eventEndTime) {
 function getMapMarkerIconUrl(eventStartTime) {
   const now = new Date();
 
-  // If the date is in the future, return the grey marker
+  // If the date is in the future, return the grey marker.
   if (eventStartTime > now) {
     return './assets/greymarker.png';
   }
 
+  // Else, a red marker.
   return './assets/redmarker.png';
 }
 
 /**
  * Returns the appropriate marker size for a single dimension of a marker, based on the number
  * of people the food will feed. Uses a logistic function so that incredibly large and small
- * number still have reasonable icon sizes.
+ * numbers still have reasonable icon sizes.
  * @param {number} numOfPeopleFoodWillFeed - The number of people the event's food will feed.
  * @param {string} dimensionType - The dimension type, either 'width' or 'height'.
  * @return {number} - The marker dimension.
  */
 function getMapMarkerIconSize(numOfPeopleFoodWillFeed, dimensionType) {
   // Input check
-  if (dimensionType !== 'width' || dimensionType !== 'height') {
+  if (dimensionType !== 'width' && dimensionType !== 'height') {
     return null;
   }
+
+  // Calculation.
   const bounds = dimensionType === 'width' ? [28, 70] : [45, 113];
-  return ((bounds[1] - bounds[0])/(Math.exp(-((numOfPeopleFoodWillFeed - 25)/6)) + 1)) + bounds[0];
+  return Math.round((bounds[1] - bounds[0])/
+      (Math.exp(-((numOfPeopleFoodWillFeed - 25)/6)) + 1) +bounds[0]);
 }
 
 /* Responsive navigation bar */
