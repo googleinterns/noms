@@ -198,7 +198,7 @@ function fetchFakePosts() {
       },
       numOfPeopleFoodWillFeed: (30 - i*5),
       foodType: 'Thai Food',
-      description: 'Come join the ACM for free burritos and to learn more' +
+      description: 'Come join the ACM for free burritos and to learn more ' +
         'about what our club does! All are welcome to join the club happenings, ' +
         'regardless of major or year. ' +
         'We have vegatarian and halal options available.',
@@ -223,11 +223,20 @@ function initMap() {
 
   // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
+    const icon = {
+      url: getMapMarkerIconUrl(post.eventStartTime),
+      scaledSize: new google.maps.Size(getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width'),
+          getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height')),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(0, 0),
+    };
+
     new google.maps.Marker({
       position: {lat: post.location.lat, lng: post.location.long},
       map: map,
       title: post.organizationName,
-      opacity: calculateMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
+      opacity: getMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
+      icon: icon,
     });
   });
 
@@ -240,7 +249,7 @@ function initMap() {
  * @param {Date} eventEndTime - The end time of the event.
  * @return {number} - The opacity to show the marker as.
  */
-function calculateMapMarkerOpacity(eventStartTime, eventEndTime) {
+function getMapMarkerOpacity(eventStartTime, eventEndTime) {
   const now = new Date();
   const startTime = eventStartTime;
   const endTime = eventEndTime;
@@ -259,6 +268,40 @@ function calculateMapMarkerOpacity(eventStartTime, eventEndTime) {
   // between eventStartTime and eventEndTime.
   const adjusted = 1 - ((now - startTime) / (endTime - startTime));
   return adjusted;
+}
+
+/**
+ * Returns the appropriate marker icon for a marker.
+ * Grey if the event hasn't started yet, red otherwise.
+ * @param {Date} eventStartTime - The start time of the event.
+ * @return {string} - The location of the marker icon.
+ */
+function getMapMarkerIconUrl(eventStartTime) {
+  const now = new Date();
+
+  // If the date is in the future, return the grey marker
+  if (eventStartTime > now) {
+    return './assets/greymarker.png';
+  }
+
+  return './assets/redmarker.png';
+}
+
+/**
+ * Returns the appropriate marker size for a single dimension of a marker, based on the number
+ * of people the food will feed. Uses a logistic function so that incredibly large and small
+ * number still have reasonable icon sizes.
+ * @param {number} numOfPeopleFoodWillFeed - The number of people the event's food will feed.
+ * @param {string} dimensionType - The dimension type, either 'width' or 'height'.
+ * @return {number} - The marker dimension.
+ */
+function getMapMarkerIconSize(numOfPeopleFoodWillFeed, dimensionType) {
+  // Input check
+  if (dimensionType !== 'width' || dimensionType !== 'height') {
+    return null;
+  }
+  const bounds = dimensionType === 'width' ? [28, 70] : [45, 113];
+  return ((bounds[1] - bounds[0])/(Math.exp(-((numOfPeopleFoodWillFeed - 25)/6)) + 1)) + bounds[0];
 }
 
 /* Responsive navigation bar */
@@ -283,7 +326,8 @@ function addPosts(posts) {
   const allPosts = document.getElementById('all-posts');
   posts.forEach((post) => {
     const titleText = post.organizationName + ' @ ' + post.location.name;
-    const subtitleText = post.foodType + ' | ' + post.eventStartTime + '-' + post.eventEndTime;
+    const subtitleText = post.foodType + ' | ' + post.eventStartTime.toLocaleTimeString('en-US') +
+      '-' + post.eventEndTime.toLocaleTimeString('en-US');
     const descriptionText = post.description;
 
     // Create card.

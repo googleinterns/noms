@@ -32,11 +32,12 @@
   background-color: white;
   border: 1px solid #303030;
   color: #303030;
+  cursor: pointer;
 }
 
 /* Map */
-#map-placeholder {
-  background: var(--peach);
+#map {
+  background: var(--grey);
   height: 65vh;
   min-width: 100px;
   padding-bottom: 30px;
