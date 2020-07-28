@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that retrieves secrets for client-side use. Keeps keys out of source control. */
-@WebServlet("/secret")
+@WebServlet("/secretsManager")
 public class SecretsManagerServlet extends HttpServlet {
 
   /** POST a secret unique id and get back the corresponding secret value. */
@@ -55,8 +55,7 @@ public class SecretsManagerServlet extends HttpServlet {
       response.setStatus(200);
       response.setCharacterEncoding("UTF-8");
       response.getWriter().println(secret);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       response.setStatus(400);
     }
   }

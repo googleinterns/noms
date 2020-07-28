@@ -1,0 +1,94 @@
+#page-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 80%;
+  margin-bottom: 50px;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+/* Create Posts */
+#create-post-button {
+  background-color: #303030;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 400;
+  height: 60px;
+  margin-left: auto;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 10px;
+  min-width: 100px;
+  outline: none;
+  text-align: center;
+  width: 100%;
+}
+
+#create-post-button:hover {
+  background-color: white;
+  border: 1px solid #303030;
+  color: #303030;
+}
+
+/* Map */
+#map-placeholder {
+  background: var(--peach);
+  height: 65vh;
+  min-width: 100px;
+  padding-bottom: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 10px;
+  width: 40%;
+}
+
+/* Post Feed */
+#all-posts {
+  font-family: "Roboto", sans-serif;
+  height: 65vh;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: 0;
+  overflow-y: auto;
+  padding-bottom: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 10px;
+  width: 45%;
+}
+
+.post-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
+  margin-bottom: 5px;
+  margin-top: 20px;
+  min-height: 100px;
+  min-width: 100px;
+  padding: 10px;
+  padding-right: 30px;
+  padding-left: 30px;
+}
+
+.card-title {
+  color: #303030;
+  font-size: 1.5rem;
+  margin-bottom: 0;
+}
+
+.card-subtitle {
+  color: grey;
+  font-size: 1.25rem;
+  font-weight: 450;
+  margin-bottom: 0;
+  margin-top: 12px;
+}
+
+.card-description {
+  color: black;
+  margin-top: 1.25rem;
+}

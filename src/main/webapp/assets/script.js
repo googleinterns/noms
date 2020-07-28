@@ -72,8 +72,12 @@ function onLoad() {
   posts = fetchFakePosts();
   collegeLocation = fetchFakeCollegeLocation();
 
+  addPosts(posts);
+
   // Add the embedded map to the page.
   getSecretFor('javascript-maps-api').then((key) => {
+    // TODO: If the key returns null, we should show a placeholder div with error text.
+
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
     script.defer = true;
@@ -89,7 +93,7 @@ function onLoad() {
  */
 async function getSecretFor(secretid) {
   try {
-    const response = await fetch('/secret?id=' + secretid, {method: 'POST'});
+    const response = await fetch('/secretsManager?id=' + secretid, {method: 'POST'});
     if (!response.ok) {
       throw new Error(response.status);
     } else {
@@ -194,7 +198,10 @@ function fetchFakePosts() {
       },
       numOfPeopleFoodWillFeed: (30 - i*5),
       foodType: 'Thai Food',
-      description: 'Hello! We have food.',
+      description: 'Come join the ACM for free burritos and to learn more' +
+        'about what our club does! All are welcome to join the club happenings, ' +
+        'regardless of major or year. ' +
+        'We have vegatarian and halal options available.',
     };
     fakePosts.push(post);
   }
@@ -267,3 +274,41 @@ function toggleNav() {
   nav.classList.toggle('nav-active');
 }
 burger.addEventListener('click', toggleNav);
+
+/**
+ * Adds posts to the page (uses mock data).
+ * @param {array} posts
+ */
+function addPosts(posts) {
+  const allPosts = document.getElementById('all-posts');
+  posts.forEach((post) => {
+    const titleText = post.organizationName + ' @ ' + post.location.name;
+    const subtitleText = post.foodType + ' | ' + post.eventStartTime + '-' + post.eventEndTime;
+    const descriptionText = post.description;
+
+    // Create card.
+    const postCard = document.createElement('div');
+    postCard.setAttribute('class', 'post-card');
+
+    // Create and add title.
+    const title = document.createElement('h2');
+    title.setAttribute('class', 'card-title');
+    title.innerText = titleText;
+    postCard.appendChild(title);
+
+    // Create and add subtitle.
+    const subtitle = document.createElement('h3');
+    subtitle.setAttribute('class', 'card-subtitle');
+    subtitle.innerText = subtitleText;
+    postCard.appendChild(subtitle);
+
+    // Create and add description.
+    const description = document.createElement('p');
+    description.setAttribute('class', 'card-description');
+    description.innerText = descriptionText;
+    postCard.appendChild(description);
+
+    // Add card to the page.
+    allPosts.append(postCard);
+  });
+}
