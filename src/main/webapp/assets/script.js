@@ -72,7 +72,9 @@ function onLoad() {
   posts = fetchFakePosts();
   collegeLocation = fetchFakeCollegeLocation();
 
-  addPosts(posts);
+  if (document.getElementById('all-posts')) {
+    addPosts(posts);
+  }
 
   // Add the embedded map to the page.
   getSecretFor('javascript-maps-api').then((key) => {

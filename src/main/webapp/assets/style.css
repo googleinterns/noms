@@ -23,6 +23,10 @@ body {
   padding: 0;
 }
 
+.title {
+  padding: 0 0 0 10rem;
+}
+
 /*
  * Nav bar across all pages
  */
@@ -102,8 +106,13 @@ header {
  */
 
 #map {
+  background: var(--grey);
   height: 500px;
   width: 100%;
+}
+
+#map-container {
+  margin: 0 2rem;
 }
 
 /*
