@@ -8,6 +8,14 @@
   margin-right: 10%;
 }
 
+@media screen and (max-width: 678px) {
+  #page-container {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+}
+
 /* Create Posts */
 #create-post-button {
   background-color: #303030;
@@ -39,9 +47,15 @@
 #map {
   background: var(--grey);
   height: 65vh;
-  flex: 1 0 400px;
+  flex: 1 1 400px;
   min-width: 100px;
   padding: 30px;
+}
+
+@media screen and (max-width: 678px) {
+  #map {
+    height: 40vh;
+  }
 }
 
 /* Post Feed */

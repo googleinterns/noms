@@ -27,6 +27,12 @@ body {
   padding: 0 0 0 10rem;
 }
 
+@media screen and (max-width: 678px) {
+  .title {
+    padding: 0 0 0 4rem;
+  }
+}
+
 /*
  * Nav bar across all pages
  */
@@ -48,6 +54,7 @@ header {
   display: flex;
   justify-content: space-around;
   padding: 0;
+  z-index: 9999;
 }
 
 .navlink {
