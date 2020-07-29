@@ -8,7 +8,18 @@
   margin-right: 10%;
 }
 
-/* Create Posts */
+@media screen and (max-width: 678px) {
+  #page-container {
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 90%;
+  }
+}
+
+/*
+ * Create Posts
+ */
+
 #create-post-button {
   background-color: #303030;
   border: none;
@@ -32,33 +43,45 @@
   background-color: white;
   border: 1px solid #303030;
   color: #303030;
+  cursor: pointer;
 }
 
-/* Map */
-#map-placeholder {
-  background: var(--peach);
+/*
+ * Map
+ */
+
+#map {
+  background: var(--grey);
   height: 65vh;
+  flex: 1 1 400px;
   min-width: 100px;
-  padding-bottom: 30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 10px;
-  width: 40%;
+  padding: 30px;
+  width: 100%;
 }
 
-/* Post Feed */
+#map-container {
+  margin: 0 2rem;
+}
+
+@media screen and (max-width: 678px) {
+  #map {
+    height: 40vh;
+  }
+}
+
+/*
+ * Posts feed
+ */
+
 #all-posts {
+  flex: 1 0 400px;
   font-family: "Roboto", sans-serif;
   height: 65vh;
   margin-bottom: 5px;
   margin-left: auto;
   margin-right: 0;
   overflow-y: auto;
-  padding-bottom: 30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 10px;
-  width: 45%;
+  padding: 30px;
 }
 
 .post-card {
