@@ -13,6 +13,9 @@
 // limitations under the License.
 /* eslint-disable no-unused-vars */
 
+// This file will be included only on the 'feed' (find-events) page,
+// and contains items specific to the map and posts on that page.
+
 //
 // Types
 //
@@ -31,8 +34,8 @@
  * @typedef {Object} PostInfo
  * @property {string} organizationName - The name of the organization making the post.
  * @property {Date} postDateTime - The date that the post was made.
- * @property {string} eventStartTime - The starting time of the event described in the post.
- * @property {string} eventEndTime - The ending time of the event described in the post.
+ * @property {Date} eventStartTime - The starting time of the event described in the post.
+ * @property {Date} eventEndTime - The ending time of the event described in the post.
  * @property {LocationInfo} location - The location of the event.
  * @property {number} numOfPeopleFoodWillFeed - The number of people the event's food can feed.
  * @property {string} foodType - A short 1-3 word description of the type of food served.
@@ -55,9 +58,15 @@ let map;
 //
 // Elements
 //
-const createPostButton = document.getElementById('create-post-button');
-const modal = document.getElementById('create-post-modal');
-const closeModalButton = document.getElementById('close-modal');
+let createPostButton;
+let modal;
+let closeModalButton;
+
+//
+// Constants
+//
+const MARKER_WIDTH_MINMAX = {min: 28, max: 70};
+const MARKER_HEIGHT_MINMAX = {min: 45, max: 113};
 
 //
 // Event listener registration
@@ -65,10 +74,6 @@ const closeModalButton = document.getElementById('close-modal');
 
 // Hooks the onLoad function to the DOMContentLoaded event.
 document.addEventListener('DOMContentLoaded', onLoad);
-
-createPostButton.addEventListener('click', showModal);
-
-closeModalButton.addEventListener('click', closeModal);
 
 //
 // Functions
@@ -78,12 +83,23 @@ closeModalButton.addEventListener('click', closeModal);
  * Fires as soon as the DOM is loaded.
  */
 function onLoad() {
+  // Get the elements from the DOM after they have loaded.
+  createPostButton = document.getElementById('create-post-button');
+  modal = document.getElementById('create-post-modal');
+  closeModalButton = document.getElementById('close-modal');
+
+  // Event Listeners that need the DOM elements.
+  createPostButton.addEventListener('click', showModal);
+  closeModalButton.addEventListener('click', closeModal);
+
   // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
   posts = fetchFakePosts();
   collegeLocation = fetchFakeCollegeLocation();
 
-  addPosts(posts);
+  if (document.getElementById('all-posts')) {
+    addPosts(posts);
+  }
 
   // Add the embedded map to the page.
   getSecretFor('javascript-maps-api').then((key) => {
@@ -189,26 +205,27 @@ function fetchFakeCollegeLocation() {
 
 /**
  * A fake implementation of a GET request that fetches all posts.
+ * One post's event hasn't started yet, one has ended, and the
+ * other three are in various stages of being completed.
  * This will be removed once our backend has actual posts.
- * @return {array} - The posts
+ * @return {array} - The posts.
  */
 function fetchFakePosts() {
   const fakePosts = [];
-
   for (let i = 0; i < 5; i++) {
     const post = {
       organizationName: `Organization ${i}`,
-      postDateTime: (new Date()).setHours((new Date()).getHours - i),
-      eventStartTime: '5:00pm',
-      eventEndTime: '7:00pm',
+      postDateTime: new Date(new Date().setHours(new Date().getHours() - i)),
+      eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
+      eventEndTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-0.5)*10)),
       location: {
         name: `Office ${i}`,
         lat: 37.348545 + (i + Math.random()*10 - 5) / 5000,
         long: -121.9386406 + (i + Math.random()*10 - 5)/ 5000,
       },
-      numOfPeopleFoodWillFeed: (10 - i),
+      numOfPeopleFoodWillFeed: (30 - i*5),
       foodType: 'Thai Food',
-      description: 'Come join the ACM for free burritos and to learn more' +
+      description: 'Come join the ACM for free burritos and to learn more ' +
         'about what our club does! All are welcome to join the club happenings, ' +
         'regardless of major or year. ' +
         'We have vegatarian and halal options available.',
@@ -233,29 +250,101 @@ function initMap() {
 
   // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
+    const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
+    const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
+    const icon = {
+      url: getMapMarkerIconUrl(post.eventStartTime),
+      scaledSize: new google.maps.Size(width, height),
+      origin: new google.maps.Point(0, 0),
+    };
+
     new google.maps.Marker({
       position: {lat: post.location.lat, lng: post.location.long},
       map: map,
       title: post.organizationName,
+      opacity: getMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
+      icon: icon,
     });
   });
 
 /* eslint-enable no-undef */
 }
 
-/* Responsive navigation bar */
-const burger = document.querySelector('.burger i');
-const nav = document.querySelector('.nav');
+/**
+ * Calculates the opacity of a given map marker.
+ * @param {Date} eventStartTime - The start time of the event.
+ * @param {Date} eventEndTime - The end time of the event.
+ * @return {number} - The opacity to show the marker as.
+ */
+function getMapMarkerOpacity(eventStartTime, eventEndTime) {
+  const now = new Date();
+  const startTime = eventStartTime;
+  const endTime = eventEndTime;
+
+  // If the date is in the future, our marker should have full opacity.
+  if (startTime > now) {
+    return 1;
+  // If the event is over, our marker should not be on the map at all.
+  } else if (endTime <= now) {
+    return 0;
+  }
+
+  // Else, we know that the event is currently happening. In that case, we need to map
+  // the range between 1 to 0 to the range of time between eventStartTime and eventEndTime.
+  const adjusted = 1 - ((now - startTime) / (endTime - startTime));
+  return adjusted;
+}
 
 /**
- * Toggles navigation bar to be responsive
+ * Returns the appropriate marker icon for a marker.
+ * Grey if the event hasn't started yet, red otherwise.
+ * @param {Date} eventStartTime - The start time of the event.
+ * @return {string} - The location of the marker icon.
  */
-function toggleNav() {
-  burger.classList.toggle('fa-bars');
-  burger.classList.toggle('fa-times');
-  nav.classList.toggle('nav-active');
+function getMapMarkerIconUrl(eventStartTime) {
+  const now = new Date();
+
+  if (eventStartTime > now) {
+    return './assets/greymarker.svg';
+  }
+
+  return './assets/redmarker.svg';
 }
-burger.addEventListener('click', toggleNav);
+
+/**
+ * Returns the appropriate marker size for a single dimension of a marker, based on the number
+ * of people the food will feed. Uses a logistic function so that incredibly large and small
+ * numbers still have reasonable icon sizes.
+ * @param {number} numOfPeopleFoodWillFeed - The number of people the event's food will feed.
+ * @param {string} dimensionType - The dimension type, either 'width' or 'height'.
+ * @return {number} - The marker's dimension size.
+ */
+function getMapMarkerIconSize(numOfPeopleFoodWillFeed, dimensionType) {
+  // Sanity check input for invalid values.
+  if (dimensionType !== 'width' && dimensionType !== 'height') {
+    return null;
+  }
+
+  // Apply the logistic function to the input.
+  // The number of people is the x-value, and the bounds for the height
+  // and width determine the logistic function's horizontal asymptotes.
+  if (dimensionType === 'width') {
+    return applyLogisticFunction(numOfPeopleFoodWillFeed, MARKER_WIDTH_MINMAX);
+  } else {
+    return applyLogisticFunction(numOfPeopleFoodWillFeed, MARKER_HEIGHT_MINMAX);
+  }
+}
+/**
+ * Applies a logistic function to the input. The function is designed such that x-values
+ * over 40 level out to bounds.max, and x-values under 5 level out to bounds.min.
+ * @param {number} xValue - The x-value to evaluate the function at.
+ * @param {{min: number, max: number}} bounds - The asymptotes of the logistic function.
+ * @return {number} - The output of the logistic function (i.e. the y-value).
+ */
+function applyLogisticFunction(xValue, bounds) {
+  return Math.round((bounds.max - bounds.min)/
+      (Math.exp(-((xValue - 25)/6)) + 1) + bounds.min);
+}
 
 /**
  * Adds posts to the page (uses mock data).
@@ -265,7 +354,8 @@ function addPosts(posts) {
   const allPosts = document.getElementById('all-posts');
   posts.forEach((post) => {
     const titleText = post.organizationName + ' @ ' + post.location.name;
-    const subtitleText = post.foodType + ' | ' + post.eventStartTime + '-' + post.eventEndTime;
+    const subtitleText = post.foodType + ' | ' + post.eventStartTime.toLocaleTimeString('en-US') +
+      '-' + post.eventEndTime.toLocaleTimeString('en-US');
     const descriptionText = post.description;
 
     // Create card.
@@ -297,15 +387,19 @@ function addPosts(posts) {
 
 /* Create post modal. */
 function showModal() {
-  modal.style.display = 'block';
+  if (modal) {
+    modal.style.display = 'block';
+  }
 }
 
 function closeModal() {
-  modal.style.display = "none";
+  if (modal) {
+    modal.style.display = "none";
+  }
 }
 
 window.onclick = function(event) {
-    if (event.target == modal) {
+    if (modal && event.target == modal) {
         closeModal();
     }
 }

@@ -2,6 +2,7 @@
   --auburn: #ce853f;
   --dark-green: #667d51;
   --dark-maroon: #955757;
+  --grey: #e5e3df;
   --light-teal: #abcbbc;
   --light-green: #b9c9a7;
   --light-maroon: #a98585;
@@ -20,6 +21,16 @@ body {
   font-size: 1rem;
   margin: 0;
   padding: 0;
+}
+
+.title {
+  padding: 0 0 0 10rem;
+}
+
+@media screen and (max-width: 678px) {
+  .title {
+    padding: 0 0 0 4rem;
+  }
 }
 
 /*
@@ -43,6 +54,7 @@ header {
   display: flex;
   justify-content: space-around;
   padding: 0;
+  z-index: 9999;
 }
 
 .navlink {
@@ -94,15 +106,6 @@ header {
   .nav-active {
     right: 0;
   }
-}
-
-/*
- * The Map
- */
-
-#map {
-  height: 500px;
-  width: 100%;
 }
 
 /*
