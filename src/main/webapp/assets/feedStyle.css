@@ -16,7 +16,10 @@
   }
 }
 
-/* Create Posts */
+/* 
+ * Create Posts
+ */
+
 #create-post-button {
   background-color: #303030;
   border: none;
@@ -43,13 +46,21 @@
   cursor: pointer;
 }
 
-/* Map */
+/*
+ * Map
+ */
+
 #map {
   background: var(--grey);
   height: 65vh;
   flex: 1 1 400px;
   min-width: 100px;
   padding: 30px;
+  width: 100%;
+}
+
+#map-container {
+  margin: 0 2rem;
 }
 
 @media screen and (max-width: 678px) {
@@ -58,7 +69,10 @@
   }
 }
 
-/* Post Feed */
+/*
+ * Posts feed
+ */
+
 #all-posts {
   flex: 1 0 400px;
   font-family: "Roboto", sans-serif;
