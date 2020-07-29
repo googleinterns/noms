@@ -282,11 +282,11 @@ function getMapMarkerIconUrl(eventStartTime) {
 
   // If the date is in the future, return the grey marker.
   if (eventStartTime > now) {
-    return './assets/greymarker.png';
+    return './assets/greymarker.svg';
   }
 
   // Else, a red marker.
-  return './assets/redmarker.png';
+  return './assets/redmarker.svg';
 }
 
 /**
