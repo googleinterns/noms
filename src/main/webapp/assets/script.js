@@ -231,7 +231,6 @@ function initMap() {
       url: getMapMarkerIconUrl(post.eventStartTime),
       scaledSize: new google.maps.Size(width, height),
       origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(0, 0),
     };
 
     new google.maps.Marker({
