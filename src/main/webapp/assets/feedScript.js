@@ -32,6 +32,7 @@
 /**
  * An object containing information about a post.
  * @typedef {Object} PostInfo
+ * @property {number} id - The unique id of the post.
  * @property {string} organizationName - The name of the organization making the post.
  * @property {Date} postDateTime - The date that the post was made.
  * @property {Date} eventStartTime - The starting time of the event described in the post.
@@ -199,6 +200,7 @@ function fetchFakePosts() {
   const fakePosts = [];
   for (let i = 0; i < 5; i++) {
     const post = {
+      id: i*1000 + i*50 + i*2 + i,
       organizationName: `Organization ${i}`,
       postDateTime: new Date(new Date().setHours(new Date().getHours() - i)),
       eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
@@ -243,14 +245,26 @@ function initMap() {
       origin: new google.maps.Point(0, 0),
     };
 
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       position: {lat: post.location.lat, lng: post.location.long},
       map: map,
       title: post.organizationName,
       opacity: getMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
       icon: icon,
     });
+
+    marker.addListener('click', function() {
+      const postElement = document.getElementById(post.id);
+      postElement.scrollIntoView();
+      postElement.style.boxShadow = '0 1px 10px #4a4a4a, 0 -1px 10px #4a4a4a';
+
+      // JS does not have native sleep(), so we can spoof the behavior with Promises.
+      new Promise((r) => setTimeout(r, 1000)).then(() => {
+        postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
+      });
+    });
   });
+
 
 /* eslint-enable no-undef */
 }
@@ -319,6 +333,7 @@ function getMapMarkerIconSize(numOfPeopleFoodWillFeed, dimensionType) {
     return applyLogisticFunction(numOfPeopleFoodWillFeed, MARKER_HEIGHT_MINMAX);
   }
 }
+
 /**
  * Applies a logistic function to the input. The function is designed such that x-values
  * over 40 level out to bounds.max, and x-values under 5 level out to bounds.min.
@@ -346,6 +361,7 @@ function addPosts(posts) {
     // Create card.
     const postCard = document.createElement('div');
     postCard.setAttribute('class', 'post-card');
+    postCard.setAttribute('id', post.id);
 
     // Create and add title.
     const title = document.createElement('h2');
