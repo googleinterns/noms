@@ -39,27 +39,21 @@
 #map {
   background: var(--grey);
   height: 65vh;
+  flex: 1 0 400px;
   min-width: 100px;
-  padding-bottom: 30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 10px;
-  width: 40%;
+  padding: 30px;
 }
 
 /* Post Feed */
 #all-posts {
+  flex: 1 0 400px;
   font-family: "Roboto", sans-serif;
   height: 65vh;
   margin-bottom: 5px;
   margin-left: auto;
   margin-right: 0;
   overflow-y: auto;
-  padding-bottom: 30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 10px;
-  width: 45%;
+  padding: 30px;
 }
 
 .post-card {

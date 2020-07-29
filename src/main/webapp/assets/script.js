@@ -260,15 +260,13 @@ function getMapMarkerOpacity(eventStartTime, eventEndTime) {
   // If the date is in the future, our marker should have full opacity.
   if (startTime > now) {
     return 1;
-  }
-
   // If the event is over, our marker should not be on the map at all.
-  if (endTime < now) {
+  } else if (endTime < now) {
     return 0;
   }
 
-  // Else, we need to map the full range of 1 to 0 to the range of time
-  // between eventStartTime and eventEndTime.
+  // Else, we know that the event is currently happening. In that case, we need to map
+  // the range between 1 to 0 to the range of time between eventStartTime and eventEndTime.
   const adjusted = 1 - ((now - startTime) / (endTime - startTime));
   return adjusted;
 }
