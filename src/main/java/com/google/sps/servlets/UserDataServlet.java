@@ -29,7 +29,7 @@ public class UserDataServlet extends HttpServlet {
 
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  /** Responsible for adding/updating a User into Datastore */
+  /** Add/update a User into Datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -45,14 +45,12 @@ public class UserDataServlet extends HttpServlet {
       subscribe = false;
     }
 
-    // Create an Entity type User.
     Entity userEntity = new Entity("User", email);
     userEntity.setProperty("name", name);
     userEntity.setProperty("university", university);
     userEntity.setProperty("subscribe", subscribe);
 
-    // Store the User in Datastore and Datastore automatically checks for duplicates
-    // and will update the user information accordingly to new information based on emails
+    // Datastores updates the entity if it existed before based on email key
     datastore.put(userEntity);
     response.sendRedirect("/index.html");
   }
