@@ -36,6 +36,7 @@
 
 #create-post-modal {
   background: white;
+  background-color: rgba(0, 0, 0, 0.4);
   bottom: 20%;
   border-radius: 15px;
   box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;

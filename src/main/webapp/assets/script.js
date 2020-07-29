@@ -298,7 +298,6 @@ function addPosts(posts) {
 /* Create post modal. */
 function showModal() {
   modal.style.display = 'block';
-  document.body.
 }
 
 function closeModal() {
