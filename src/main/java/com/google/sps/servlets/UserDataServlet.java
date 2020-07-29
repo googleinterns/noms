@@ -29,7 +29,7 @@ public class UserDataServlet extends HttpServlet {
 
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  /** Responsible for add a new User into Datastore */
+  /** Responsible for adding/updating a User into Datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
