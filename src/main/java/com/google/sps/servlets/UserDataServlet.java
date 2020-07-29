@@ -17,7 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.sps.data.User;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,44 +27,33 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/user")
 public class UserDataServlet extends HttpServlet {
 
-  /** Responsible for creating new User. */
+  private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+  /** Responsible for add a new User into Datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Get the input from the form.
-    String name = getParameter(request, "name", "");
-    String email = getParameter(request, "email", "");
-    String university = getParameter(request, "university", "");
+    String name = request.getParameter("name");
+    String email = request.getParameter("email");
+    String university = request.getParameter("university");
     String subscription = request.getParameter("email-notif");
-    boolean subscribe;
+    boolean subscribe = true;
 
-    if (subscription.equals("subscribe")) {
-      subscribe = true;
-    } else if (subscription.equals("unsubscribe")) {
+    // Check if user wants to unsubscribe.
+    if (subscription.equals("unsubscribe")) {
       subscribe = false;
     }
 
     // Create an Entity type User.
-    Entity userEntity = new Entity("User");
+    Entity userEntity = new Entity("User", email);
     userEntity.setProperty("name", name);
-    userEntity.setProperty("email", email);
     userEntity.setProperty("university", university);
+    userEntity.setProperty("subscribe", subscribe);
 
-    // Store the User in Datastore and refresh page.
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    // Store the User in Datastore and Datastore automatically checks for duplicates
+    // and will update the user information accordingly to new information based on emails
     datastore.put(userEntity);
     response.sendRedirect("/index.html");
-  }
-
-  /**
-   * @return the request parameter, or the default value if the parameter was not specified by the
-   *     client
-   */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
   }
 }
