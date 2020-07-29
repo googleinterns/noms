@@ -125,8 +125,8 @@
     margin-left: auto;
     margin-right: 0;
     overflow-y: auto;
-    padding-top: 30px !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-top: 30px;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
