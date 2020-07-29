@@ -10,9 +10,9 @@
 
 @media screen and (max-width: 678px) {
   #page-container {
-    width: 90%;
     margin-left: 5%;
     margin-right: 5%;
+    width: 90%;
   }
 }
 
