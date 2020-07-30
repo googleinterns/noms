@@ -264,9 +264,7 @@ function initMap() {
       });
     });
   });
-
-
-/* eslint-enable no-undef */
+  /* eslint-enable no-undef */
 }
 
 /**
