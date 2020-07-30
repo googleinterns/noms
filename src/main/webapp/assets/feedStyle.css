@@ -55,11 +55,22 @@
   box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
   height: 60%;
   left: 20%;
+  padding: 30px;
   position: fixed;
   width: 60%;
   overflow: auto;
   top: 20%;
   z-index: 1; 
+}
+
+modal-form {
+  width: inherit;
+}
+
+input[type=text] {
+  border-radius: 50px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 @media screen and (max-width: 678px) {
