@@ -23,16 +23,6 @@ body {
   padding: 0;
 }
 
-.title {
-  padding: 0 0 0 10rem;
-}
-
-@media screen and (max-width: 678px) {
-  .title {
-    padding: 0 0 0 4rem;
-  }
-}
-
 /*
  * Nav bar across all pages
  */
