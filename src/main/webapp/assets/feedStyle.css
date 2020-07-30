@@ -54,7 +54,7 @@
   z-index: 1;
 }
 
-#create-post-modal {
+#modal-create-post {
   background: white;
   bottom: 20%;
   border-radius: 15px;
@@ -69,14 +69,44 @@
   z-index: 1; 
 }
 
+#modal-close {
+  background: none;
+  left: 80%;
+  position: fixed;
+  outline: none;
+  top: 20%;
+  border: none;
+  margin-top: 30px;
+  font-size: 1.25rem;
+}
+
+#modal-title {
+  margin-left: 12px;
+}
+
 modal-form {
   width: inherit;
 }
 
 input[type=text] {
+  border: none;
   border-radius: 50px;
-  margin-bottom: 10px;
-  margin-top: 10px;
+  font-size: 1rem;
+  margin-bottom: 0;
+  margin-top: 0;
+  outline: none;
+}
+
+::-webkit-input-placeholder { /* Edge */
+  color: #404040;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #404040;
+}
+
+::placeholder {
+  color: #404040;
 }
 
 @media screen and (max-width: 678px) {
@@ -85,7 +115,7 @@ input[type=text] {
     margin-right: 5%;
     width: 90%;
   }
-  #create-post-modal {
+  #modal-create-post {
       left: 5%;
       width: 90%;
       top: 5%;

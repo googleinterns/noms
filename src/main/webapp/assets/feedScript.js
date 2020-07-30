@@ -86,7 +86,7 @@ function onLoad() {
   // Get the elements from the DOM after they have loaded.
   createPostButton = document.getElementById('create-post-button');
   modal = document.getElementById('modal-background');
-  closeModalButton = document.getElementById('close-modal');
+  closeModalButton = document.getElementById('modal-close');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
