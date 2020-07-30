@@ -1,0 +1,25 @@
+name: Compress images
+on: 
+  pull_request:
+    paths:
+      - '**.jpg'
+      - '**.jpeg'
+      - '**.png'
+      - '**.webp'
+jobs:
+  build:
+    name: calibreapp/image-actions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Setup Github User
+        run: |
+          git config --local user.email "mirrorkeydev@gmail.com"
+          git config --local user.name "mirrorkeydev"
+
+      - name: Compress Images
+        uses: calibreapp/image-actions@master
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
