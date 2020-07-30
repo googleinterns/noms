@@ -1,11 +1,17 @@
-#page-container {
+#col-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   width: 80%;
   margin-bottom: 50px;
   margin-left: 10%;
   margin-right: 10%;
+}
+
+#page-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 /*
@@ -103,19 +109,12 @@ input[type=text] {
   margin: 0 2rem;
 }
 
-@media screen and (max-width: 678px) {
-  #map {
-    height: 40vh;
-  }
-}
-
 /*
  * Posts feed
  */
 
 #all-posts {
   flex: 1 0 400px;
-  font-family: "Roboto", sans-serif;
   height: 65vh;
   margin-bottom: 5px;
   margin-left: auto;
@@ -154,4 +153,28 @@ input[type=text] {
 .card-description {
   color: black;
   margin-top: 1.25rem;
+}
+
+@media screen and (max-width: 678px) {
+  #col-container {
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 90%;
+  }
+
+  #map {
+    height: 40vh;
+  }
+
+  #all-posts {
+    flex: 1 0 0;
+    height: 65vh;
+    margin-bottom: 5px;
+    margin-left: auto;
+    margin-right: 0;
+    overflow-y: auto;
+    padding-top: 30px;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
