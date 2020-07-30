@@ -255,8 +255,8 @@ function initMap() {
 
     marker.addListener('click', function() {
       const postElement = document.getElementById(post.id);
-      postElement.scrollIntoView();
-      postElement.style.boxShadow = '0 1px 10px #4a4a4a, 0 -1px 10px #4a4a4a';
+      postElement.scrollIntoView({block: 'center'});
+      postElement.style.boxShadow = '0 1px 20px #939393, 0 -1px 20px #939393';
 
       // JS does not have native sleep(), so we can spoof the behavior with Promises.
       new Promise((r) => setTimeout(r, 1000)).then(() => {
