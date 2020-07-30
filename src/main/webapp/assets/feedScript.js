@@ -77,15 +77,17 @@ document.addEventListener('DOMContentLoaded', onLoad);
 /**
  * Fires as soon as the DOM is loaded.
  */
-function onLoad() {
+async function onLoad() {
+  const collegeid = (new URLSearchParams(window.location.search)).get('collegeid');
+
   // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
-  posts = fetchFakePosts();
-  collegeLocation = fetchFakeCollegeLocation();
+  posts = fetchFakePosts(collegeid);
+  collegeLocation = await fetchFakeCollegeLocation(collegeid);
 
-  if (document.getElementById('all-posts')) {
-    addPosts(posts);
-  }
+  // Update text elements on page with fetched information.
+  document.getElementById('find-events-title').innerText += ` @ ${collegeLocation.name}`;
+  addPosts(posts);
 
   // Add the embedded map to the page.
   getSecretFor('javascript-maps-api').then((key) => {
@@ -178,13 +180,18 @@ function createSearchParamsFromObject(obj) {
 /**
  * A fake implementation of a GET request for the college of the page we are on.
  * This will be removed once our backend has actual college information.
- * @return {LocationInfo} - The college's location and information.
+ * @param {number} collegeid - The ID of the college we want the lat/long for.
+ * @return {Promise<LocationInfo>} - The college's location and information.
  */
-function fetchFakeCollegeLocation() {
+async function fetchFakeCollegeLocation(collegeid) {
+  // Get all colleges
+  const locations = await (await fetch('./assets/college-locations.json')).json();
+  const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
+  console.log(collegeInfo);
   const newLocation = {
-    name: 'Santa Clara University',
-    lat: 37.348545,
-    long: -121.9386406,
+    name: collegeInfo.NAME,
+    lat: parseFloat(collegeInfo.LAT),
+    long: parseFloat(collegeInfo.LON),
   };
   return newLocation;
 }
@@ -194,9 +201,10 @@ function fetchFakeCollegeLocation() {
  * One post's event hasn't started yet, one has ended, and the
  * other three are in various stages of being completed.
  * This will be removed once our backend has actual posts.
+ * @param {number} collegeid - The ID of the college we want posts for.
  * @return {array} - The posts.
  */
-function fetchFakePosts() {
+function fetchFakePosts(collegeid) {
   const fakePosts = [];
   for (let i = 0; i < 5; i++) {
     const post = {
