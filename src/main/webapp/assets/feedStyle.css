@@ -45,7 +45,7 @@
 
 #modal-background {
   background: white;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #00000088;
   display: none;
   height: 100%;
   position: fixed;
@@ -93,7 +93,7 @@ input[type=text] {
 }
 
 input[type=number] {
-  background: rgba(27, 24, 24, 0.1);
+  background: #1b18181A;
   border: none;
   border-radius: 50px;
   font: 400 1rem Arial, sans-serif;
@@ -138,10 +138,7 @@ select {
 
 #modal-time-text {
   display: inline-block;
-  margin-bottom: 0;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-top: 0;
+  margin: 0 10px;
 }
 
 #modal-slash {
