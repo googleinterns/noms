@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
+  // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
   // Don't load the map, posts if there wasn't a college ID provided.
@@ -384,8 +385,9 @@ function addPosts(posts) {
   const allPosts = document.getElementById('all-posts');
   posts.forEach((post) => {
     const titleText = post.organizationName + ' @ ' + post.location.name;
-    const subtitleText = post.foodType + ' | ' + post.eventStartTime.toLocaleTimeString('en-US') +
-      '-' + post.eventEndTime.toLocaleTimeString('en-US');
+    const subtitleText = post.foodType + ' | ' +
+      post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) +
+      '-' + post.eventEndTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     const descriptionText = post.description;
 
     // Create card.
