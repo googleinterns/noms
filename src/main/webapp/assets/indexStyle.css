@@ -43,7 +43,7 @@
   margin: 0;
 }
 
-select:invalid { 
+select:invalid {
   color: gray;
 }
 
@@ -53,14 +53,14 @@ select:focus {
 }
 
 .selectdiv {
-  position: relative;  
+  position: relative;
 }
 
 select::-ms-expand {
   display: none;
 }
 
-.selectdiv:after {
+.selectdiv::after {
   color: #565656;
   content: '🛆';
   font: 20px "Consolas", monospace;
@@ -91,12 +91,12 @@ select::-ms-expand {
 
 #map-preview {
   background-color: white;
-  border: #9D5A5A solid 1px;
+  border: #9d5a5a solid 1px;
   border-radius: 4px;
   flex: 0 1 30rem;
   margin: 3rem;
   padding: 2rem;
-  width: 100%
+  width: 100%;
 }
 
 #map-preview-img {
@@ -159,7 +159,7 @@ select::-ms-expand {
     padding: 1rem;
   }
 
-  .selectdiv:after {
+  .selectdiv::after {
     font-size: 15px;
     right: 25px;
     top: 10px;
@@ -174,17 +174,17 @@ select::-ms-expand {
   }
 
   #boba-emoji {
-    right: 0rem;
+    right: 0;
   }
-  
+
   #burger-emoji {
     bottom: 1rem;
     left: 2rem;
   }
-  
+
   #pizza-emoji {
     bottom: 2rem;
-    right: 0rem;
+    right: 0;
   }
 }
 
