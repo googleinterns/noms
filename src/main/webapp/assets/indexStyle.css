@@ -85,32 +85,109 @@ select::-ms-expand {
   margin: 0 0 1rem 0;
 }
 
+#emoji-container {
+  height: 10rem;
+  text-align: center;
+  width: 10rem;
+}
+
+.emoji {
+  height: 6rem;
+  position: relative;
+}
+
+#slogan-container {
+  display: flex;
+  flex-wrap: no-wrap;
+}
+
+#slogan-emoji-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#boba-emoji {
+  right: 4rem;
+}
+
+#burger-emoji {
+  left: 3rem;
+  bottom: 3rem;
+}
+
+#pizza-emoji {
+  right: 2.5rem;
+  bottom: 4rem;
+}
+
 @media screen and (max-width: 678px) {
   #main-container {
     margin: 5vh 5%;
   }
+
   #title-slogan {
-    font-size: 2rem;
+    font-size: 3rem;
   }
+
   #slogan {
     margin: 1.5rem;
   }
+
+  .subtitle {
+    font-size: 1.1rem;
+    margin: 2rem 0;
+  }
+
   #map-preview {
     margin: 1.5rem;
     padding: 1rem;
   }
+
   .selectdiv:after {
     font-size: 15px;
     right: 25px;
     top: 10px;
   }
+
   .selectdiv select {
     font-size: 14px;
   }
+
+  .emoji {
+    height: 4rem;
+  }
+
+  #boba-emoji {
+    right: 0rem;
+  }
+  
+  #burger-emoji {
+    left: 2rem;
+    bottom: 1rem;
+  }
+  
+  #pizza-emoji {
+    bottom: 2rem;
+    right: 0rem;
+  }
 }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 400px) {
   .selectdiv select {
     font-size: 12px;
+  }
+
+  #title-slogan {
+    font-size: 2.5rem;
+    width: 12rem;
+  }
+
+  #emoji-container {
+    height: 7rem;
+    width: 5rem;
+  }
+
+  .emoji {
+    height: 3rem;
   }
 }

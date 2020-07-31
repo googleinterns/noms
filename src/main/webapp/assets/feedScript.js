@@ -80,6 +80,13 @@ document.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
   const collegeid = (new URLSearchParams(window.location.search)).get('collegeid');
 
+  // Don't load the map, posts if there wasn't a college ID provided.
+  if (!collegeid) {
+    document.getElementById('find-events-title').innerHTML =
+      'No college provided. Please visit the <a href="/">home page</a> to pick a college.';
+    return;
+  }
+
   // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
   posts = fetchFakePosts(collegeid);
@@ -187,7 +194,6 @@ async function fetchFakeCollegeLocation(collegeid) {
   // Get all colleges
   const locations = await (await fetch('./assets/college-locations.json')).json();
   const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
-  console.log(collegeInfo);
   const newLocation = {
     name: collegeInfo.NAME,
     lat: parseFloat(collegeInfo.LAT),
@@ -206,6 +212,23 @@ async function fetchFakeCollegeLocation(collegeid) {
  */
 function fetchFakePosts(collegeid) {
   const fakePosts = [];
+  let collegeAbbreviation = '';
+  let baseLat = 0;
+  let baseLong = 0;
+  if (parseFloat(collegeid) === 209542) {
+    collegeAbbreviation = 'OSU';
+    baseLat = 44.56395;
+    baseLong = -123.274723;
+  } else if (parseFloat(collegeid) === 122931) {
+    collegeAbbreviation = 'SCU';
+    baseLat = 37.348362;
+    baseLong = -121.93784;
+  } else {
+    collegeAbbreviation = 'UCI';
+    baseLat = 33.648434;
+    baseLong = -117.841248;
+  }
+
   for (let i = 0; i < 5; i++) {
     const post = {
       id: i*1000 + i*50 + i*2 + i,
@@ -214,9 +237,9 @@ function fetchFakePosts(collegeid) {
       eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
       eventEndTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-0.5)*10)),
       location: {
-        name: `Office ${i}`,
-        lat: 37.348545 + (i + Math.random()*10 - 5) / 5000,
-        long: -121.9386406 + (i + Math.random()*10 - 5)/ 5000,
+        name: `${collegeAbbreviation} Office ${i}`,
+        lat: baseLat + (i + Math.random()*10 - 5) / 5000,
+        long: baseLong + (i + Math.random()*10 - 5)/ 5000,
       },
       numOfPeopleFoodWillFeed: (30 - i*5),
       foodType: 'Thai Food',

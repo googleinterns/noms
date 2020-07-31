@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This file will be included on every page, and contains items
-// that are applicable application-wide, such as nav-bar functionality
+// This file provides the JavaScript induced on the landing page (index.html)
 
 //
 // Event listener registration
@@ -30,16 +29,27 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
-  // Get all colleges
-  const locations = await (await fetch('./assets/college-locations.json')).json();
+  const collegeLocations = await (await fetch('./assets/college-locations.json')).json();
 
   // Add all colleges as dropdown options
   const collegeDropdown = document.getElementById('colleges-select');
-  locations.forEach((location) => {
+  collegeLocations.forEach((location) => {
     const newOption = document.createElement('option');
     newOption.textContent = location.NAME;
     newOption.value = location.UNITID;
 
     collegeDropdown.appendChild(newOption);
   });
+
+  // When users select an option from the dropdown, send them to that page.
+  collegeDropdown.addEventListener('input', navigateUserToCollegePage);
+}
+
+/**
+ * When the user selects a college from the dropdown, we immediately
+ * navigate them to the appropriate college's page.
+ */
+function navigateUserToCollegePage() {
+  const collegeid = document.getElementById('colleges-select').value;
+  window.location.href = `/find-events.html?collegeid=${collegeid}`;
 }
