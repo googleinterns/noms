@@ -78,22 +78,23 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
-  const collegeid = (new URLSearchParams(window.location.search)).get('collegeid');
+  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
   // Don't load the map, posts if there wasn't a college ID provided.
-  if (!collegeid) {
+  if (!collegeId) {
     document.getElementById('find-events-title').innerHTML =
-      'No college provided. Please visit the <a href="/">home page</a> to pick a college.';
+      'no college provided. please visit the <a href="/">home page</a> to pick a college.';
     return;
   }
 
   // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
-  posts = fetchFakePosts(collegeid);
-  collegeLocation = await fetchFakeCollegeLocation(collegeid);
+  posts = fetchFakePosts(collegeId);
+  collegeLocation = await fetchFakeCollegeLocation(collegeId);
 
   // Update text elements on page with fetched information.
-  document.getElementById('find-events-title').innerText += ` @ ${collegeLocation.name}`;
+  document.getElementById('find-events-title').innerText +=
+  ` @ ${collegeLocation.name}`.toLowerCase();
   addPosts(posts);
 
   // Add the embedded map to the page.
