@@ -77,15 +77,25 @@ document.addEventListener('DOMContentLoaded', onLoad);
 /**
  * Fires as soon as the DOM is loaded.
  */
-function onLoad() {
+async function onLoad() {
+  // Get the college id from the query string parameters.
+  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
+
+  // If no college ID was provided, redirect to the landing page.
+  if (!collegeId) {
+    window.location.href = '/';
+    return;
+  }
+
   // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
-  posts = fetchFakePosts();
-  collegeLocation = fetchFakeCollegeLocation();
+  posts = fetchFakePosts(collegeId);
+  collegeLocation = await fetchFakeCollegeLocation(collegeId);
 
-  if (document.getElementById('all-posts')) {
-    addPosts(posts);
-  }
+  // Update text elements on page with fetched information.
+  document.getElementById('find-events-title').innerText +=
+  ` @ ${collegeLocation.name}`.toLowerCase();
+  addPosts(posts);
 
   // Add the embedded map to the page.
   getSecretFor('javascript-maps-api').then((key) => {
@@ -178,13 +188,17 @@ function createSearchParamsFromObject(obj) {
 /**
  * A fake implementation of a GET request for the college of the page we are on.
  * This will be removed once our backend has actual college information.
- * @return {LocationInfo} - The college's location and information.
+ * @param {number} collegeid - The ID of the college we want the lat/long for.
+ * @return {Promise<LocationInfo>} - The college's location and information.
  */
-function fetchFakeCollegeLocation() {
+async function fetchFakeCollegeLocation(collegeid) {
+  // Get all colleges
+  const locations = await (await fetch('./assets/college-locations.json')).json();
+  const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
   const newLocation = {
-    name: 'Santa Clara University',
-    lat: 37.348545,
-    long: -121.9386406,
+    name: collegeInfo.NAME,
+    lat: parseFloat(collegeInfo.LAT),
+    long: parseFloat(collegeInfo.LON),
   };
   return newLocation;
 }
@@ -194,10 +208,28 @@ function fetchFakeCollegeLocation() {
  * One post's event hasn't started yet, one has ended, and the
  * other three are in various stages of being completed.
  * This will be removed once our backend has actual posts.
+ * @param {number} collegeid - The ID of the college we want posts for.
  * @return {array} - The posts.
  */
-function fetchFakePosts() {
+function fetchFakePosts(collegeid) {
   const fakePosts = [];
+  let collegeAbbreviation = '';
+  let baseLat = 0;
+  let baseLong = 0;
+  if (parseFloat(collegeid) === 209542) {
+    collegeAbbreviation = 'OSU';
+    baseLat = 44.56395;
+    baseLong = -123.274723;
+  } else if (parseFloat(collegeid) === 122931) {
+    collegeAbbreviation = 'SCU';
+    baseLat = 37.348362;
+    baseLong = -121.93784;
+  } else {
+    collegeAbbreviation = 'UCI';
+    baseLat = 33.648434;
+    baseLong = -117.841248;
+  }
+
   for (let i = 0; i < 5; i++) {
     const post = {
       id: i*1000 + i*50 + i*2 + i,
@@ -206,9 +238,9 @@ function fetchFakePosts() {
       eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
       eventEndTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-0.5)*10)),
       location: {
-        name: `Office ${i}`,
-        lat: 37.348545 + (i + Math.random()*10 - 5) / 5000,
-        long: -121.9386406 + (i + Math.random()*10 - 5)/ 5000,
+        name: `${collegeAbbreviation} Office ${i}`,
+        lat: baseLat + (i + Math.random()*10 - 5) / 5000,
+        long: baseLong + (i + Math.random()*10 - 5)/ 5000,
       },
       numOfPeopleFoodWillFeed: (30 - i*5),
       foodType: 'Thai Food',
@@ -352,8 +384,9 @@ function addPosts(posts) {
   const allPosts = document.getElementById('all-posts');
   posts.forEach((post) => {
     const titleText = post.organizationName + ' @ ' + post.location.name;
-    const subtitleText = post.foodType + ' | ' + post.eventStartTime.toLocaleTimeString('en-US') +
-      '-' + post.eventEndTime.toLocaleTimeString('en-US');
+    const subtitleText = post.foodType + ' | ' +
+      post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
+      '-' + post.eventEndTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
     const descriptionText = post.description;
 
     // Create card.
