@@ -1,3 +1,14 @@
+#main-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10vh 5%;
+}
+
+/*
+ * Title + subtitle
+ */
+
 #title-slogan {
   color: var(--dark-green);
   font-size: 4rem;
@@ -9,15 +20,27 @@
   margin: 2rem 0;
 }
 
-#colleges-select {
-  margin: 0;
+#slogan {
+  flex: 0 1 30rem;
+  margin: 3rem 3rem 0 3rem;
 }
 
-#main-container {
+#slogan-container {
+  display: flex;
+  flex-wrap: no-wrap;
+}
+
+#slogan-emoji-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  margin: 10vh 5%;
+}
+
+/*
+ * Colleges dropdown
+ */
+
+#colleges-select {
+  margin: 0;
 }
 
 select:invalid { 
@@ -25,7 +48,7 @@ select:invalid {
 }
 
 select:focus {
-  border: 0px solid white;
+  border: 0 solid white;
   outline: none;
 }
 
@@ -38,29 +61,33 @@ select::-ms-expand {
 }
 
 .selectdiv:after {
+  color: #565656;
   content: '🛆';
   font: 20px "Consolas", monospace;
-  color: #565656;
+  pointer-events: none;
+  position: absolute;
+  right: 20px;
+  top: 5px;
+  transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
-  transform: rotate(180deg);
-  right: 20px;
-  top: 5px;
-  position: absolute;
-  pointer-events: none;
 }
 
 .selectdiv select {
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
-  height: 3rem;
-  margin: 5px 0px;
-  padding: 0px 24px;
-  font-size: 16px;
   color: #333;
+  font-size: 16px;
+  height: 3rem;
+  margin: 5px 0;
+  padding: 0 24px;
 }
+
+/*
+ * Map preview
+ */
 
 #map-preview {
   background-color: white;
@@ -76,14 +103,13 @@ select::-ms-expand {
   width: 100%;
 }
 
-#slogan {
-  flex: 0 1 30rem;
-  margin: 3rem 3rem 0 3rem;
-}
-
 #map-circles {
   margin: 0 0 1rem 0;
 }
+
+/*
+ * Food emojis
+ */
 
 #emoji-container {
   height: 10rem;
@@ -96,28 +122,18 @@ select::-ms-expand {
   position: relative;
 }
 
-#slogan-container {
-  display: flex;
-  flex-wrap: no-wrap;
-}
-
-#slogan-emoji-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 #boba-emoji {
   right: 4rem;
 }
 
 #burger-emoji {
-  left: 3rem;
   bottom: 3rem;
+  left: 3rem;
 }
 
 #pizza-emoji {
-  right: 2.5rem;
   bottom: 4rem;
+  right: 2.5rem;
 }
 
 @media screen and (max-width: 678px) {
@@ -162,8 +178,8 @@ select::-ms-expand {
   }
   
   #burger-emoji {
-    left: 2rem;
     bottom: 1rem;
+    left: 2rem;
   }
   
   #pizza-emoji {
