@@ -81,10 +81,9 @@ async function onLoad() {
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
-  // Don't load the map, posts if there wasn't a college ID provided.
+  // If no college ID was provided, redirect to the landing page.
   if (!collegeId) {
-    document.getElementById('find-events-title').innerHTML =
-      'no college provided. please visit the <a href="/">home page</a> to pick a college.';
+    window.location.href = '/';
     return;
   }
 
