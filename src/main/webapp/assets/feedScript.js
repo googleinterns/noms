@@ -57,9 +57,20 @@ let posts = null;
 let map;
 
 //
+// Elements
+//
+/** @type {HTMLElement} */
+let createPostButton;
+
+/** @type {HTMLElement} */
+let modal;
+
+/** @type {HTMLElement} */
+let closeModalButton;
+
+//
 // Constants
 //
-
 const MARKER_WIDTH_MINMAX = {min: 28, max: 70};
 const MARKER_HEIGHT_MINMAX = {min: 45, max: 113};
 
@@ -78,6 +89,15 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
+  // Get the elements from the DOM after they have loaded.
+  createPostButton = document.getElementById('create-post-button');
+  modal = document.getElementById('modal-background');
+  closeModalButton = document.getElementById('modal-close');
+
+  // Event Listeners that need the DOM elements.
+  createPostButton.addEventListener('click', showModal);
+  closeModalButton.addEventListener('click', closeModal);
+
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
@@ -416,3 +436,35 @@ function addPosts(posts) {
     allPosts.append(postCard);
   });
 }
+
+/**
+ * Shows the modal.
+ * @return {void}
+ */
+function showModal() {
+  if (modal) {
+    modal.style.display = 'block';
+  }
+}
+
+/**
+ * Closes the modal.
+ * @return {void}
+ */
+function closeModal() {
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+/**
+ * Closes the modal if user clicks outside.
+ * @param {myEvent} event - the modal background being clicked.
+ * @listens myEvent
+ * @return {void}
+ */
+window.onclick = function(event) {
+  if (modal && event.target == modal) {
+    closeModal();
+  }
+};

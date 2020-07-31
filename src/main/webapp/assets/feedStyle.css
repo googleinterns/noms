@@ -17,7 +17,6 @@
 /*
  * Create Posts
  */
-
 #create-post-button {
   background-color: #303030;
   border: none;
@@ -44,10 +43,172 @@
   cursor: pointer;
 }
 
+#modal-background {
+  background: white;
+  background-color: #0008;
+  display: none;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+#modal-create-post {
+  background: white;
+  border-radius: 15px;
+  bottom: 15%;
+  box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
+  left: 25%;
+  max-height: 450px;
+  overflow: auto;
+  padding: 30px;
+  position: fixed;
+  top: 15%;
+  width: 50%;
+  z-index: 1;
+}
+
+#modal-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  outline: none;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+
+#modal-title {
+  margin-left: 12px;
+}
+
+input[type=text] {
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  margin-bottom: 0;
+  margin-top: 0;
+  outline: none;
+}
+
+input[type=number] {
+  background: #1b18181a;
+  border: none;
+  border-radius: 50px;
+  font: 400 1rem Arial, sans-serif;
+  margin-bottom: 15px;
+  margin-top: 0;
+  outline: none;
+  padding: 12px 20px;
+  width: 40px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+  padding-right: 0;
+}
+
+select {
+  border: none;
+  border-radius: 50px;
+  display: inline-block;
+  font: 400 1rem Arial, sans-serif;
+  margin: 0;
+  outline: none;
+  padding-bottom: 6px;
+  padding-left: 8px;
+  padding-right: 1px;
+  padding-top: 6px;
+  width: 50px;
+}
+
+#modal-description {
+  background: rgba(27, 24, 24, 0.1);
+  border: none;
+  border-radius: 25px;
+  box-sizing: border-box;
+  font: 400 1rem Arial, sans-serif;
+  font-size: 1rem;
+  margin-bottom: 0;
+  margin-top: 0;
+  outline: none;
+  padding: 12px 20px;
+  width: 100%;
+}
+
+#modal-time-text {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+#modal-slash {
+  display: inline-block;
+  margin: 0;
+}
+
+#modal-year {
+  margin-right: 20px;
+}
+
+#start-am-or-pm {
+  margin-right: 20px;
+}
+
+.modal-span {
+  white-space: nowrap;
+}
+
+#modal-submit {
+  background: var(--dark-green);
+  border: none;
+  border-radius: 50px;
+  color: white;
+  height: 35px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  outline: none;
+  position: absolute;
+  right: 30px;
+  width: 80px;
+}
+
+#modal-submit:hover {
+  background: white;
+  border: 1px solid var(--dark-green);
+  color: var(--dark-green);
+}
+
+::-webkit-input-placeholder { /* Edge */
+  color: #404040;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #404040;
+}
+
+::placeholder {
+  color: #404040;
+}
+
+@media screen and (max-width: 678px) {
+  #page-container {
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 90%;
+  }
+
+  #modal-create-post {
+    height: 80%;
+    left: 5%;
+    max-height: 80%;
+    top: 5%;
+    width: 75%;
+  }
+}
+
 /*
  * Map
  */
-
 #map {
   background: var(--grey);
   height: 65vh;
