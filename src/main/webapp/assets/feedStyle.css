@@ -45,7 +45,7 @@
 
 #modal-background {
   background: white;
-  background-color: #00000088;
+  background-color: #0008;
   display: none;
   height: 100%;
   position: fixed;
@@ -93,7 +93,7 @@ input[type=text] {
 }
 
 input[type=number] {
-  background: #1b18181A;
+  background: #1b18181a;
   border: none;
   border-radius: 50px;
   font: 400 1rem Arial, sans-serif;
