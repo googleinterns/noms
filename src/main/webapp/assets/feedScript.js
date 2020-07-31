@@ -59,8 +59,13 @@ let map;
 //
 // Elements
 //
+/** @type {HTMLElement} */
 let createPostButton;
+
+/** @type {HTMLElement} */
 let modal;
+
+/** @type {HTMLElement} */
 let closeModalButton;
 
 //
@@ -399,21 +404,34 @@ function addPosts(posts) {
   });
 }
 
-/* Create post modal. */
+/**
+ * Shows the modal.
+ * @return {void}
+ */
 function showModal() {
   if (modal) {
     modal.style.display = 'block';
   }
 }
 
+/**
+ * Closes the modal.
+ * @return {void}
+ */
 function closeModal() {
   if (modal) {
-    modal.style.display = "none";
+    modal.style.display = 'none';
   }
 }
 
+/**
+ * Closes the modal if user clicks outside.
+ * @param {myEvent} event - the modal background being clicked.
+ * @listens myEvent
+ * @return {void}
+ */
 window.onclick = function(event) {
-    if (modal && event.target == modal) {
-        closeModal();
-    }
-}
+  if (modal && event.target == modal) {
+    closeModal();
+  }
+};

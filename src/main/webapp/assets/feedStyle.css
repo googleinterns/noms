@@ -71,20 +71,16 @@
 
 #modal-close {
   background: none;
-  right: 15px;
-  position: absolute;
-  outline: none;
-  top: 15px;
   border: none;
   font-size: 1.25rem;
+  outline: none;
+  position: absolute;
+  right: 15px;
+  top: 15px;
 }
 
 #modal-title {
   margin-left: 12px;
-}
-
-modal-form {
-  width: inherit;
 }
 
 input[type=text] {
@@ -113,17 +109,17 @@ input[type=number] {
 }
 
 select {
-  width: 50px;
-  border-radius: 50px;
-  font: 400 1rem Arial;
   border: none;
-  outline: none;
+  border-radius: 50px;
   display: inline-block;
+  font: 400 1rem Arial;
   margin: 0;
-  padding-top: 6px;
+  outline: none;
   padding-bottom: 6px;
   padding-left: 8px;
   padding-right: 1px;
+  padding-top: 6px;
+  width: 50px;
 }
 
 #modal-description {
@@ -142,10 +138,10 @@ select {
 
 #modal-time-text {
   display: inline-block;
+  margin-bottom: 0;
   margin-left: 10px;
   margin-right: 10px;
   margin-top: 0;
-  margin-bottom: 0;
 }
 
 #modal-slash {
@@ -166,17 +162,17 @@ select {
 }
 
 #modal-submit {
-  width: 80px;
-  border-radius: 50px;
-  border: none;
-  color: white;
   background: var(--dark-green);
-  outline: none;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  position: absolute;
+  border: none;
+  border-radius: 50px;
+  color: white;
   height: 35px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  outline: none;
+  position: absolute;
   right: 30px;
+  width: 80px;
 }
 
 #modal-submit:hover {
@@ -204,11 +200,11 @@ select {
     width: 90%;
   }
   #modal-create-post {
-      left: 5%;
-      width: 75%;
-      top: 5%;
-      max-height: 80%;
       height: 80%;
+      left: 5%;
+      max-height: 80%;
+      top: 5%;
+      width: 75%;
   }
 }
 
