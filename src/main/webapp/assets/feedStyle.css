@@ -49,8 +49,8 @@
   display: none;
   height: 100%;
   position: fixed;
-  width: 100%;
   top: 0;
+  width: 100%;
   z-index: 1;
 }
 
@@ -61,12 +61,12 @@
   box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
   left: 25%;
   max-height: 450px;
+  overflow: auto;
   padding: 30px;
   position: fixed;
-  width: 50%;
-  overflow: auto;
-  z-index: 1;
   top: 15%;
+  width: 50%;
+  z-index: 1;
 }
 
 #modal-close {
