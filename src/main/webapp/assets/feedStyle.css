@@ -243,6 +243,7 @@ select {
   padding: 10px;
   padding-right: 30px;
   padding-left: 30px;
+  transition: box-shadow 0.5s;
 }
 
 .card-title {
