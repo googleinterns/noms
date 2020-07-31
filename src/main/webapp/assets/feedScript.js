@@ -386,8 +386,8 @@ function addPosts(posts) {
   posts.forEach((post) => {
     const titleText = post.organizationName + ' @ ' + post.location.name;
     const subtitleText = post.foodType + ' | ' +
-      post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) +
-      '-' + post.eventEndTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
+      '-' + post.eventEndTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
     const descriptionText = post.description;
 
     // Create card.
