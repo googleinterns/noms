@@ -56,27 +56,26 @@
 
 #modal-create-post {
   background: white;
-  bottom: 20%;
   border-radius: 15px;
+  bottom: 15%;
   box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
-  height: 60%;
   left: 20%;
+  max-height: 450px;
   padding: 30px;
   position: fixed;
   width: 60%;
   overflow: auto;
-  top: 20%;
-  z-index: 1; 
+  z-index: 1;
+  top: 15%;
 }
 
 #modal-close {
   background: none;
-  left: 80%;
-  position: fixed;
+  right: 15px;
+  position: absolute;
   outline: none;
-  top: 20%;
+  top: 15px;
   border: none;
-  margin-top: 30px;
   font-size: 1.25rem;
 }
 
@@ -95,6 +94,86 @@ input[type=text] {
   margin-bottom: 0;
   margin-top: 0;
   outline: none;
+}
+
+input[type=number] {
+  background: rgba(27, 24, 24, 0.1);
+  border: none;
+  border-radius: 50px;
+  font: 400 1rem Arial;
+  margin-bottom: 15px;
+  margin-top: 0;
+  outline: none;
+  padding: 12px 20px;
+  width: 40px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+  padding-right: 0;
+}
+
+select {
+  width: 50px;
+  border-radius: 50px;
+  font: 400 1rem Arial;
+  border: none;
+  outline: none;
+  display: inline-block;
+  margin: 0;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+  padding-right: 1px;
+}
+
+#modal-description {
+  background: rgba(27, 24, 24, 0.1);
+  border: none;
+  border-radius: 25px;
+  box-sizing: border-box;
+  font: 400 1rem Arial;
+  font-size: 1rem;
+  margin-bottom: 0;
+  margin-top: 0;
+  outline: none;
+  padding: 12px 20px;
+  width: 100%;
+}
+
+#modal-time-text {
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#modal-slash {
+  display: inline-block;
+  margin: 0;
+}
+
+#modal-year {
+  margin-right: 50px;
+}
+
+#modal-submit {
+  width: 80px;
+  border-radius: 50px;
+  border: none;
+  color: white;
+  background: var(--dark-green);
+  outline: none;
+  margin-top: 15px;
+  position: absolute;
+  height: 35px;
+  right: 30px;
+}
+
+#modal-submit:hover {
+  background: white;
+  border: 1px solid var(--dark-green);
+  color: var(--dark-green);
 }
 
 ::-webkit-input-placeholder { /* Edge */
