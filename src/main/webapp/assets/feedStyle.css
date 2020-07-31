@@ -96,7 +96,7 @@ input[type=number] {
   background: rgba(27, 24, 24, 0.1);
   border: none;
   border-radius: 50px;
-  font: 400 1rem Arial;
+  font: 400 1rem Arial, sans-serif;
   margin-bottom: 15px;
   margin-top: 0;
   outline: none;
@@ -112,7 +112,7 @@ select {
   border: none;
   border-radius: 50px;
   display: inline-block;
-  font: 400 1rem Arial;
+  font: 400 1rem Arial, sans-serif;
   margin: 0;
   outline: none;
   padding-bottom: 6px;
@@ -127,7 +127,7 @@ select {
   border: none;
   border-radius: 25px;
   box-sizing: border-box;
-  font: 400 1rem Arial;
+  font: 400 1rem Arial, sans-serif;
   font-size: 1rem;
   margin-bottom: 0;
   margin-top: 0;
@@ -199,6 +199,7 @@ select {
     margin-right: 5%;
     width: 90%;
   }
+
   #modal-create-post {
       height: 80%;
       left: 5%;
