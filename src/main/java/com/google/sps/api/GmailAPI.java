@@ -55,6 +55,12 @@ public class GmailAPI {
   private static String CLIENT_SECRET = "";
 	private static Gmail service = null;
 
+  /**
+    * Create a Gmail service using credentails.
+    *
+    * @throws IOException
+    * @throws GeneralSecurityException
+    */
 	public static Gmail getGmailService() throws IOException, GeneralSecurityException {
 
     // Gather client info from OAuth 2.0 credentials.
@@ -71,7 +77,7 @@ public class GmailAPI {
         .setRefreshToken(Token.REFRESH_TOKEN)
         .setAccessToken(getAccessToken(Token.REFRESH_TOKEN));
 
-		// Create Gmail service.
+		// Build service.
 		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 		service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, authorize)
 				.setApplicationName(APPLICATION_NAME).build();
@@ -79,15 +85,24 @@ public class GmailAPI {
 		return service;
 	}
 
+  /**
+    * Retrieve new access token due to the fact that it has a lifetime of 1 hour
+    * through refresh token.
+    *
+    * @param refresh_token Authorized token to create access tokens.
+    */
 	private static String getAccessToken(String refresh_token) {
 
 		try {
+
+      // Gather POST parameters.
 			Map<String, Object> params = new LinkedHashMap<>();
 			params.put("grant_type", "refresh_token");
 			params.put("client_id", CLIENT_ID);
 			params.put("client_secret", CLIENT_SECRET); 
 			params.put("refresh_token", refresh_token);
 
+      // Build POST request.
 			StringBuilder postData = new StringBuilder();
 			for (Map.Entry<String, Object> param : params.entrySet()) {
 				if (postData.length() != 0) {
@@ -100,6 +115,7 @@ public class GmailAPI {
 
 			byte[] postDataBytes = postData.toString().getBytes("UTF-8");
 
+      // Send POST request for new access token.
 			URL url = new URL("https://accounts.google.com/o/oauth2/token");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setDoOutput(true);
@@ -107,12 +123,14 @@ public class GmailAPI {
 			con.setRequestMethod("POST");
 			con.getOutputStream().write(postDataBytes);
 
+      // Read POST response.
 			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			StringBuffer buffer = new StringBuffer();
 			for (String line = reader.readLine(); line != null; line = reader.readLine()) {
 				buffer.append(line);
 			}
 
+      // Return select access token from POST response.
 			JSONObject json = new JSONObject(buffer.toString());
 			String accessToken = json.getString("access_token");
 			return accessToken;
