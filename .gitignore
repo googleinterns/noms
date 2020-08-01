@@ -6,5 +6,4 @@ package.json
 package-lock.json
 .eslintrc.js
 
-src/main/java/com/google/sps/api/
-Token.java
+src/main/java/com/google/sps/api/Token.java
