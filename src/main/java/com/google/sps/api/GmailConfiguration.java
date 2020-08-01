@@ -107,7 +107,7 @@ public class GmailConfiguration {
   }
 
   /**
-    * Send a test email from areeta@google.com
+    * Send a test email from areeta@google.com.
     *
     * @throws IOException
     * @throws GeneralSecurityException
