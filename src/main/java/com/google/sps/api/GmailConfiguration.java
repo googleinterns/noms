@@ -19,8 +19,8 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.security.GeneralSecurityException;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -37,7 +37,7 @@ import javax.mail.internet.MimeMultipart;
 /** Creates and sends emails from an authorized account. */
 public class GmailConfiguration {
 
-  // Referenced off of https://developers.google.com/gmail/api/v1/reference/users/messages/send.
+  // Referenced from https://developers.google.com/gmail/api/v1/reference/users/messages/send.
 
   /**
     * Create a MimeMessage using the parameters provided.
@@ -70,8 +70,8 @@ public class GmailConfiguration {
   /**
     * Create a message from an email.
     *
-    * @param emailContent Email to be set to raw of message
-    * @return a message containing a base64url encoded email
+    * @param emailContent email to be set to raw of message
+    * @return message containing a base64url encoded email
     * @throws IOException
     * @throws MessagingException
     */
@@ -89,11 +89,11 @@ public class GmailConfiguration {
   /**
     * Send an email from the user's mailbox to its recipient.
     *
-    * @param service Authorized Gmail API instance.
-    * @param userId User's email address. The special value "me"
+    * @param service authorized Gmail API instance.
+    * @param userId user's email address, using the special value "me"
     * can be used to indicate the authenticated user.
-    * @param emailContent Email to be sent.
-    * @return The sent message
+    * @param emailContent email to be sent.
+    * @return sent message
     * @throws MessagingException
     * @throws IOException
     */
