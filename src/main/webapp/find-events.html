@@ -43,7 +43,7 @@
       <div id="modal-create-post">
         <button id="modal-close" type="button">&#10005;</button>
         <h1 id="modal-title">Create a Post</h1>
-        <form id="modal-form">
+        <form id="modal-form" action="/postdata" method="post">
           <input type="text" id="modal-org-name" name="organizationName" placeholder="organization name" required><br>
 
           <span class="modal-span">
@@ -59,7 +59,7 @@
             <p id="modal-time-text">start:</p>
             <input type="number" id="modal-start-hour" name="startHour" placeholder="h" min="1" max="12" step="1">
             <input type="number" id="modal-start-minute" name="startMinute" placeholder="m" min="0" max="60" step="1">
-            <select id="start-am-or-pm" name="AMorPM">
+            <select id="start-am-or-pm" name="startAMorPM">
               <option value="am" selected>am</option>
               <option value="pm">pm</option>
             </select>
@@ -67,17 +67,18 @@
           
           <span class="modal-span">
             <p id="modal-time-text">end:</p>
-            <input type="number" id="modal-start-hour" name="startHour" placeholder="h" min="1" max="12" step="1">
-            <input type="number" id="modal-start-minute" name="startMinute" placeholder="m" min="0" max="60" step="1">
-            <select id="end-am-or-pm" name="AMorPM">
+            <input type="number" id="modal-end-hour" name="endHour" placeholder="h" min="1" max="12" step="1">
+            <input type="number" id="modal-end-minute" name="endMinute" placeholder="m" min="0" max="60" step="1">
+            <select id="end-am-or-pm" name="endAMorPM">
               <option value="am" selected>am</option>
-              <option value="pm">am</option>
+              <option value="pm">pm</option>
             </select>
           </span>
 
           <input type="text" id="modal-location" name="location" placeholder="location" required><br>   
           <input type="text" id="modal-num-people" name="numberOfPeopleItFeeds" placeholder="how many people can it feed?" required><br>
           <textarea id="modal-description" name="description" placeholder="description" rows="3" maxlength="500"></textarea><br>
+          <input id="modal-college-id" name="collegeId" type="hidden">
           <button id="modal-submit" type="button">submit</button>
         <form>
       </div>

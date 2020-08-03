@@ -68,6 +68,12 @@ let modal;
 /** @type {HTMLElement} */
 let closeModalButton;
 
+/** @type {HTMLElement} */
+let submitModalButton;
+
+/** @type {HTMLElement} */
+let modalForm;
+
 //
 // Constants
 //
@@ -93,10 +99,13 @@ async function onLoad() {
   createPostButton = document.getElementById('create-post-button');
   modal = document.getElementById('modal-background');
   closeModalButton = document.getElementById('modal-close');
+  submitModalButton = document.getElementById('modal-submit');
+  modalForm = document.getElementById('modal-form');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
   closeModalButton.addEventListener('click', closeModal);
+  submitModalButton.addEventListener('click', submitModal);
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -454,6 +463,23 @@ function showModal() {
 function closeModal() {
   if (modal) {
     modal.style.display = 'none';
+  }
+}
+
+/**
+ * On click of the submit button, sends modal data to the servlet.
+ * @return {void}
+ */
+function submitModal() {
+  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
+  console.log('found id: ' + collegeId);
+  if (modalForm && collegeId) {
+    let modalCollegeId = document.getElementById('modal-college-id');
+    modalCollegeId.value =  collegeId;
+    console.log('modal value ' + modalCollegeId.value);
+    console.log('elts ' + modalForm.elements);
+    console.log('id ' + modalForm.elements.namedItem('modal-college-id').value);
+    modalForm.submit();
   }
 }
 
