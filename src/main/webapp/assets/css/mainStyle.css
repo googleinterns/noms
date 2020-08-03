@@ -29,6 +29,9 @@ body {
   -khtml-user-select: none;
   -webkit-user-select: none;
   -o-user-select: none;
+  user-drag: none; 
+  -webkit-user-drag: none;
+  -ms-user-select: none;
 }
 
 /*
