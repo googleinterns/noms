@@ -118,8 +118,26 @@ async function onLoad() {
   addPosts(posts);
 
   // Add the embedded map to the page.
+  addMapToPage();
+}
+
+/**
+ * Tries to add the map to the page. The map URL calls the initMap() function as
+ * its callback, which then positions the map and adds markers. If we are unable
+ * to retrieve the secret for the map, then we display an error to the user.
+ */
+function addMapToPage() {
   getSecretFor('javascript-maps-api').then((key) => {
-    // TODO: If the key returns null, we should show a placeholder div with error text.
+    if (key === null) {
+      const mapElement = document.getElementById('map');
+      const errorElement = document.createElement('div');
+      errorElement.setAttribute('id', 'map-error');
+      errorElement.innerText = `An error occured while fetching the credentials
+                                needed to view the map. Try refreshing the page;
+                                if the error persists, please contact us above.`;
+      mapElement.appendChild(errorElement);
+      return;
+    }
 
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
@@ -133,6 +151,7 @@ async function onLoad() {
 /**
  * Gets the secret value corresponding to a secret ID from GCP secrets store.
  * @param {string} secretid - The secret's id, as defined in the secrets store.
+ * @return {string | null} - Either the secret for the requested ID, or else null.
  */
 async function getSecretFor(secretid) {
   try {
@@ -144,7 +163,7 @@ async function getSecretFor(secretid) {
     }
   } catch (err) {
     console.warn(err);
-    return;
+    return null;
   }
 }
 
