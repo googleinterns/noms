@@ -178,7 +178,6 @@ function addMapToPage() {
  */
 async function getSecretFor(secretid) {
   try {
-    throw new Error("everything is bad");
     const response = await fetch('/secretsManager?id=' + secretid, {method: 'POST'});
     if (!response.ok) {
       throw new Error(response.status);
