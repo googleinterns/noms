@@ -36,46 +36,31 @@ public class PostDataServlet extends HttpServlet {
     /* On the POST command, stores the name and review as a Review entity in Datastore. */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // String collegeId = request.getParameter("collegeId");
+        /*
+        String collegeId = request.getParameter("collegeId");
 
-        // response.setContentType("text/html");
-        // response.getWriter().println(collegeId);
-        // response.getWriter().println(request.getParameterNames());
-        // response.getWriter().println(request.getParameterMap());
+        response.setContentType("text/html");
+        response.getWriter().println(collegeId);
+        response.getWriter().println(request.getParameterNames());
+        response.getWriter().println(request.getParameterMap());
+
+        */
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
+        
         String collegeId = request.getParameter("collegeId");
-        // Creates entity based off college ID and sets the properties.
-        Entity newPost = new Entity(collegeId);
+        Post newPost = new Post(request, collegeId);
+        Entity newPostEntity = newPost.createEntity();
+        datastore.put(newPostEntity);
 
-        newPost.setProperty("organizationName", request.getParameter("organizationName"));
-
-        newPost.setProperty("month", request.getParameter("month"));
-        newPost.setProperty("day", request.getParameter("day"));
-        newPost.setProperty("year", request.getParameter("year"));
-
-        newPost.setProperty("month", request.getParameter("month"));
-        newPost.setProperty("day", request.getParameter("day"));
-        newPost.setProperty("year", request.getParameter("year")); 
-
-        newPost.setProperty("startHour", request.getParameter("startHour"));
-        newPost.setProperty("startMinute", request.getParameter("startMinute"));
-        newPost.setProperty("startAMorPM", request.getParameter("startAMorPM")); 
-
-        newPost.setProperty("endHour", request.getParameter("endHour"));
-        newPost.setProperty("endMinute", request.getParameter("endMinute"));
-        newPost.setProperty("endAMorPM", request.getParameter("endAMorPM")); 
-
-        newPost.setProperty("location", request.getParameter("location"));
-        newPost.setProperty("numberOfPeopleItFeeds", request.getParameter("numberOfPeopleItFeeds"));
-        newPost.setProperty("description", request.getParameter("description")); 
-
-        // Store in Datastore and redirects back to Reviews page (where GET command activates and displays the review).
-        response.setContentType("text/html");
-        response.getWriter().println(datastore.put(newPost));
-        // datastore.put(newPost);
         String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
+        response.sendRedirect(redirectURL);
+        
+        // Store in Datastore and redirects back to Reviews page (where GET command activates and displays the review).
+        // response.setContentType("text/html");
+        // response.getWriter().println(datastore.put(newPostEntity));
+        // datastore.put(newPost);
+        // String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
         // response.sendRedirect(redirectURL);
     }
 }
