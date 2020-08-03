@@ -32,6 +32,26 @@ body {
 }
 
 /*
+ * Loading spinner
+ */
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  margin: 10px auto;
+  border: 4px var(--off-white) solid;
+  border-top: 4px var(--dark-green) solid;
+  border-radius: 50%;
+  animation: sp-anime 1.0s infinite linear;
+}
+
+@keyframes sp-anime {
+	100% { 
+		transform: rotate(360deg); 
+	}
+}
+
+/*
  * Nav bar across all pages
  */
 
