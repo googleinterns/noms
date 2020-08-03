@@ -160,13 +160,12 @@ header {
   align-items: center;
   display: flex;
   justify-content: space-around;
-  margin: 1rem;
 }
 
 .subscribe,
 .unsubcribe {
-  margin: 1rem;
   padding: 1rem;
+  margin: 1rem;
 }
 
 input[type=text],
