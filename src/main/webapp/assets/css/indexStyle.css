@@ -47,11 +47,6 @@ select:invalid {
   color: gray;
 }
 
-.selectdiv select:focus {
-  border: 2px solid #ababab;
-  outline: none;
-}
-
 .selectdiv {
   position: relative;
 }
@@ -80,6 +75,11 @@ select::-ms-expand {
   height: 3rem;
   margin: 5px 0;
   padding: 0 24px;
+}
+
+.selectdiv select:focus {
+  border: 2px solid #ababab;
+  outline: none;
 }
 
 /*
