@@ -47,8 +47,8 @@ select:invalid {
   color: gray;
 }
 
-select:focus {
-  border: 0 solid white;
+.selectdiv select:focus {
+  border: 2px solid #ababab;
   outline: none;
 }
 
@@ -62,20 +62,17 @@ select::-ms-expand {
 
 .selectdiv::after {
   color: #565656;
-  content: '🛆';
+  content: 'v';
   font: 20px "Consolas", monospace;
   pointer-events: none;
   position: absolute;
-  right: 20px;
-  top: 5px;
-  transform: rotate(180deg);
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
+  right: 25px;
+  top: 12px;
 }
 
 .selectdiv select {
   appearance: none;
+  border: 2px solid #d8d8d8;
   -webkit-appearance: none;
   -moz-appearance: none;
   color: #333;
@@ -161,8 +158,7 @@ select::-ms-expand {
 
   .selectdiv::after {
     font-size: 15px;
-    right: 25px;
-    top: 10px;
+    top: 15px;
   }
 
   .selectdiv select {
