@@ -31,6 +31,7 @@ body {
   -o-user-select: none;
 }
 
+
 /*
  * Nav bar across all pages
  */
@@ -46,6 +47,11 @@ header {
 .logo {
   font-size: larger;
   letter-spacing: 1px;
+}
+
+.logo > a {
+  color: black;
+  text-decoration: none;
 }
 
 .nav {
@@ -65,8 +71,13 @@ header {
   text-decoration: none;
 }
 
+.logo a:focus,
+.logo a:hover,
+.navlink a:focus,
 .navlink a:hover {
   color: var(--dark-green);
+  outline: none;
+  text-decoration: underline;
 }
 
 .burger {
