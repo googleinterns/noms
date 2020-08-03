@@ -1,9 +1,5 @@
-credentials.json
-
 target/
 node_modules
 package.json
 package-lock.json
 .eslintrc.js
-
-src/main/java/com/google/sps/api/Token.java
