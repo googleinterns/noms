@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <title>sign up</title>
     <!-- css -->
-    <link type="text/css" rel="stylesheet" href="./assets/mainStyle.css">
-    <link type="text/css" rel="stylesheet" href="./assets/feedStyle.css">
+    <link type="text/css" rel="stylesheet" href="./assets/css/mainStyle.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- js -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script src="./assets/mainScript.js"></script>
+    <script src="./assets/js/mainScript.js"></script>
   </head>
   <body>
     <header>
@@ -40,8 +39,8 @@
           <form action="/user" method="POST" autocomplete="off">
             <label class="input-name">name</label>
             <input type="text" name="name" required>
-            <label class="input-name">email</label>
-            <input type="email" name="email" required>
+            <label class="input-name" for="email">email</label>
+            <input type="email" name="email"  pattern=".+@google.com" required>
             <label class="input-name">univeristy</label>
             <input type="text" name="university" required>
             <div class="subscription">
