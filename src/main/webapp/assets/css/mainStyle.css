@@ -48,7 +48,7 @@ body {
 }
 
 @keyframes sp-anime {
-  100% { 
+  100% {
     transform: rotate(360deg);
   }
 }
