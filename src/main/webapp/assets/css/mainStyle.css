@@ -57,16 +57,23 @@ header {
 
 .navlink {
   list-style: none;
-  margin: 1rem;
 }
 
+.logo a,
 .navlink a {
   color: #000;
+  border-radius: 5px;
+  padding: 0.7rem 0.8rem;
   text-decoration: none;
 }
 
+.logo a:focus,
+.logo a:hover,
+.navlink a:focus,
 .navlink a:hover {
-  color: var(--dark-green);
+  color: black;
+  background-color: #dfdfdf;
+  outline: none;
 }
 
 .burger {
