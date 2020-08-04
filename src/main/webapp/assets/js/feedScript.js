@@ -60,6 +60,7 @@ let map;
 //
 // Elements
 //
+
 /** @type {HTMLElement} */
 let createPostButton;
 
@@ -68,6 +69,9 @@ let modal;
 
 /** @type {HTMLElement} */
 let closeModalButton;
+
+/** @type {HTMLButtonElement} */
+let toggleLegendButton;
 
 //
 // Constants
@@ -82,6 +86,10 @@ const MARKER_HEIGHT_MINMAX = {min: 45, max: 113};
 // Hooks the onLoad function to the DOMContentLoaded event.
 document.addEventListener('DOMContentLoaded', onLoad);
 
+document.addEventListener('mouseup', onClickAnywhere);
+
+document.addEventListener('keyup', onKeyUp);
+
 //
 // Functions
 //
@@ -94,10 +102,12 @@ async function onLoad() {
   createPostButton = document.getElementById('create-post-button');
   modal = document.getElementById('modal-background');
   closeModalButton = document.getElementById('modal-close');
+  toggleLegendButton = document.getElementById('toggle-legend-button');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
   closeModalButton.addEventListener('click', closeModal);
+  toggleLegendButton.addEventListener('click', toggleLegend);
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -129,6 +139,28 @@ async function onLoad() {
     window.initMap = initMap;
     document.head.appendChild(script);
   });
+}
+
+/**
+ * Handles mouse clicks anywhere on the page.
+ * @param {any} event - The mouseclick event.
+ */
+function onClickAnywhere(event) {
+  // If the user clicked somewhere, we don't consider them a keyboard-user anymore.
+  document.body.classList.remove('keyboard-active');
+}
+
+/**
+ * Handles keyup events on the general page.
+ * @param {any} event - The keydown event.
+ */
+function onKeyUp(event) {
+  // If the key is a tab, consider the user a keyboard user.
+  // This allows us to separate "active" classes due to keyboard navigation from
+  // "active" classes due to simply clicking on something.
+  if (event.keyCode == 9) {
+    document.body.classList.add('keyboard-active');
+  }
 }
 
 /**
@@ -301,8 +333,8 @@ function initMap() {
       position: {lat: post.location.lat, lng: post.location.long},
       map: map,
       title: post.eventStartTime > new Date() ?
-        `${post.organizationName} (event hasn't started)` :
-        `${post.organizationName} (ongoing event)`,
+        `${post.organizationName} (not started yet)` :
+        `${post.organizationName} (happening now)`,
       opacity: getMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
       icon: icon,
     });
@@ -328,7 +360,7 @@ function initMap() {
 
 /**
  * Adds the user to the map based on their browser's reported location.
- * @param {any} position - The position returned by the browser's geolocation feature.
+ * @param {any} position - The position returned by the browser's geolocator.
  */
 function addUserToMap(position) {
   const icon = {
@@ -495,3 +527,17 @@ window.onclick = function(event) {
     closeModal();
   }
 };
+
+/**
+ * Toggles the legend next to the map.
+ */
+function toggleLegend() {
+  const legend = document.getElementById('map-legend');
+  if (legend.computedStyleMap().get('z-index') == 0) {
+    legend.style.zIndex = 1;
+    legend.style.display = 'block';
+  } else {
+    legend.style.zIndex = 0;
+    legend.style.display = 'none';
+  }
+}

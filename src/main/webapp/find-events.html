@@ -30,7 +30,32 @@
 
     <!-- main content -->
     <div id="col-container">
-	    <h1 id="find-events-title">find events</h1>
+      <h1 id="find-events-title">find events</h1>
+
+      <!-- map legend -->
+      <button id="toggle-legend-button" type="button">legend</button>
+      <div id="map-legend-container">
+        <div id="map-legend">
+          <div class="map-legend-entry">
+            <img src="./assets/svg/redmarker.svg" alt="Red map pin" class="unselectable">
+            <p class="unselectable">event started</p>
+          </div>
+          <div class="map-legend-entry">
+            <img src="./assets/svg/redmarker.svg" alt="Faded red map pin" id="faded-image" class="unselectable">
+            <p class="unselectable">event half done</p>
+          </div>
+          <div class="map-legend-entry">
+            <img src="./assets/svg/greymarker.svg" alt="Grey map pin" class="unselectable">
+            <p class="unselectable">future event</p>
+          </div>
+          <div class="map-legend-entry">
+            <img src="./assets/svg/bluemarker.svg" alt="Round blue map marker" class="unselectable">
+            <p class="unselectable">your location</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- map and posts -->
       <div id="page-container">
         <div id="map"></div>
         <div id="all-posts">
@@ -39,6 +64,7 @@
       </div>
     </div>
 
+    <!-- modal -->
     <div id="modal-background">
       <div id="modal-create-post">
         <button id="modal-close" type="button">&#10005;</button>
