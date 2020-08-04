@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 /* eslint-disable no-unused-vars */
+/* global google */
 
 // This file will be included only on the 'feed' (find-events) page,
 // and contains items specific to the map and posts on that page.
@@ -278,7 +279,6 @@ function fetchFakePosts(collegeid) {
  * Initializes the embedded Google Maps map.
  */
 function initMap() {
-  /* eslint-disable no-undef */
   // Get the college of the page and center the map on it.
   map = new google.maps.Map(document.getElementById('map'),
       {
@@ -300,7 +300,9 @@ function initMap() {
     const marker = new google.maps.Marker({
       position: {lat: post.location.lat, lng: post.location.long},
       map: map,
-      title: post.organizationName,
+      title: post.eventStartTime > new Date() ?
+        `${post.organizationName} (event hasn't started)` :
+        `${post.organizationName} (ongoing event)`,
       opacity: getMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
       icon: icon,
     });
@@ -316,7 +318,32 @@ function initMap() {
       });
     });
   });
-  /* eslint-enable no-undef */
+
+  // Get the user's position and show it as a marker, if they consent and their browser supports
+  // geolocation. If anything goes wrong, just default to not showing them their location.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(addUserToMap, () => {});
+  }
+}
+
+/**
+ * Adds the user to the map based on their browser's reported location.
+ * @param {any} position - The position returned by the browser's geolocation feature.
+ */
+function addUserToMap(position) {
+  const icon = {
+    url: './assets/svg/bluemarker.svg',
+    scaledSize: new google.maps.Size(30, 30),
+    anchor: new google.maps.Point(15, 15),
+    origin: new google.maps.Point(0, 0),
+  };
+
+  new google.maps.Marker({
+    position: {lat: position.coords.latitude, lng: position.coords.longitude},
+    map: map,
+    title: 'That\'s you!',
+    icon: icon,
+  });
 }
 
 /**
@@ -354,10 +381,10 @@ function getMapMarkerIconUrl(eventStartTime) {
   const now = new Date();
 
   if (eventStartTime > now) {
-    return './assets/greymarker.svg';
+    return './assets/svg/greymarker.svg';
   }
 
-  return './assets/redmarker.svg';
+  return './assets/svg/redmarker.svg';
 }
 
 /**
