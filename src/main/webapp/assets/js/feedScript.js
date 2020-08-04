@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
-  // Show a spinning loading icon to user on map
+  // Show a spinning loading icon to user on map.
   addMapSpinner();
 
   // Get the elements from the DOM after they have loaded.

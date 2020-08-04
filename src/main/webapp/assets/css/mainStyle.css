@@ -29,7 +29,6 @@ body {
   -khtml-user-select: none;
   -webkit-user-select: none;
   -o-user-select: none;
-  user-drag: none; 
   -webkit-user-drag: none;
   -ms-user-select: none;
 }
@@ -45,13 +44,13 @@ body {
   border: 4px var(--off-white) solid;
   border-top: 4px var(--dark-green) solid;
   border-radius: 50%;
-  animation: sp-anime 1.0s infinite linear;
+  animation: sp-anime 1s infinite linear;
 }
 
 @keyframes sp-anime {
-	100% { 
-		transform: rotate(360deg); 
-	}
+  100% { 
+    transform: rotate(360deg);
+  }
 }
 
 /*
