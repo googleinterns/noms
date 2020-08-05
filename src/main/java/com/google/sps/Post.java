@@ -72,11 +72,12 @@ public class Post {
         Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
         for (Entity entity: queryResult.asIterable()) {
+            /*
             Post newPost = new Post();
             newPost.entityToPost(entity);
             currentPosts.add(newPost);
+            */
 
-            /*
             // Create a calendar based off the post timing.
             Calendar postTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
@@ -93,13 +94,19 @@ public class Post {
             if (postTime.before(nowTime)) {
                 datastore.delete(entity.getKey());
             }
+            else {
+                Post newPost = new Post();
+                newPost.entityToPost(entity);
+                currentPosts.add(newPost);
+            }
+            /*
             // If not, and the post is on the same day, create a Post object and add it to the ArrayList.
             else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
                 Post newPost = new Post();
                 newPost.entityToPost(entity);
                 currentPosts.add(newPost);
             }  
-            */ 
+            */
         }
         return currentPosts;
         
