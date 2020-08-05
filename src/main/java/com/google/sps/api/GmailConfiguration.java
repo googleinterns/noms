@@ -50,18 +50,18 @@ public class GmailConfiguration {
     * @throws MessagingException
     */
   public static MimeMessage createEmail(String to, String subject, String bodyText) 
-    throws MessagingException {
+      throws MessagingException {
 
-      Properties props = new Properties();
-      Session session = Session.getDefaultInstance(props, null);
-      MimeMessage email = new MimeMessage(session);
+    Properties props = new Properties();
+    Session session = Session.getDefaultInstance(props, null);
+    MimeMessage email = new MimeMessage(session);
 
-      email.setFrom(new InternetAddress(FROM));
-      email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to));
-      email.setSubject(subject);
-      email.setContent(bodyText, "text/html;charset=UTF-8");
+    email.setFrom(new InternetAddress(FROM));
+    email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to));
+    email.setSubject(subject);
+    email.setContent(bodyText, "text/html;charset=UTF-8");
 
-      return email;
+    return email;
   }
 
   /**
@@ -73,17 +73,17 @@ public class GmailConfiguration {
     * @throws MessagingException
     */
   public static Message createMessageWithEmail(MimeMessage emailContent)
-    throws MessagingException, IOException {
+      throws MessagingException, IOException {
 
-      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-      emailContent.writeTo(buffer);
-      byte[] bytes = buffer.toByteArray();
-      String encodedEmail = Base64.encodeBase64URLSafeString(bytes);
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    emailContent.writeTo(buffer);
+    byte[] bytes = buffer.toByteArray();
+    String encodedEmail = Base64.encodeBase64URLSafeString(bytes);
 
-      Message message = new Message();
-      message.setRaw(encodedEmail);
+    Message message = new Message();
+    message.setRaw(encodedEmail);
 
-      return message;
+    return message;
   }
 
   /**
@@ -96,12 +96,12 @@ public class GmailConfiguration {
     * @throws IOException
     */
   public static Message sendMessage(Gmail service, MimeMessage emailContent)
-    throws MessagingException, IOException {
+      throws MessagingException, IOException {
     
-      Message message = createMessageWithEmail(emailContent);
-      message = service.users().messages().send(FROM, message).execute();
-      
-      return message;
+    Message message = createMessageWithEmail(emailContent);
+    message = service.users().messages().send(FROM, message).execute();
+
+    return message;
   }
 
   /**	
