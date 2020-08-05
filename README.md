@@ -1,6 +1,6 @@
 # noms
 
-A full-stack web application that connects students and college organizations to post about free food events on campus.
+A full-stack web application that connects students and college organizations by posting about free food events on campus.
 
 ## Context
 
@@ -29,8 +29,9 @@ Primary users:
 APIs Needed:
 * Google Datastore
 * Google Maps API
-* GMail API
+* Gmail API
 * Geocoding Service API
+* Google Secret Manager
 
 ## Usage
 
