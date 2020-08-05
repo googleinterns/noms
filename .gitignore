@@ -1,3 +1,7 @@
+credentials.json
+
+src/main/java/com/google/sps/api/Token.java
+
 target/
 node_modules
 package.json
