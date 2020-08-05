@@ -25,9 +25,7 @@ import com.google.api.client.util.StringUtils;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
-import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.sps.api.Token;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,6 +43,7 @@ import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
@@ -54,13 +53,10 @@ public class GmailAPI {
 	private static final String APPLICATION_NAME = "noms";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static final String USER = "me";
-  private static final String PROJECT_ID = "step186-2020";
-  private static final String VERSION_ID = "latest";
+  private static final File CREDENTIALS_FILE_PATH = new File(System.getProperty("user.dir") + "/credentials.json");
   
   private static String CLIENT_ID = "";
   private static String CLIENT_SECRET = "";
-  private static String REFRESH_TOKEN = "";
-
 	private static Gmail service = null;
 
   /**
@@ -71,18 +67,19 @@ public class GmailAPI {
     */
 	public static Gmail getGmailService() throws IOException, GeneralSecurityException {
 
-    // Gather client info from OAuth 2.0 credentials through Secrets Manager.
-    CLIENT_ID = getSecretKey("client-id");
-    CLIENT_SECRET = getSecretKey("client-secret");
-    REFRESH_TOKEN = getSecretKey("refresh-token");
+    // Gather client info from OAuth 2.0 credentials.
+		InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH); 
+		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+    CLIENT_ID = clientSecrets.getDetails().getClientId().toString();
+    CLIENT_SECRET = clientSecrets.getDetails().getClientSecret().toString();
 
     // Set up credentials to use the Gmail API.
 		Credential authorize = new GoogleCredential.Builder().setTransport(GoogleNetHttpTransport.newTrustedTransport())
       .setJsonFactory(JSON_FACTORY)
       .setClientSecrets(CLIENT_ID, CLIENT_SECRET)
       .build()
-      .setRefreshToken(REFRESH_TOKEN)
-      .setAccessToken(getAccessToken(REFRESH_TOKEN));
+      .setRefreshToken(Token.REFRESH_TOKEN)
+      .setAccessToken(getAccessToken());
 
 		// Build service.
 		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -93,26 +90,12 @@ public class GmailAPI {
 	}
 
   /**
-    * Retrieve a secret key by accessing the Secrets Manager.
-    *
-    * @param secretName name of secret accessing
-    */
-	public static String getSecretKey(String secretName) throws IOException {
-
-    SecretManagerServiceClient client = SecretManagerServiceClient.create();
-    SecretVersionName secretVersionName = SecretVersionName.of(PROJECT_ID, secretName, VERSION_ID);
-    AccessSecretVersionResponse secretResponse = client.accessSecretVersion(secretVersionName);
-
-    return secretResponse.getPayload().getData().toStringUtf8();
-  }
-
-  /**
     * Retrieve new access token due to the fact that it has a lifetime of 1 hour
     * through refresh token.
     *
     * @param refresh_token Authorized token to create access tokens.
     */
-	private static String getAccessToken(String refresh_token) 
+	private static String getAccessToken() 
     throws IOException, MalformedURLException, ProtocolException, UnsupportedEncodingException {
 
       // Gather POST parameters.
@@ -120,7 +103,7 @@ public class GmailAPI {
       params.put("grant_type", "refresh_token");
       params.put("client_id", CLIENT_ID);
       params.put("client_secret", CLIENT_SECRET); 
-      params.put("refresh_token", refresh_token);
+      params.put("refresh_token", Token.REFRESH_TOKEN);
 
       // Build POST request.
       StringBuilder postData = new StringBuilder();
