@@ -58,7 +58,7 @@ select::-ms-expand {
 .selectdiv::after {
   color: #565656;
   content: 'v';
-  font: 20px "Consolas", monospace;
+  font: 20px monospace;
   pointer-events: none;
   position: absolute;
   right: 25px;

@@ -89,6 +89,9 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
+  // Show a spinning loading icon to user on map.
+  addMapSpinner();
+
   // Get the elements from the DOM after they have loaded.
   createPostButton = document.getElementById('create-post-button');
   modal = document.getElementById('modal-background');
@@ -118,8 +121,46 @@ async function onLoad() {
   addPosts(posts);
 
   // Add the embedded map to the page.
+  addMapToPage();
+}
+
+/**
+ * Adds the loading spinner on the map.
+ */
+function addMapSpinner() {
+  const map = document.getElementById('map-info-container');
+  const spinner = document.createElement('div');
+  spinner.setAttribute('id', 'map-spinner');
+  spinner.setAttribute('class', 'spinner');
+  map.appendChild(spinner);
+}
+
+/**
+ * Removes the loading spinner on the map.
+ */
+function removeMapSpinner() {
+  const map = document.getElementById('map-info-container');
+  const spinner = document.getElementById('map-spinner');
+  map.removeChild(spinner);
+}
+
+/**
+ * Tries to add the map to the page. The map URL calls the initMap() function as
+ * its callback, which then positions the map and adds markers. If we are unable
+ * to retrieve the secret for the map, then we display an error to the user.
+ */
+function addMapToPage() {
   getSecretFor('javascript-maps-api').then((key) => {
-    // TODO: If the key returns null, we should show a placeholder div with error text.
+    if (key === null) {
+      const mapElement = document.getElementById('map-info-container');
+      const errorElement = document.createElement('div');
+      errorElement.setAttribute('id', 'map-error');
+      errorElement.innerText = `An error occured while fetching the credentials
+                                needed to view the map. Try refreshing the page;
+                                if the error persists, please contact us above.`;
+      mapElement.appendChild(errorElement);
+      return;
+    }
 
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
@@ -133,6 +174,7 @@ async function onLoad() {
 /**
  * Gets the secret value corresponding to a secret ID from GCP secrets store.
  * @param {string} secretid - The secret's id, as defined in the secrets store.
+ * @return {string | null} - Either the secret for the requested ID, or else null.
  */
 async function getSecretFor(secretid) {
   try {
@@ -144,7 +186,8 @@ async function getSecretFor(secretid) {
     }
   } catch (err) {
     console.warn(err);
-    return;
+    removeMapSpinner();
+    return null;
   }
 }
 
@@ -278,6 +321,10 @@ function fetchFakePosts(collegeid) {
  * Initializes the embedded Google Maps map.
  */
 function initMap() {
+  // Remove the 'loading map' spinner (not strictly necessary since the
+  // API consumes the entire 'map' element, but can't hurt).
+  removeMapSpinner();
+
   /* eslint-disable no-undef */
   // Get the college of the page and center the map on it.
   map = new google.maps.Map(document.getElementById('map'),
