@@ -110,9 +110,6 @@ public class GmailConfiguration {
     * @param to email address of the receiver
     * @param subject subject of the email
     * @param bodyText body text of the email
-    * @throws IOException	
-    * @throws GeneralSecurityException	
-    * @throws MessagingException	
     */
   public static void sendEmail(String to, String subject, String content) {
 
@@ -125,15 +122,8 @@ public class GmailConfiguration {
 
     } catch (Exception e) {
 
-      response.setStatus(500);
-      response.setContentType("text; charset=UTF-8");
-      response.getWriter().println("ERROR: Unable to send message : " + e.toString());
+      System.out.println("ERROR: Unable to send message : " + e.toString());
+
     }
   }	
-
-  public static void main(String[] args) 	
-    throws IOException, GeneralSecurityException, MessagingException {	
-      // TODO: Delete main and add email functionality to POST method when user subscribes
-      sendEmail("areeta@google.com", Email.welcomeSubject, Email.welcomeContent);	
-  }
 }
