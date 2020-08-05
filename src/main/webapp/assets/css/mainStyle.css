@@ -110,13 +110,13 @@ header {
 
   .nav {
     background: #a98585;
+    display: none;
     flex-direction: column;
     height: calc(100% - 70px);
     justify-content: space-around;
     margin: 0;
     position: absolute;
     padding: 0;
-    right: -100%;
     top: 70px;
     transition: all 400ms;
     width: 50%;
@@ -131,6 +131,7 @@ header {
   }
 
   .nav-active {
+    display: inherit;
     right: 0;
   }
 }
