@@ -336,10 +336,11 @@ function initMap() {
 
   // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
+    const now = new Date();
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
     const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
     const icon = {
-      url: getMapMarkerIconUrl(post.eventStartTime),
+      url: getMapMarkerIconUrl(now, post.eventStartTime),
       scaledSize: new google.maps.Size(width, height),
       origin: new google.maps.Point(0, 0),
     };
@@ -348,7 +349,7 @@ function initMap() {
       position: {lat: post.location.lat, lng: post.location.long},
       map: map,
       title: post.organizationName,
-      opacity: getMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
+      opacity: getMapMarkerOpacity(now, post.eventStartTime, post.eventEndTime),
       icon: icon,
     });
 
@@ -368,12 +369,12 @@ function initMap() {
 
 /**
  * Calculates the opacity of a given map marker.
+ * @param {Date} now - The current time.
  * @param {Date} eventStartTime - The start time of the event.
  * @param {Date} eventEndTime - The end time of the event.
  * @return {number} - The opacity to show the marker as.
  */
-function getMapMarkerOpacity(eventStartTime, eventEndTime) {
-  const now = new Date();
+function getMapMarkerOpacity(now, eventStartTime, eventEndTime) {
   const startTime = eventStartTime;
   const endTime = eventEndTime;
 
@@ -394,12 +395,11 @@ function getMapMarkerOpacity(eventStartTime, eventEndTime) {
 /**
  * Returns the appropriate marker icon for a marker.
  * Grey if the event hasn't started yet, red otherwise.
+ * @param {Date} now - The current time.
  * @param {Date} eventStartTime - The start time of the event.
  * @return {string} - The location of the marker icon.
  */
-function getMapMarkerIconUrl(eventStartTime) {
-  const now = new Date();
-
+function getMapMarkerIconUrl(now, eventStartTime) {
   if (eventStartTime > now) {
     return './assets/greymarker.svg';
   }
