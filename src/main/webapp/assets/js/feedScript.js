@@ -118,6 +118,7 @@ async function onLoad() {
 
   // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
+  fetchPosts(collegeId);
   posts = fetchFakePosts(collegeId);
   collegeLocation = await fetchFakeCollegeLocation(collegeId);
 
@@ -281,6 +282,56 @@ function fetchFakePosts(collegeid) {
     fakePosts.push(post);
   }
   return fakePosts;
+}
+
+async function fetchPosts(collegeId) {
+  // send college ID
+  // get and sort info
+  const url = '/postdata?collegeId=' + collegeId;
+  const response = await fetch(url);
+  const message = await response.text();
+  console.log(message);
+
+//   const posts = [];
+//   let collegeAbbreviation = '';
+//   let baseLat = 0;
+//   let baseLong = 0;
+//   if (parseFloat(collegeid) === 209542) {
+//     collegeAbbreviation = 'OSU';
+//     baseLat = 44.56395;
+//     baseLong = -123.274723;
+//   } else if (parseFloat(collegeid) === 122931) {
+//     collegeAbbreviation = 'SCU';
+//     baseLat = 37.348362;
+//     baseLong = -121.93784;
+//   } else {
+//     collegeAbbreviation = 'UCI';
+//     baseLat = 33.648434;
+//     baseLong = -117.841248;
+//   }
+
+//   for (let i = 0; i < 5; i++) {
+//     const post = {
+//       id: i*1000 + i*50 + i*2 + i,
+//       organizationName: `Organization ${i}`,
+//       postDateTime: new Date(new Date().setHours(new Date().getHours() - i)),
+//       eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
+//       eventEndTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-0.5)*10)),
+//       location: {
+//         name: `${collegeAbbreviation} Office ${i}`,
+//         lat: baseLat + (i + Math.random()*10 - 5) / 5000,
+//         long: baseLong + (i + Math.random()*10 - 5)/ 5000,
+//       },
+//       numOfPeopleFoodWillFeed: (30 - i*5),
+//       foodType: 'Thai Food',
+//       description: 'Come join the ACM for free burritos and to learn more ' +
+//         'about what our club does! All are welcome to join the club happenings, ' +
+//         'regardless of major or year. ' +
+//         'We have vegatarian and halal options available.',
+//     };
+//     fakePosts.push(post);
+//   }
+//   return fakePosts;
 }
 
 /**
@@ -479,6 +530,7 @@ function submitModal() {
     console.log('modal value ' + modalCollegeId.value);
     console.log('elts ' + modalForm.elements);
     console.log('id ' + modalForm.elements.namedItem('modal-college-id').value);
+    // TODO: add lat and long
     modalForm.submit();
   }
 }

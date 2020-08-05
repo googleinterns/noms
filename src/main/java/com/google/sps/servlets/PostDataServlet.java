@@ -33,34 +33,43 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/postdata")
 public class PostDataServlet extends HttpServlet {
 
+    /* Convert an ArrayList of Post objects to JSON. */
+    private String listToJson(ArrayList<Post> alist) {
+        Gson gson = new Gson();
+        String json = gson.toJson(alist);
+        return json;
+    }
+
+     /* 
+      * On the GET request, retrieves all the posts from Datastore and convers them to JSON. 
+      * If a post is outdated, deletes it.
+     */
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        String collegeId = request.getParameter("collegeId");
+
+        // Retrieves the Review comments with a Query.
+        Query query = new Query(collegeId).addSort("timeSort", SortDirection.DESCENDING);
+        PreparedQuery results = datastore.prepare(query);
+        ArrayList<Post> posts = Post.queryToPosts(results, datastore);
+
+        String json = listToJson(posts);
+        response.setContentType("application/json");
+        response.getWriter().println(json);
+    }
+
     /* On the POST command, stores the name and review as a Review entity in Datastore. */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        /*
-        String collegeId = request.getParameter("collegeId");
-
-        response.setContentType("text/html");
-        response.getWriter().println(collegeId);
-        response.getWriter().println(request.getParameterNames());
-        response.getWriter().println(request.getParameterMap());
-
-        */
-
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         
         String collegeId = request.getParameter("collegeId");
         Post newPost = new Post(request, collegeId);
-        Entity newPostEntity = newPost.createEntity();
+        Entity newPostEntity = newPost.postToEntity();
         datastore.put(newPostEntity);
 
         String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
         response.sendRedirect(redirectURL);
-        
-        // Store in Datastore and redirects back to Reviews page (where GET command activates and displays the review).
-        // response.setContentType("text/html");
-        // response.getWriter().println(datastore.put(newPostEntity));
-        // datastore.put(newPost);
-        // String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
-        // response.sendRedirect(redirectURL);
     }
 }
