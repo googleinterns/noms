@@ -114,13 +114,21 @@ public class GmailConfiguration {
     * @throws GeneralSecurityException	
     * @throws MessagingException	
     */
-  public static void sendEmail(String to, String subject, String content) 	
-    throws IOException, GeneralSecurityException, MessagingException {	
+  public static void sendEmail(String to, String subject, String content) {
 
+    try {
+      
       Gmail service = GmailAPI.getGmailService();	
       MimeMessage Mimemessage = createEmail(to, subject, content);	
       Message message = createMessageWithEmail(Mimemessage);	
       message = service.users().messages().send("me", message).execute();	
+
+    } catch (Exception e) {
+
+      response.setStatus(500);
+      response.setContentType("text; charset=UTF-8");
+      response.getWriter().println("ERROR: Unable to send message : " + e.toString());
+    }
   }	
 
   public static void main(String[] args) 	
