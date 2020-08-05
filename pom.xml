@@ -159,6 +159,7 @@
         <configuration>
           <deploy.projectId>step186-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
+          <addDefaultExcludes>false</addDefaultExcludes>
         </configuration>
       </plugin>
     </plugins>
