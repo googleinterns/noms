@@ -118,7 +118,7 @@ async function onLoad() {
 
   // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
-  posts = fetchPosts(collegeId);
+  posts = await fetchPosts(collegeId);
 //   posts = fetchFakePosts(collegeId);
   collegeLocation = await fetchFakeCollegeLocation(collegeId);
 
@@ -126,7 +126,7 @@ async function onLoad() {
   document.getElementById('find-events-title').innerText +=
   ` @ ${collegeLocation.name}`.toLowerCase();
 
-//   addPosts(posts);
+  addPosts(posts);
 
   // Add the embedded map to the page.
   getSecretFor('javascript-maps-api').then((key) => {
@@ -312,7 +312,6 @@ async function fetchPosts(collegeId) {
   }
 
   for (let i = 0; i < message.length; i++) {
-    const date = message[i]['month'] + '/' + message['day'] + '/' + message['year'];
     const post = {
       id: message[i]['postId'],
       organizationName: message[i]['organizationName'],
@@ -332,9 +331,6 @@ async function fetchPosts(collegeId) {
   }
   console.log(typeof posts);
   console.log(posts);
-  posts = JSON.parse(posts);
-  console.log(typeof posts);
-  console.log(posts);
   return posts;
 }
 
@@ -352,7 +348,8 @@ function initMap() {
   );
 
   // Get all posts on the page and show them as markers.
-  posts.forEach((post) => {
+  for (post in posts) {
+//   posts.forEach((post) => {
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
     const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
     const icon = {
@@ -379,7 +376,7 @@ function initMap() {
         postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
       });
     });
-  });
+  }
   /* eslint-enable no-undef */
 }
 
@@ -464,10 +461,16 @@ function applyLogisticFunction(xValue, bounds) {
  * Adds posts to the page (uses mock data).
  * @param {array} posts
  */
-function addPosts(posts) {
-  console.log(typeof posts);
-  const allPosts = document.getElementById('all-posts');
-  posts.forEach((post) => {
+async function addPosts(posts) {
+//   await posts;
+  console.log('at add posts');
+  console.log('addPosts ' + posts);
+  let allPosts = document.getElementById('all-posts');
+//   posts.forEach((post) => {
+  for (i = 0; i < posts.length; i++) {
+    let post = posts[i];
+    console.log('in post loop');
+    console.log(post);
     const titleText = post.organizationName + ' @ ' + post.location.name;
     const subtitleText = post.foodType + ' | ' +
       post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
@@ -499,7 +502,7 @@ function addPosts(posts) {
 
     // Add card to the page.
     allPosts.append(postCard);
-  });
+  }
 }
 
 /**
