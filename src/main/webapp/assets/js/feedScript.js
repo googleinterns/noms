@@ -193,19 +193,17 @@ async function getSecretFor(secretid) {
 
 /**
  * Translates a location from its name to a pair of latitude and longitudes.
- * @param {any} apiResponse - The api's reponse (or a mock of it, for testing).
  * @param {string} address - The address to translate to lat/long.
- * @return {LocationInfo} or null if no such location exists or an error occurs.
+ * @param {any} apiResponse - The function that returns an API response (or mocked one).
+ * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
 async function translateLocationToLatLong(address, apiResponse = fetchTranslateLocation) {
   try {
-    const response = await fetch('/translateLocation', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: createSearchParamsFromObject({location: address}),
-    });
+    const response = await fetchTranslateLocation(address);
+
+    if (!response) {
+      throw new Error('POST failed for unknown reasons. Please check console.');
+    }
 
     // If we get a non-200 status response, then fail.
     if (!response.ok) {
@@ -239,9 +237,11 @@ async function translateLocationToLatLong(address, apiResponse = fetchTranslateL
 }
 
 /**
- * Try doing the thing
+ * Try doing the thing.
+ * @param {string} address - The address to translate to lat/long.
+ * @return {Promise<any>} - The API's response.
  */
-async function fetchTranslateLocation() {
+async function fetchTranslateLocation(address) {
   try {
     const response = await fetch('/translateLocation', {
       method: 'POST',
@@ -250,6 +250,7 @@ async function fetchTranslateLocation() {
       },
       body: createSearchParamsFromObject({location: address}),
     });
+    return response;
   } catch (err) {
     console.warn(err);
     return null;

@@ -110,14 +110,16 @@ describe('Geolocation Functionality', function() {
   describe('#translateLocationToLatLong()', function() {
     it('should return the result if it gets back any api results', async function() {
       const address = 'Memorial Union, Corvallis';
-      const mockApiResponse = {
-        formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
-        geometry: {
-          location: {
-            lat: 44.5649688,
-            lng: -123.2789571,
+      const mockApiResponse = (_) => {
+        return {
+          formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
+          geometry: {
+            location: {
+              lat: 44.5649688,
+              lng: -123.2789571,
+            },
           },
-        },
+        };
       };
       const result = {
         name: 'Southwest Jefferson Way, Corvallis OR, 97331',
