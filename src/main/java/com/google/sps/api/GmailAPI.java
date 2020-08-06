@@ -60,7 +60,7 @@ public class GmailAPI {
   private static String CLIENT_ID = "";
   private static String CLIENT_SECRET = "";
   private static String REFRESH_TOKEN = "";
-
+  
   private static Gmail service = null;
 
   /**
