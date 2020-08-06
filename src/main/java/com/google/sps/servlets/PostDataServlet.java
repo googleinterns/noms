@@ -50,7 +50,7 @@ public class PostDataServlet extends HttpServlet {
         String collegeId = request.getParameter("collegeId");
 
         // Retrieves the Review comments with a Query.
-        Query query = new Query(collegeId).addSort("timeSort", SortDirection.DESCENDING);
+        Query query = new Query(collegeId).addSort("timeSort", SortDirection.ASCENDING);
         PreparedQuery results = datastore.prepare(query);
         ArrayList<Post> posts = Post.queryToPosts(results, datastore);
 

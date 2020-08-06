@@ -24,15 +24,13 @@ import java.util.Calendar;
 public class Post {
     String postId = "";
     String organizationName = "";
-    String month = "";
-    String day = "";
-    String year = "";
-    String startHour = "";
-    String startMinute = "";
-    String startAMorPM = "";
-    String endHour = "";
-    String endMinute = "";
-    String endAMoPM = "";
+    int month = 0;
+    int day = 0;
+    int year = 0;
+    int startHour = 0;
+    int startMinute = 0;
+    int endHour = 0;
+    int endMinute = 0;
     String location = "";
     String numberOfPeopleItFeeds = "";
     String typeOfFood = "";
@@ -40,51 +38,52 @@ public class Post {
     String collegeId = "";
     int timeSort = 0;
 
+    /* Fill in the important Post details from the POST request. */
     public Post(HttpServletRequest request, String collegeId) {
         organizationName = request.getParameter("organizationName");
-        month = request.getParameter("month");
-        day = request.getParameter("day");
-        year = request.getParameter("year");
-        startHour = request.getParameter("startHour");
-        startMinute = request.getParameter("startMinute");
-        startAMorPM = request.getParameter("startAMorPM");
-        endHour = request.getParameter("endHour");
-        endMinute = request.getParameter("endMinute");
-        endAMoPM = request.getParameter("endAMorPM");
+        month = Integer.parseInt(request.getParameter("month"));
+        day = Integer.parseInt(request.getParameter("day"));
+        year = Integer.parseInt(request.getParameter("year"));
+        startHour = Integer.parseInt(request.getParameter("startHour"));
+        startMinute = Integer.parseInt(request.getParameter("startMinute"));
+        endHour = Integer.parseInt(request.getParameter("endHour"));
+        endMinute = Integer.parseInt(request.getParameter("endMinute"));
         location = request.getParameter("location");
         numberOfPeopleItFeeds = request.getParameter("numberOfPeopleItFeeds");
         typeOfFood = request.getParameter("typeOfFood");
         description = request.getParameter("description");
         this.collegeId = collegeId;
 
-        // Calculate the start time in minutes
-        timeSort = (Integer.parseInt(startHour) * 60) + Integer.parseInt(startMinute);
+        String startAMorPM = request.getParameter("startAMorPM");
         if (startAMorPM.equals("pm")) {
-            timeSort += 12 * 60;
+            startHour += 12;
         }
+
+        String endAMorPM = request.getParameter("endAMorPM");
+        if (endAMorPM.equals("pm")) {
+            endHour += 12;
+        }
+
+        // Translate the start time into minutes.
+        timeSort = startHour * 60 + startMinute;
     }
 
     public Post() { }
 
+    /* Translate the entities from the Datastore query to Post objects and return in an array. */
     public static ArrayList<Post> queryToPosts(PreparedQuery queryResult, DatastoreService datastore) {
         // TODO: Update Time Zone based off University
         ArrayList<Post> currentPosts = new ArrayList<Post>();
         Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
         for (Entity entity: queryResult.asIterable()) {
-            /*
-            Post newPost = new Post();
-            newPost.entityToPost(entity);
-            currentPosts.add(newPost);
-            */
-
             // Create a calendar based off the post timing.
             Calendar postTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
-            int postTimeSort =  ((Long) entity.getProperty("timeSort")).intValue();
-            int postMonth = Integer.parseInt(entity.getProperty("month").toString());
-            int postDay = Integer.parseInt(entity.getProperty("day").toString());
-            int postYear = 2000 + Integer.parseInt(entity.getProperty("year").toString());
+            int postTimeSort = ((Long) entity.getProperty("timeSort")).intValue();
+            int postMonth = ((Long) entity.getProperty("month")).intValue();
+            int postDay = ((Long) entity.getProperty("day")).intValue();
+            int postYear = 2000 + ((Long) entity.getProperty("year")).intValue();
             int postHour = postTimeSort / 60;
             int postMinute = postTimeSort % 60;
 
@@ -109,20 +108,18 @@ public class Post {
             */
         }
         return currentPosts;
-        
     }
 
+    /* Translate an entity from Datastore to a Post object. */
     public void entityToPost(Entity entity) {
         organizationName = (String) entity.getProperty("organizationName");
-        month = (String) entity.getProperty("month");
-        day = (String) entity.getProperty("day");
-        year = (String) entity.getProperty("year");
-        startHour = (String) entity.getProperty("startHour");
-        startMinute = (String) entity.getProperty("startMinute");
-        startAMorPM = (String) entity.getProperty("startAMorPM");
-        endHour = (String) entity.getProperty("endHour");
-        endMinute = (String) entity.getProperty("endMinute");
-        endAMoPM = (String) entity.getProperty("endAMorPM");
+        month = ((Long) entity.getProperty("month")).intValue();
+        day = ((Long) entity.getProperty("day")).intValue();
+        year = ((Long) entity.getProperty("year")).intValue();
+        startHour = ((Long) entity.getProperty("startHour")).intValue();
+        startMinute = ((Long) entity.getProperty("startMinute")).intValue();
+        endHour = ((Long) entity.getProperty("endHour")).intValue();
+        endMinute = ((Long) entity.getProperty("endMinute")).intValue();
         location = (String) entity.getProperty("location");
         numberOfPeopleItFeeds = (String) entity.getProperty("numberOfPeopleItFeeds");
         typeOfFood = (String) entity.getProperty("typeOfFood");
@@ -132,7 +129,7 @@ public class Post {
         postId = entity.getKey().toString();
     }
 
-    /* Creates a new entity with the college id. Sets all the properties. */
+    /* Creates a new entity with the college id and the information from the POST request. Sets all the properties. */
     public Entity postToEntity() {
         Entity newPost = new Entity(collegeId);
 
@@ -144,11 +141,8 @@ public class Post {
 
         newPost.setProperty("startHour", startHour);
         newPost.setProperty("startMinute", startMinute);
-        newPost.setProperty("startAMorPM", startAMorPM); 
-
         newPost.setProperty("endHour", endHour);
         newPost.setProperty("endMinute", endMinute);
-        newPost.setProperty("endAMorPM", endAMoPM); 
 
         newPost.setProperty("location", location);
         newPost.setProperty("typeOfFood", typeOfFood);
