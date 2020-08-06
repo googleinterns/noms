@@ -4,7 +4,7 @@
 /**
  * Test suite for all functions that control the placement/sizing of map markers.
  */
-describe('Map Markers', function() {
+describe('Sizing/Placement of Map Markers', function() {
   /**
    * Tests for getMapMarkerOpacity().
    */
@@ -70,7 +70,7 @@ describe('Map Markers', function() {
     });
 
     it('should return the higher asymptote at high x-values', function() {
-      expect(applyLogisticFunction(50, {min: 5, max: 30})).to.equal(30);
+      expect(applyLogisticFunction(60, {min: 5, max: 30})).to.equal(30);
     });
 
     it('should return the lower asymptote at negative x-values', function() {
@@ -79,6 +79,54 @@ describe('Map Markers', function() {
 
     it('should return the higher asymptote at really big x-values', function() {
       expect(applyLogisticFunction(100000, {min: 5, max: 30})).to.equal(30);
+    });
+  });
+
+  /**
+   * Tests for getMapMarkerIconSize().
+   */
+  describe('#getMapMarkerIconSize()', function() {
+    it('should return null if the dimensionType isn\'t \'width\' or \'height\'', function() {
+      expect(getMapMarkerIconSize(0, 'garbage')).to.be.null;
+    });
+
+    it('should return the minimum if the event won\'t feed many people', function() {
+      expect(getMapMarkerIconSize(0, 'width')).to.equal(MARKER_WIDTH_MINMAX.min);
+    });
+
+    it('should return the max if the event will feed many people', function() {
+      expect(getMapMarkerIconSize(100, 'height')).to.equal(MARKER_HEIGHT_MINMAX.max);
+    });
+  });
+});
+
+/**
+ * Test suite for the page's geolocation functionalities.
+ */
+describe('Geolocation functionality', function() {
+  /**
+   * Tests for getMapMarkerOpacity().
+   */
+  describe('#translateLocationToLatLong()', function() {
+    it('should return the result if it gets back any api results', function() {
+      const address = 'Memorial Union, Corvallis';
+      nock('')
+          .post('/translateLocation', 'location=' + encodeURIComponent(address))
+          .reply(200, {
+            formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
+            geometry: {
+              location: {
+                lat: 44.5649688,
+                lng: -123.2789571,
+              },
+            },
+          });
+      const result = {
+        name: 'Southwest Jefferson Way, Corvallis OR, 97331',
+        lat: 44.5649688,
+        long: -123.2789571,
+      };
+      expect(translateLocationToLatLong(address)).to.be.eql(result);
     });
   });
 });

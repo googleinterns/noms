@@ -440,7 +440,7 @@ function getMapMarkerIconSize(numOfPeopleFoodWillFeed, dimensionType) {
  */
 function applyLogisticFunction(xValue, bounds) {
   return Math.round((bounds.max - bounds.min)/
-      (Math.exp(-((xValue - 25)/6)) + 1) + bounds.min);
+      (Math.exp(-((xValue - 28)/6)) + 1) + bounds.min);
 }
 
 /**

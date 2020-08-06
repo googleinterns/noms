@@ -4,15 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <!-- css -->
-    <link rel="stylesheet" href="./mocha.css">
+    <link rel="stylesheet" href="./node_modules/mocha/mocha.css">
     <!-- js -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="../feedScript.js"></script>
   </head>
   <body>
     <div id="mocha"></div>
-    <script src="./mocha.js"></script>
-    <script src="./chai.js"></script>
+    <script src="./node_modules/mocha/mocha.js"></script>
+    <script src="./node_modules/chai/chai.js"></script>
+    <script src="./node_modules/nock/index.js"></script>
     <script>
         mocha.ui('bdd'); 
         mocha.reporter('html');
