@@ -32,8 +32,8 @@ public class Post {
     int endHour = 0;
     int endMinute = 0;
     String location = "";
-    Long lat = 0L;
-    Long lng = 0L;
+    Double lat = 0.0;
+    Double lng = 0.0;
     String numberOfPeopleItFeeds = "";
     String typeOfFood = "";
     String description = "";
@@ -51,8 +51,8 @@ public class Post {
         endHour = Integer.parseInt(request.getParameter("endHour"));
         endMinute = Integer.parseInt(request.getParameter("endMinute"));
         location = request.getParameter("location");
-        lat = Long.parseLong(request.getParameter("lat"));
-        lng = Long.parseLong(request.getParameter("lng"));
+        lat = Double.parseDouble(request.getParameter("lat"));
+        lng = Double.parseDouble(request.getParameter("lng"));
         numberOfPeopleItFeeds = request.getParameter("numberOfPeopleItFeeds");
         typeOfFood = request.getParameter("typeOfFood");
         description = request.getParameter("description");
@@ -125,8 +125,8 @@ public class Post {
         endHour = ((Long) entity.getProperty("endHour")).intValue();
         endMinute = ((Long) entity.getProperty("endMinute")).intValue();
         location = (String) entity.getProperty("location");
-        lat = (Long) entity.getProperty("lat");
-        lng = (Long) entity.getProperty("lng");
+        lat = Double.parseDouble(entity.getProperty("lat").toString());
+        lng = Double.parseDouble(entity.getProperty("lng").toString());
         numberOfPeopleItFeeds = (String) entity.getProperty("numberOfPeopleItFeeds");
         typeOfFood = (String) entity.getProperty("typeOfFood");
         description = (String) entity.getProperty("description");

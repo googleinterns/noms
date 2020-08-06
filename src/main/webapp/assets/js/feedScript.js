@@ -520,7 +520,7 @@ async function submitModal() {
     const modalLocation = document.getElementById('modal-location').value;
     const latLngResult = await translateLocationToLatLong(modalLocation);
     const lat = latLngResult.lat;
-    const lng = latLngResult.lng;
+    const lng = latLngResult.long;
 
     console.log('result ' + latLngResult);
     console.log('lat ' + lat + 'lng ' + lng);
