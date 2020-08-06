@@ -193,10 +193,11 @@ async function getSecretFor(secretid) {
 
 /**
  * Translates a location from its name to a pair of latitude and longitudes.
+ * @param {any} apiResponse - The api's reponse (or a mock of it, for testing).
  * @param {string} address - The address to translate to lat/long.
  * @return {LocationInfo} or null if no such location exists or an error occurs.
  */
-async function translateLocationToLatLong(address) {
+async function translateLocationToLatLong(apiResponse, address) {
   try {
     const response = await fetch('/translateLocation', {
       method: 'POST',

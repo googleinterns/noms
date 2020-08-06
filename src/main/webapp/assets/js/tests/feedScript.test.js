@@ -101,14 +101,14 @@ describe('Sizing/Placement of Map Markers', function() {
 });
 
 /**
- * Test suite for the page's geolocation functionalities.
+ * Test suite for geolocation functionality on the page.
  */
-describe('Geolocation functionality', function() {
+describe('Geolocation Functionality', function() {
   /**
-   * Tests for getMapMarkerOpacity().
-   */
+ * Tests for translateLocationToLatLong().
+ */
   describe('#translateLocationToLatLong()', function() {
-    it('should return the result if it gets back any api results', function() {
+    it('should return the result if it gets back any api results', async function() {
       const address = 'Memorial Union, Corvallis';
       nock('')
           .post('/translateLocation', 'location=' + encodeURIComponent(address))
@@ -126,7 +126,7 @@ describe('Geolocation functionality', function() {
         lat: 44.5649688,
         long: -123.2789571,
       };
-      expect(translateLocationToLatLong(address)).to.be.eql(result);
+      expect(await translateLocationToLatLong(address)).to.be.eql(result);
     });
   });
 });
