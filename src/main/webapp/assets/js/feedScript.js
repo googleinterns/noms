@@ -162,7 +162,7 @@ async function getSecretFor(secretid) {
 /**
  * Translates a location from its name to a pair of latitude and longitudes.
  * @param {string} address - The address to translate to lat/long.
- * @return {LocationInfo} or null if no such location exists or an error occurs.
+ * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
 async function translateLocationToLatLong(address) {
   try {
@@ -286,30 +286,13 @@ function fetchFakePosts(collegeid) {
 }
 
 async function fetchPosts(collegeId) {
-  // send college ID
-  // get and sort info
+  // Send the college Id.
   const url = '/postdata?collegeId=' + collegeId;
   const response = await fetch(url);
   const message = await response.json();
   console.log(message);
 
   let posts = [];
-  let collegeAbbreviation = '';
-  let baseLat = 0;
-  let baseLong = 0;
-  if (parseFloat(collegeId) === 209542) {
-    collegeAbbreviation = 'OSU';
-    baseLat = 44.56395;
-    baseLong = -123.274723;
-  } else if (parseFloat(collegeId) === 122931) {
-    collegeAbbreviation = 'SCU';
-    baseLat = 37.348362;
-    baseLong = -121.93784;
-  } else {
-    collegeAbbreviation = 'UCI';
-    baseLat = 33.648434;
-    baseLong = -117.841248;
-  }
 
   for (let i = 0; i < message.length; i++) {
     const post = {
@@ -320,8 +303,8 @@ async function fetchPosts(collegeId) {
       eventEndTime: new Date(message[i]['year'], message[i]['month'], message[i]['day'], message[i]['endHour'], message[i]['endMinute'], 0, 0),
       location: {
         name: message[i]['location'],
-        lat: baseLat,
-        long: baseLong,
+        lat: message[i]['lat'],
+        long: message[i]['lng'],
       },
       numOfPeopleFoodWillFeed: message[i]['numberOfPeopleItFeeds'],
       foodType: message[i]['typeOfFood'],
@@ -348,8 +331,8 @@ function initMap() {
   );
 
   // Get all posts on the page and show them as markers.
-  for (post in posts) {
-//   posts.forEach((post) => {
+
+  posts.forEach((post) => {
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
     const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
     const icon = {
@@ -376,7 +359,7 @@ function initMap() {
         postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
       });
     });
-  }
+  });
   /* eslint-enable no-undef */
 }
 
@@ -467,7 +450,7 @@ async function addPosts(posts) {
   console.log('addPosts ' + posts);
   let allPosts = document.getElementById('all-posts');
 //   posts.forEach((post) => {
-  for (i = 0; i < posts.length; i++) {
+  for (let i = 0; i < posts.length; i++) {
     let post = posts[i];
     console.log('in post loop');
     console.log(post);
@@ -529,16 +512,28 @@ function closeModal() {
  * On click of the submit button, sends modal data to the servlet.
  * @return {void}
  */
-function submitModal() {
+async function submitModal() {
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
   console.log('found id: ' + collegeId);
+
   if (modalForm && collegeId) {
-    let modalCollegeId = document.getElementById('modal-college-id');
-    modalCollegeId.value =  collegeId;
-    console.log('modal value ' + modalCollegeId.value);
-    console.log('elts ' + modalForm.elements);
-    console.log('id ' + modalForm.elements.namedItem('modal-college-id').value);
-    // TODO: add lat and long
+    const modalLocation = document.getElementById('modal-location').value;
+    const latLngResult = await translateLocationToLatLong(modalLocation);
+    const lat = latLngResult.lat;
+    const lng = latLngResult.lng;
+
+    console.log('result ' + latLngResult);
+    console.log('lat ' + lat + 'lng ' + lng);
+
+    let url;
+
+    if (lat && lng) {
+      url = '/postdata?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
+    } else {
+      url = '/postdata?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
+    }
+
+    modalForm.action = url;
     modalForm.submit();
   }
 }
