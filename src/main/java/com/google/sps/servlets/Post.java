@@ -102,14 +102,12 @@ public class Post {
                 newPost.entityToPost(entity);
                 currentPosts.add(newPost);
             }
-            /*
-            // If not, and the post is on the same day, create a Post object and add it to the ArrayList.
-            else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
-                Post newPost = new Post();
-                newPost.entityToPost(entity);
-                currentPosts.add(newPost);
-            }  
-            */
+            // TODO: Only add if the post is on the same day.
+            // else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
+            //     Post newPost = new Post();
+            //     newPost.entityToPost(entity);
+            //     currentPosts.add(newPost);
+            // }  
         }
         return currentPosts;
     }

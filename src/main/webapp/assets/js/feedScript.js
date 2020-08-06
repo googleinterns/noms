@@ -446,14 +446,11 @@ function applyLogisticFunction(xValue, bounds) {
  */
 async function addPosts(posts) {
 //   await posts;
-  console.log('at add posts');
   console.log('addPosts ' + posts);
   let allPosts = document.getElementById('all-posts');
 //   posts.forEach((post) => {
   for (let i = 0; i < posts.length; i++) {
     let post = posts[i];
-    console.log('in post loop');
-    console.log(post);
     const titleText = post.organizationName + ' @ ' + post.location.name;
     const subtitleText = post.foodType + ' | ' +
       post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
@@ -519,16 +516,14 @@ async function submitModal() {
   if (modalForm && collegeId) {
     const modalLocation = document.getElementById('modal-location').value;
     const latLngResult = await translateLocationToLatLong(modalLocation);
-    const lat = latLngResult.lat;
-    const lng = latLngResult.long;
 
     console.log('result ' + latLngResult);
-    console.log('lat ' + lat + 'lng ' + lng);
-
     let url;
 
-    if (lat && lng) {
-      url = '/postdata?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
+    if (latLngResult) {
+      const lat = latLngResult.lat;
+      const lng = latLngResult.long;
+      url = '/postdata?' + 'collegeId=' + collegeId + '&lat=' + lat.toString() + '&lng=' + lng.toString();
     } else {
       url = '/postdata?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
     }
