@@ -15,7 +15,6 @@
 package com.google.sps.api;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -25,7 +24,9 @@ import com.google.api.client.util.StringUtils;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
-import com.google.sps.api.Token;
+import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,10 +54,13 @@ public class GmailAPI {
   private static final String APPLICATION_NAME = "noms";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String USER = "me";
-  private static final File CREDENTIALS_FILE_PATH = new File(System.getProperty("user.dir") + "/credentials.json");
+  private static final String PROJECTID = "step186-2020";
+  private static final String VERSIONID = "latest";
 
   private static String CLIENT_ID = "";
   private static String CLIENT_SECRET = "";
+  private static String REFRESH_TOKEN = "";
+
   private static Gmail service = null;
 
   /**
@@ -67,18 +71,17 @@ public class GmailAPI {
     */
   public static Gmail getGmailService() throws IOException, GeneralSecurityException {
 
-    // Gather client info from OAuth 2.0 credentials.
-    InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH); 
-    GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-    CLIENT_ID = clientSecrets.getDetails().getClientId().toString();
-    CLIENT_SECRET = clientSecrets.getDetails().getClientSecret().toString();
+    // Gather client info from OAuth 2.0 credentials through Secrets Manager.
+    CLIENT_ID = getSecret("client-id");
+    CLIENT_SECRET = getSecret("client-secret");
+    REFRESH_TOKEN = getSecret("refresh-token");
 
     // Set up credentials to use the Gmail API.
     Credential authorize = new GoogleCredential.Builder().setTransport(GoogleNetHttpTransport.newTrustedTransport())
       .setJsonFactory(JSON_FACTORY)
       .setClientSecrets(CLIENT_ID, CLIENT_SECRET)
       .build()
-      .setRefreshToken(Token.REFRESH_TOKEN)
+      .setRefreshToken(REFRESH_TOKEN)
       .setAccessToken(getAccessToken());
 
     // Build service.
@@ -90,12 +93,30 @@ public class GmailAPI {
   }
 
   /**
-  * Retrieve new access token due to the fact that it has a lifetime of 1 hour
-  * through refresh token.
-  *
-  * @param refresh_token Authorized token to create access tokens.
-  */
-  private static String getAccessToken() 
+    * Retrieve secrets throgh Secrets Manager.
+    *
+    * @param secretId id of secret key
+    * @throws IOException
+    */
+  public static String getSecret(String secretId) throws IOException {
+
+    // Retrieve the secret key for given ID.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      SecretVersionName secretVersionName = SecretVersionName.of(PROJECTID, secretId, VERSIONID);
+      AccessSecretVersionResponse secretResponse = client.accessSecretVersion(secretVersionName);
+      return secretResponse.getPayload().getData().toStringUtf8();
+    }
+  }
+
+  /**
+    * Retrieve new access token due to the fact that it has a lifetime of 1 hour
+    * through refresh token.
+    *
+    * @throws IOException 
+    * @throws MalformedURLException
+    * @throws UnsupportedEncodingException
+    */
+  private static String getAccessToken()
       throws IOException, MalformedURLException, ProtocolException, UnsupportedEncodingException {
 
     // Gather POST parameters.
@@ -103,7 +124,7 @@ public class GmailAPI {
     params.put("grant_type", "refresh_token");
     params.put("client_id", CLIENT_ID);
     params.put("client_secret", CLIENT_SECRET); 
-    params.put("refresh_token", Token.REFRESH_TOKEN);
+    params.put("refresh_token", REFRESH_TOKEN);
 
     // Build POST request.
     StringBuilder postData = new StringBuilder();
