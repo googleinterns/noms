@@ -197,7 +197,7 @@ async function getSecretFor(secretid) {
  * @param {string} address - The address to translate to lat/long.
  * @return {LocationInfo} or null if no such location exists or an error occurs.
  */
-async function translateLocationToLatLong(apiResponse, address) {
+async function translateLocationToLatLong(address, apiResponse = fetchTranslateLocation) {
   try {
     const response = await fetch('/translateLocation', {
       method: 'POST',
@@ -232,6 +232,24 @@ async function translateLocationToLatLong(apiResponse, address) {
       lat: result.geometry.location.lat,
       long: result.geometry.location.lng,
     };
+  } catch (err) {
+    console.warn(err);
+    return null;
+  }
+}
+
+/**
+ * Try doing the thing
+ */
+async function fetchTranslateLocation() {
+  try {
+    const response = await fetch('/translateLocation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: createSearchParamsFromObject({location: address}),
+    });
   } catch (err) {
     console.warn(err);
     return null;
