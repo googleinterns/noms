@@ -17,8 +17,4 @@ $ npm i
 $ mvn package appengine:run
 ```
 
-2. Navigate to `theurl.dev/assets/js/test/testrunner.html`
-
-#### Local environment
-
-1. Open `testrunner.html` in a browser
+2. Navigate to `theurlgiven.dev/assets/js/test/feedScript.testrunner.html`
