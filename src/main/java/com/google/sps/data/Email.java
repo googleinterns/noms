@@ -14,22 +14,19 @@
 
 package com.google.sps.data;
 
+import java.io.File;
+import java.io.IOException;
+import org.apache.commons.io.FileUtils;
+
 public final class Email {
 
   public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
   public static final String dailyDigestSubject = "⭐ noms: daily digest of free food!";
+  public static final String welcomeContentPath = "/home/areeta/noms/src/main/java/com/google/sps/data/WelcomeEmail.html";
 
-  public static final String welcomeContent = "<body style=\"margin: 3rem\">" +
-    "<h1>welcome to noms</h1>" +
-    "<p> thank you so much for subscribing to our mailing list of free food!";
-
-  public static final String dailyDigestContent = "<body style=\"margin: 3rem\">" +
-    "<h1>daily digest of free food @ university of california-irvine</h1>" +
-    "<div style=\"background: green; border-radius: 15px;" + 
-    "<p>pad thai @ aldrich park</p>";
-
-  URL path = ClassLoader.getSystemResource("WelcomeEmail.html");
-  File input = new File(path.toURI());
-  Document document = Jsoup.parse(input, "UTF-8");
-  public static final String welcomeContent = document;
+  public static String getStringFromHTML(String path) throws IOException {
+    File HTMLfile = new File(path);
+    String str = FileUtils.readFileToString(HTMLfile, "utf-8");
+    return str;
+  }
 }

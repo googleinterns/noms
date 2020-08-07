@@ -59,7 +59,7 @@ public class GmailConfiguration {
     email.setFrom(new InternetAddress(FROM));
     email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to));
     email.setSubject(subject);
-    email.setContent(bodyText, "text/html;charset=UTF-8");
+    email.setContent(bodyText, "text/html;charset=utf-8");
 
     return email;
   }

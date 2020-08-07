@@ -72,7 +72,7 @@ public class UserDataServlet extends HttpServlet {
       datastore.put(userEntity);
 
       // Send a welcome email.
-      GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.welcomeContent);	
+      GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.getStringFromHTML(Email.welcomeContentPath));	
     }
 
     response.sendRedirect("/index.html");

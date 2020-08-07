@@ -3,49 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    <!-- css -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-      :root {
-        --auburn: #ce853f;
-        --dark-green: #667d51;
-        --dark-maroon: #955757;
-        --grey: #e5e3df;
-        --light-teal: #abcbbc;
-        --light-green: #b9c9a7;
-        --off-white: #f2f0f0;
-        --peach: #f2ddc9;
-        --tan: #e4c492;
-      }
-      
-      html,
-      body {
-        background-color: var(--off-white);
-        color: #000;
-        font-family:
-          'Roboto',
-          sans-serif;
-        font-size: 1rem;
-        margin: 0;
-        padding: 0;
-      }
-      
-      #top {
-        align-items: center;
-        display: flex;
-        justify-content: space-between;
-      }
-      
       .container {
         align-items: center;
         display: flex;
         justify-content: center;
+        font-size: 1rem;
       }
       
       .browser {
-        background: var(--tan);
+        background: #e4c492;
         border: 2px solid #00000;
         border-radius: 5px;
         color: #fff;
@@ -60,57 +27,27 @@
         margin: 1.5rem;
         padding: 3rem;
       }
-      
-      #emoji-container {
-        margin-right: 1rem;
+
+      .a {
+        color: #808080;
       }
-      
-      #socials {
-        display: flex;
-        flex-direction: row;
-        font-size: 2rem;
-        justify-content: space-between;
-        margin: 2rem 0 0 2rem;
-      }
-      
-      .fa {
-        color: #fff;
-        font-size: 1.5rem !important;
-        padding: 0.7rem;
-        text-align: center;
-        text-decoration: none;
-      }
-      
-      .fa:hover {
-        opacity: 0.7;
-      }
-  </style>
+    </style>
   </head>
   <body>
     <div class="container">
       <div class="browser">
         <div class="content">
-          <div id="top">
-            <h1>n o m s</h1>
-            <div id="emoji-container">
-              <img src="./assets/svg/bobaemoji.svg" alt="Emoji of boba drink" class="emoji unselectable" id="boba-emoji">
-              <img src="./assets/svg/burgeremoji.svg" alt="Emoji of burger" class="emoji unselectable" id="burger-emoji">
-              <img src="./assets/svg/pizzaemoji.svg" alt="Emoji of pizza slice" class="emoji unselectable" id="pizza-emoji">
-              <img src="./assets/svg/noodleemoji.svg" alt="Emoji of noodle bowl" class="emoji unselectable" id="noodle-emoji">
-            </div>
-          </div>
+          <h1 style="font-size: 5rem; letter-spacing: 10px; text-align: center; margin-top: 0; padding-top: 0;">noms</h1>
           <h3>hello!</h3>
           <p>
             thank you so much for joining our mailing list! currently, each time someone adds a post in
             regards to your specific university, we will send you an email about it. in
             the future, you’ll be able to set how often you get notifications!
           </p>
-          <p>feel free to check out our github, the app again, or give feedback below!</p>
-          <div class="socials" style="flex-direction: row; text-align: center;">
-            <a href="https://github.com/googleinterns/noms" class="fa fa-github"></a>
-            <a href="https://step186-2020.uc.r.appspot.com/" class="fa fa-link"></a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdlKQoEN-50gVAkQnxU5ESQNe2bRr4CUNMOLnnY2Aj-EKET-g/viewform" class="fa fa-comment"></a>
-          </div>
+          <p>feel free to check out our <a href="https://github.com/googleinterns/noms">github</a>, 
+            <a href="https://step186-2020.uc.r.appspot.com/">the app again</a>, or
+			      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdlKQoEN-50gVAkQnxU5ESQNe2bRr4CUNMOLnnY2Aj-EKET-g/viewform">give feedback</a>!
+          </p>
         </div>
       </div>
   </body>
