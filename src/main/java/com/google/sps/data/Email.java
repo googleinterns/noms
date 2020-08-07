@@ -28,4 +28,8 @@ public final class Email {
     "<div style=\"background: green; border-radius: 15px;" + 
     "<p>pad thai @ aldrich park</p>";
 
+  URL path = ClassLoader.getSystemResource("WelcomeEmail.html");
+  File input = new File(path.toURI());
+  Document document = Jsoup.parse(input, "UTF-8");
+  public static final String welcomeContent = document;
 }
