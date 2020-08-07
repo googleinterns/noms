@@ -156,6 +156,14 @@ function removeMapSpinner() {
 }
 
 /**
+ * Adds our custom buttons (such as 'legend') to the map after it has loaded.
+ */
+function addMapButtons() {
+  const mapButtonsContainer = document.getElementById('map-buttons-container');
+  mapButtonsContainer.style.display = 'flex';
+}
+
+/**
  * Tries to add the map to the page. The map URL calls the initMap() function as
  * its callback, which then positions the map and adds markers. If we are unable
  * to retrieve the secret for the map, then we display an error to the user.
@@ -357,12 +365,14 @@ function initMap() {
   // Remove the 'loading map' spinner (not strictly necessary since the
   // API consumes the entire 'map' element, but can't hurt).
   removeMapSpinner();
+  addMapButtons();
 
   // Get the college of the page and center the map on it.
   map = new google.maps.Map(document.getElementById('map'),
       {
         center: {lat: collegeLocation.lat, lng: collegeLocation.long},
         zoom: 17,
+        mapTypeControl: false,
       },
   );
 

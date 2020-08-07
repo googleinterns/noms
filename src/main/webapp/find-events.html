@@ -33,7 +33,6 @@
       <h1 id="find-events-title">find events</h1>
 
       <!-- map legend -->
-      <button id="toggle-legend-button" type="button">legend</button>
       <div id="map-legend-container">
         <div id="map-legend">
           <div class="map-legend-entry">
@@ -57,7 +56,12 @@
 
       <!-- map and posts -->
       <div id="page-container">
-        <div id="map"><div id="map-info-container"></div></div>
+        <div id="map-container">
+          <div id="map"><div id="map-info-container"></div></div>
+          <div id="map-buttons-container">
+            <button id="toggle-legend-button" type="button">legend</button>
+          </div>
+        </div>
         <div id="all-posts">
           <button id="create-post-button" type="button">create a post</button>
         </div>
