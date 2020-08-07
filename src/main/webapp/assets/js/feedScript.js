@@ -240,7 +240,8 @@ async function getSecretFor(secretid) {
  */
 async function translateLocationToLatLong(address, apiResponse = fetchTranslateLocation) {
   try {
-    const response = await fetchTranslateLocation(address);
+    const response = await apiResponse(address);
+    console.log(response);
 
     if (!response) {
       throw new Error('POST failed for unknown reasons. Please check console.');
