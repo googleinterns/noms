@@ -378,7 +378,6 @@ function initMap() {
 
   // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
-    console.log(post);
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
     const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
     const icon = {
