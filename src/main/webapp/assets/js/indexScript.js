@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
-  const collegeLocations = await (await fetch('./assets/college-locations.json')).json();
+  const collegeLocations = await (await fetch('./assets/college-locations1.json')).json();
 
   // Add all colleges as dropdown options
   const collegeDropdown = document.getElementById('colleges-select');

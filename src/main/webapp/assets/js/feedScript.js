@@ -132,7 +132,7 @@ async function onLoad() {
 
   // These global variables will be assigned here and never assigned again.
   posts = await fetchPosts(collegeId);
-  collegeLocation = await fetchFakeCollegeLocation(collegeId);
+  collegeLocation = await fetchCollegeLocation(collegeId);
 
   // Update text elements on page with fetched information.
   document.getElementById('find-events-title').innerText +=
@@ -299,12 +299,11 @@ function createSearchParamsFromObject(obj) {
 }
 
 /**
- * A fake implementation of a GET request for the college of the page we are on.
- * This will be removed once our backend has actual college information.
+ * Fetches the college location information from the local JSON storing it.
  * @param {number} collegeid - The ID of the college we want the lat/long for.
  * @return {Promise<LocationInfo>} - The college's location and information.
  */
-async function fetchFakeCollegeLocation(collegeid) {
+async function fetchCollegeLocation(collegeid) {
   // Get all colleges
   const locations = await (await fetch('./assets/college-locations.json')).json();
   const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
@@ -407,8 +406,6 @@ async function fetchPosts(collegeId) {
     };
     posts.push(post);
   }
-  console.log(typeof posts);
-  console.log(posts);
   return posts;
 }
 
@@ -432,6 +429,7 @@ function initMap() {
 
   // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
+    console.log(post);
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
     const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
     const icon = {
