@@ -301,13 +301,17 @@ async function fetchPosts(collegeId) {
     const year = message[i]['year'];
     const month = message[i]['month'];
     const day = message[i]['day'];
+    const startHour = message[i]['startHour'];
+    const endHour = message[i]['endHour'];
+    const startMinute = message[i]['startMinute'];
+    const endMinute = message[i]['endMinute'];
 
     const post = {
       id: message[i]['postId'],
       organizationName: message[i]['organizationName'],
       postDateTime: new Date(),
-      eventStartTime: new Date(year, month, day, message[i]['startHour'], message[i]['startMinute'], 0, 0),
-      eventEndTime: new Date(year, month, day, message[i]['endHour'], message[i]['endMinute'], 0, 0),
+      eventStartTime: new Date(year, month, day, startHour, startMinute, 0, 0),
+      eventEndTime: new Date(year, month, day, endHour, endMinute, 0, 0),
       location: {
         name: message[i]['location'],
         lat: message[i]['lat'],
@@ -454,7 +458,7 @@ async function addPosts(posts) {
   console.log('addPosts ' + posts);
   const allPosts = document.getElementById('all-posts');
   for (let i = 0; i < posts.length; i++) {
-    let post = posts[i];
+    const post = posts[i];
     const titleText = post.organizationName + ' @ ' + post.location.name;
     const subtitleText = post.foodType + ' | ' +
       post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
