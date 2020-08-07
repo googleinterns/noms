@@ -244,17 +244,16 @@ async function getSecretFor(secretid) {
 /**
  * Translates a location from its name to a pair of latitude and longitudes.
  * @param {string} address - The address to translate to lat/long.
+ * @param {function} apiToCall - Represents the option to dependency-inject a mock api call.
  * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
-async function translateLocationToLatLong(address) {
+async function translateLocationToLatLong(address, apiToCall = fetchTranslateLocation) {
   try {
-    const response = await fetch('/translateLocation', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: createSearchParamsFromObject({location: address}),
-    });
+    const response = await apiToCall(address);
+
+    if (!response) {
+      throw new Error('POST failed for unknown reasons. Please check console.');
+    }
 
     // If we get a non-200 status response, then fail.
     if (!response.ok) {
@@ -263,7 +262,6 @@ async function translateLocationToLatLong(address) {
     }
 
     const result = await response.json();
-    console.log(result);
 
     // If our result is empty, then we didn't have any results at all.
     if (Object.keys(result).length === 0) {
@@ -281,6 +279,28 @@ async function translateLocationToLatLong(address) {
       lat: result.geometry.location.lat,
       long: result.geometry.location.lng,
     };
+  } catch (err) {
+    console.warn(err);
+    return null;
+  }
+}
+
+/**
+ * The API call for translateLocationToLatLong(). Has been factored out of the
+ * function so that mock API calls may be passed in for testing purposes.
+ * @param {string} address - The address to translate to lat/long.
+ * @return {Promise<any>} - The API's response.
+ */
+async function fetchTranslateLocation(address) {
+  try {
+    const response = await fetch('/translateLocation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: createSearchParamsFromObject({location: address}),
+    });
+    return response;
   } catch (err) {
     console.warn(err);
     return null;
@@ -432,10 +452,11 @@ function initMap() {
 
   // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
+    const now = new Date();
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
     const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
     const icon = {
-      url: getMapMarkerIconUrl(post.eventStartTime),
+      url: getMapMarkerIconUrl(now, post.eventStartTime),
       scaledSize: new google.maps.Size(width, height),
       origin: new google.maps.Point(0, 0),
     };
@@ -446,7 +467,7 @@ function initMap() {
       title: post.eventStartTime > new Date() ?
         `${post.organizationName} (not started yet)` :
         `${post.organizationName} (happening now)`,
-      opacity: getMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
+      opacity: getMapMarkerOpacity(now, post.eventStartTime, post.eventEndTime),
       icon: icon,
     });
 
@@ -491,12 +512,12 @@ function addUserToMap(position) {
 
 /**
  * Calculates the opacity of a given map marker.
+ * @param {Date} now - The current time.
  * @param {Date} eventStartTime - The start time of the event.
  * @param {Date} eventEndTime - The end time of the event.
  * @return {number} - The opacity to show the marker as.
  */
-function getMapMarkerOpacity(eventStartTime, eventEndTime) {
-  const now = new Date();
+function getMapMarkerOpacity(now, eventStartTime, eventEndTime) {
   const startTime = eventStartTime;
   const endTime = eventEndTime;
 
@@ -517,12 +538,11 @@ function getMapMarkerOpacity(eventStartTime, eventEndTime) {
 /**
  * Returns the appropriate marker icon for a marker.
  * Grey if the event hasn't started yet, red otherwise.
+ * @param {Date} now - The current time.
  * @param {Date} eventStartTime - The start time of the event.
  * @return {string} - The location of the marker icon.
  */
-function getMapMarkerIconUrl(eventStartTime) {
-  const now = new Date();
-
+function getMapMarkerIconUrl(now, eventStartTime) {
   if (eventStartTime > now) {
     return './assets/svg/greymarker.svg';
   }
@@ -563,7 +583,7 @@ function getMapMarkerIconSize(numOfPeopleFoodWillFeed, dimensionType) {
  */
 function applyLogisticFunction(xValue, bounds) {
   return Math.round((bounds.max - bounds.min)/
-      (Math.exp(-((xValue - 25)/6)) + 1) + bounds.min);
+      (Math.exp(-((xValue - 28)/6)) + 1) + bounds.min);
 }
 
 /**
