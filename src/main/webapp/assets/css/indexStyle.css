@@ -39,11 +39,11 @@
  * Colleges dropdown
  */
 
-#colleges-select {
+#colleges-datalist {
   margin: 0;
 }
 
-select:invalid {
+datalist:invalid {
   color: gray;
 }
 
@@ -51,7 +51,7 @@ select:invalid {
   position: relative;
 }
 
-select::-ms-expand {
+datalist::-ms-expand {
   display: none;
 }
 
@@ -65,7 +65,7 @@ select::-ms-expand {
   top: 12px;
 }
 
-.selectdiv select {
+.selectdiv datalist {
   appearance: none;
   border: 2px solid #d8d8d8;
   -webkit-appearance: none;
@@ -77,7 +77,7 @@ select::-ms-expand {
   padding: 0 24px;
 }
 
-.selectdiv select:focus {
+.selectdiv datalist:focus {
   border: 2px solid #ababab;
   outline: none;
 }

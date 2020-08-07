@@ -29,20 +29,23 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
-  const collegeLocations = await (await fetch('./assets/college-locations.json')).json();
+  const collegeLocations = await (await fetch('./assets/college-locations4.json')).json();
 
   // Add all colleges as dropdown options
-  const collegeDropdown = document.getElementById('colleges-select');
+  let frag = document.createDocumentFragment();
+  const collegeDataList = document.getElementById('colleges');
   collegeLocations.forEach((location) => {
     const newOption = document.createElement('option');
     newOption.textContent = location.NAME;
     newOption.value = location.UNITID;
 
-    collegeDropdown.appendChild(newOption);
+    frag.appendChild(newOption);
   });
 
+  collegeDataList.appendChild(frag);
+
   // When users select an option from the dropdown, send them to that page.
-  collegeDropdown.addEventListener('input', navigateUserToCollegePage);
+  collegeDataList.addEventListener('input', navigateUserToCollegePage);
 }
 
 /**
@@ -50,6 +53,6 @@ async function onLoad() {
  * navigate them to the appropriate college's page.
  */
 function navigateUserToCollegePage() {
-  const collegeid = document.getElementById('colleges-select').value;
+  const collegeid = document.getElementById('colleges').value;
   window.location.href = `/find-events.html?collegeid=${collegeid}`;
 }
