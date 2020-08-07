@@ -641,7 +641,7 @@ async function submitModal() {
   const formElements = modalForm.elements;
   for (let i = 0; i < formElements.length; i++) {
     if (formElements[i].value.length == 0) {
-        return;
+      return;
     }
   }
 
