@@ -70,6 +70,12 @@ let modal;
 /** @type {HTMLElement} */
 let closeModalButton;
 
+/** @type {HTMLElement} */
+let submitModalButton;
+
+/** @type {HTMLElement} */
+let modalForm;
+
 /** @type {HTMLButtonElement} */
 let toggleLegendButton;
 
@@ -105,11 +111,14 @@ async function onLoad() {
   createPostButton = document.getElementById('create-post-button');
   modal = document.getElementById('modal-background');
   closeModalButton = document.getElementById('modal-close');
+  submitModalButton = document.getElementById('modal-submit');
+  modalForm = document.getElementById('modal-form');
   toggleLegendButton = document.getElementById('toggle-legend-button');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
   closeModalButton.addEventListener('click', closeModal);
+  submitModalButton.addEventListener('click', submitModal);
   toggleLegendButton.addEventListener('click', toggleLegend);
 
   // Get the college id from the query string parameters.
@@ -121,14 +130,14 @@ async function onLoad() {
     return;
   }
 
-  // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
-  posts = fetchFakePosts(collegeId);
-  collegeLocation = await fetchFakeCollegeLocation(collegeId);
+  posts = await fetchPosts(collegeId);
+  collegeLocation = await fetchCollegeLocation(collegeId);
 
   // Update text elements on page with fetched information.
   document.getElementById('find-events-title').innerText +=
   ` @ ${collegeLocation.name}`.toLowerCase();
+
   addPosts(posts);
 
   // Add the embedded map to the page.
@@ -235,17 +244,16 @@ async function getSecretFor(secretid) {
 /**
  * Translates a location from its name to a pair of latitude and longitudes.
  * @param {string} address - The address to translate to lat/long.
- * @return {LocationInfo} or null if no such location exists or an error occurs.
+ * @param {function} apiToCall - Represents the option to dependency-inject a mock api call.
+ * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
-async function translateLocationToLatLong(address) {
+async function translateLocationToLatLong(address, apiToCall = fetchTranslateLocation) {
   try {
-    const response = await fetch('/translateLocation', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: createSearchParamsFromObject({location: address}),
-    });
+    const response = await apiToCall(address);
+
+    if (!response) {
+      throw new Error('POST failed for unknown reasons. Please check console.');
+    }
 
     // If we get a non-200 status response, then fail.
     if (!response.ok) {
@@ -254,7 +262,6 @@ async function translateLocationToLatLong(address) {
     }
 
     const result = await response.json();
-    console.log(result);
 
     // If our result is empty, then we didn't have any results at all.
     if (Object.keys(result).length === 0) {
@@ -279,6 +286,28 @@ async function translateLocationToLatLong(address) {
 }
 
 /**
+ * The API call for translateLocationToLatLong(). Has been factored out of the
+ * function so that mock API calls may be passed in for testing purposes.
+ * @param {string} address - The address to translate to lat/long.
+ * @return {Promise<any>} - The API's response.
+ */
+async function fetchTranslateLocation(address) {
+  try {
+    const response = await fetch('/translateLocation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: createSearchParamsFromObject({location: address}),
+    });
+    return response;
+  } catch (err) {
+    console.warn(err);
+    return null;
+  }
+}
+
+/**
  * Creates search params for any object, to send fetch requests with.
  * @param {any} obj - The generic object to create seachparams for.
  * @return {string} - The searchparams.
@@ -290,12 +319,11 @@ function createSearchParamsFromObject(obj) {
 }
 
 /**
- * A fake implementation of a GET request for the college of the page we are on.
- * This will be removed once our backend has actual college information.
+ * Fetches the college location information from the local JSON storing it.
  * @param {number} collegeid - The ID of the college we want the lat/long for.
  * @return {Promise<LocationInfo>} - The college's location and information.
  */
-async function fetchFakeCollegeLocation(collegeid) {
+async function fetchCollegeLocation(collegeid) {
   // Get all colleges
   const locations = await (await fetch('./assets/college-locations.json')).json();
   const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
@@ -308,54 +336,46 @@ async function fetchFakeCollegeLocation(collegeid) {
 }
 
 /**
- * A fake implementation of a GET request that fetches all posts.
- * One post's event hasn't started yet, one has ended, and the
- * other three are in various stages of being completed.
- * This will be removed once our backend has actual posts.
- * @param {number} collegeid - The ID of the college we want posts for.
+ * A GET request that fetches all posts on this current day.
+ * @param {number} collegeId - The ID of the college we want posts for.
  * @return {array} - The posts.
  */
-function fetchFakePosts(collegeid) {
-  const fakePosts = [];
-  let collegeAbbreviation = '';
-  let baseLat = 0;
-  let baseLong = 0;
-  if (parseFloat(collegeid) === 209542) {
-    collegeAbbreviation = 'OSU';
-    baseLat = 44.56395;
-    baseLong = -123.274723;
-  } else if (parseFloat(collegeid) === 122931) {
-    collegeAbbreviation = 'SCU';
-    baseLat = 37.348362;
-    baseLong = -121.93784;
-  } else {
-    collegeAbbreviation = 'UCI';
-    baseLat = 33.648434;
-    baseLong = -117.841248;
-  }
+async function fetchPosts(collegeId) {
+  // Send the college Id.
+  const url = '/postData?collegeId=' + collegeId;
+  const response = await fetch(url);
+  const message = await response.json();
+  console.log(message);
 
-  for (let i = 0; i < 5; i++) {
+  const posts = [];
+
+  for (let i = 0; i < message.length; i++) {
+    const year = message[i]['year'];
+    const month = message[i]['month'];
+    const day = message[i]['day'];
+    const startHour = message[i]['startHour'];
+    const endHour = message[i]['endHour'];
+    const startMinute = message[i]['startMinute'];
+    const endMinute = message[i]['endMinute'];
+
     const post = {
-      id: i*1000 + i*50 + i*2 + i,
-      organizationName: `Organization ${i}`,
-      postDateTime: new Date(new Date().setHours(new Date().getHours() - i)),
-      eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
-      eventEndTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-0.5)*10)),
+      id: message[i]['postId'],
+      organizationName: message[i]['organizationName'],
+      postDateTime: new Date(),
+      eventStartTime: new Date(year, month, day, startHour, startMinute, 0, 0),
+      eventEndTime: new Date(year, month, day, endHour, endMinute, 0, 0),
       location: {
-        name: `${collegeAbbreviation} Office ${i}`,
-        lat: baseLat + (i + Math.random()*10 - 5) / 5000,
-        long: baseLong + (i + Math.random()*10 - 5)/ 5000,
+        name: message[i]['location'],
+        lat: message[i]['lat'],
+        long: message[i]['lng'],
       },
-      numOfPeopleFoodWillFeed: (30 - i*5),
-      foodType: 'Thai Food',
-      description: 'Come join the ACM for free burritos and to learn more ' +
-        'about what our club does! All are welcome to join the club happenings, ' +
-        'regardless of major or year. ' +
-        'We have vegatarian and halal options available.',
+      numOfPeopleFoodWillFeed: message[i]['numberOfPeopleItFeeds'],
+      foodType: message[i]['typeOfFood'],
+      description: message[i]['description'],
     };
-    fakePosts.push(post);
+    posts.push(post);
   }
-  return fakePosts;
+  return posts;
 }
 
 /**
@@ -378,10 +398,11 @@ function initMap() {
 
   // Get all posts on the page and show them as markers.
   posts.forEach((post) => {
+    const now = new Date();
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
     const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
     const icon = {
-      url: getMapMarkerIconUrl(post.eventStartTime),
+      url: getMapMarkerIconUrl(now, post.eventStartTime),
       scaledSize: new google.maps.Size(width, height),
       origin: new google.maps.Point(0, 0),
     };
@@ -392,7 +413,7 @@ function initMap() {
       title: post.eventStartTime > new Date() ?
         `${post.organizationName} (not started yet)` :
         `${post.organizationName} (happening now)`,
-      opacity: getMapMarkerOpacity(post.eventStartTime, post.eventEndTime),
+      opacity: getMapMarkerOpacity(now, post.eventStartTime, post.eventEndTime),
       icon: icon,
     });
 
@@ -437,12 +458,12 @@ function addUserToMap(position) {
 
 /**
  * Calculates the opacity of a given map marker.
+ * @param {Date} now - The current time.
  * @param {Date} eventStartTime - The start time of the event.
  * @param {Date} eventEndTime - The end time of the event.
  * @return {number} - The opacity to show the marker as.
  */
-function getMapMarkerOpacity(eventStartTime, eventEndTime) {
-  const now = new Date();
+function getMapMarkerOpacity(now, eventStartTime, eventEndTime) {
   const startTime = eventStartTime;
   const endTime = eventEndTime;
 
@@ -463,12 +484,11 @@ function getMapMarkerOpacity(eventStartTime, eventEndTime) {
 /**
  * Returns the appropriate marker icon for a marker.
  * Grey if the event hasn't started yet, red otherwise.
+ * @param {Date} now - The current time.
  * @param {Date} eventStartTime - The start time of the event.
  * @return {string} - The location of the marker icon.
  */
-function getMapMarkerIconUrl(eventStartTime) {
-  const now = new Date();
-
+function getMapMarkerIconUrl(now, eventStartTime) {
   if (eventStartTime > now) {
     return './assets/svg/greymarker.svg';
   }
@@ -509,16 +529,18 @@ function getMapMarkerIconSize(numOfPeopleFoodWillFeed, dimensionType) {
  */
 function applyLogisticFunction(xValue, bounds) {
   return Math.round((bounds.max - bounds.min)/
-      (Math.exp(-((xValue - 25)/6)) + 1) + bounds.min);
+      (Math.exp(-((xValue - 28)/6)) + 1) + bounds.min);
 }
 
 /**
- * Adds posts to the page (uses mock data).
+ * Adds posts to the page.
  * @param {array} posts
  */
-function addPosts(posts) {
+async function addPosts(posts) {
+  console.log('addPosts ' + posts);
   const allPosts = document.getElementById('all-posts');
-  posts.forEach((post) => {
+  for (let i = 0; i < posts.length; i++) {
+    const post = posts[i];
     const titleText = post.organizationName + ' @ ' + post.location.name;
     const subtitleText = post.foodType + ' | ' +
       post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
@@ -550,7 +572,7 @@ function addPosts(posts) {
 
     // Add card to the page.
     allPosts.append(postCard);
-  });
+  }
 }
 
 /**
@@ -570,6 +592,42 @@ function showModal() {
 function closeModal() {
   if (modal) {
     modal.style.display = 'none';
+  }
+}
+
+/**
+ * On click of the submit button, sends modal data to the servlet.
+ * @return {void}
+ */
+async function submitModal() {
+  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
+
+  // If one of the fields is empty, don't submit.
+  // Uses formElement.length - 1 to exclude the button element.
+  const formElements = modalForm.elements;
+  for (let i = 0; i < formElements.length - 1; i++) {
+    if (formElements[i].value.length == 0) {
+      return;
+    }
+  }
+
+  if (modalForm && collegeId) {
+    const modalLocation = document.getElementById('modal-location').value;
+    const latLngResult = await translateLocationToLatLong(modalLocation);
+
+    console.log('result ' + latLngResult);
+    let url;
+
+    if (latLngResult) {
+      const lat = latLngResult.lat;
+      const lng = latLngResult.long;
+      url = '/postData?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
+    } else {
+      url = '/postData?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
+    }
+
+    modalForm.action = url;
+    modalForm.submit();
   }
 }
 
