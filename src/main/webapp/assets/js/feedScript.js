@@ -638,8 +638,9 @@ async function submitModal() {
   console.log('found id: ' + collegeId);
 
   // If one of the fields is empty, don't submit.
+  // Uses formElement.length - 1 to exclude the button element.
   const formElements = modalForm.elements;
-  for (let i = 0; i < formElements.length - 1; i++) { //Excludes the button element. 
+  for (let i = 0; i < formElements.length - 1; i++) {
     if (formElements[i].value.length == 0) {
       return;
     }
