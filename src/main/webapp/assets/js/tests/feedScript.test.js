@@ -141,7 +141,7 @@ describe('Geolocation Functionality', function() {
           ok: false,
           status: 400,
           text: async function() {
-            return "Request failed"
+            return 'Request failed';
           },
         };
       };
