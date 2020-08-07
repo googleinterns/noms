@@ -307,7 +307,7 @@ select {
 }
 
 #toggle-legend-button:hover {
-  background-color:#efefef;
+  background-color: #efefef;
   cursor: pointer;
 }
 
