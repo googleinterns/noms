@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /* Servlet that stores and retrieves posts. */
-@WebServlet("/postdata")
+@WebServlet("/postData")
 public class PostDataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -41,8 +41,6 @@ public class PostDataServlet extends HttpServlet {
         return json;
     }
 
-    /* On the GET request, retrieves all the posts from Datastore and convers them to JSON. */
-    /* If a post is outdated, deletes it from Datastore. */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String collegeId = request.getParameter("collegeId");

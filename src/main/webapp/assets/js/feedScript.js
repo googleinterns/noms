@@ -374,7 +374,7 @@ function fetchFakePosts(collegeid) {
  */
 async function fetchPosts(collegeId) {
   // Send the college Id.
-  const url = '/postdata?collegeId=' + collegeId;
+  const url = '/postData?collegeId=' + collegeId;
   const response = await fetch(url);
   const message = await response.json();
   console.log(message);
@@ -635,7 +635,6 @@ function closeModal() {
  */
 async function submitModal() {
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
-  console.log('found id: ' + collegeId);
 
   // If one of the fields is empty, don't submit.
   // Uses formElement.length - 1 to exclude the button element.
@@ -656,9 +655,9 @@ async function submitModal() {
     if (latLngResult) {
       const lat = latLngResult.lat;
       const lng = latLngResult.long;
-      url = '/postdata?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
+      url = '/postData?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
     } else {
-      url = '/postdata?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
+      url = '/postData?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
     }
 
     modalForm.action = url;

@@ -1,25 +1,25 @@
 /* Post Object:
 Holds the information in the cards
-- Post ID
-- Organization Name
-- The date (month, day, year)
-- The start time (hour, minute)
-- The end time (hour, minute)
-- location (lat, long)
-- Number of people it feeds
-- Type of food
-- Description
-- College Id
+  - Post ID
+  - Organization Name
+  - The date (month, day, year)
+  - The start time (hour, minute)
+  - The end time (hour, minute)
+  - location (lat, lng)
+  - Number of people it feeds
+  - Type of food
+  - Description
+  - College Id
 */
 
 package com.google.sps.servlets;
-import javax.servlet.http.HttpServletRequest;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import java.util.ArrayList;
-import java.util.TimeZone;
 import java.util.Calendar;
+import java.util.TimeZone;
+import javax.servlet.http.HttpServletRequest;
 
 public class Post {
     String postId = "";
@@ -39,10 +39,6 @@ public class Post {
     String description = "";
     String collegeId = "";
     int timeSort = 0;
-
-    public Post() {
-        // All variables are already initialized.
-    }
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
@@ -82,15 +78,16 @@ public class Post {
 
         // Create a calendar based off the current time zone.
         // TODO: Update Time Zone based off student and university location, instead of "America/Los_Angeles".
+
         Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
         for (Entity entity: queryResult.asIterable()) {
 
             // Create a calendar based off the post timing.
             Calendar postTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
-            int postMonth = ((Long) entity.getProperty("month")).intValue();
-            int postDay = ((Long) entity.getProperty("day")).intValue();
-            int postYear = 2000 + ((Long) entity.getProperty("year")).intValue();
+            int postMonth = Integer.parseInt(entity.getProperty("month").toString());
+            int postDay = Integer.parseInt(entity.getProperty("day").toString());
+            int postYear = 2000 + Integer.parseInt(entity.getProperty("year").toString());
             int postHour = Integer.parseInt(entity.getProperty("endHour").toString());
             int postMinute = Integer.parseInt(entity.getProperty("endMinute").toString());
             postTime.set(postYear, postMonth, postDay, postHour, postMinute);
@@ -112,20 +109,20 @@ public class Post {
     /* Translate the fields of an entity from Datastore to a Post object. */
     public void entityToPost(Entity entity) {
         organizationName = (String) entity.getProperty("organizationName");
-        month = ((Long) entity.getProperty("month")).intValue();
-        day = ((Long) entity.getProperty("day")).intValue();
-        year = ((Long) entity.getProperty("year")).intValue();
-        startHour = ((Long) entity.getProperty("startHour")).intValue();
-        startMinute = ((Long) entity.getProperty("startMinute")).intValue();
-        endHour = ((Long) entity.getProperty("endHour")).intValue();
-        endMinute = ((Long) entity.getProperty("endMinute")).intValue();
+        month = Integer.parseInt(entity.getProperty("month").toString());
+        day = Integer.parseInt(entity.getProperty("day").toString());
+        year = Integer.parseInt(entity.getProperty("year").toString());
+        startHour = Integer.parseInt(entity.getProperty("startHour").toString());
+        startMinute = Integer.parseInt(entity.getProperty("startMinute").toString());
+        endHour = Integer.parseInt(entity.getProperty("endHour").toString());
+        endMinute = Integer.parseInt(entity.getProperty("endMinute").toString());
         location = (String) entity.getProperty("location");
         lat = Double.parseDouble(entity.getProperty("lat").toString());
         lng = Double.parseDouble(entity.getProperty("lng").toString());
         numberOfPeopleItFeeds = (String) entity.getProperty("numberOfPeopleItFeeds");
         typeOfFood = (String) entity.getProperty("typeOfFood");
         description = (String) entity.getProperty("description");
-        timeSort = ((Long) entity.getProperty("timeSort")).intValue();
+        timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
         collegeId = (String) entity.getKind();
         postId = entity.getKey().toString();
     }
