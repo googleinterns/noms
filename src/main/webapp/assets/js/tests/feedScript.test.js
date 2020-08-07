@@ -113,7 +113,7 @@ describe('Geolocation Functionality', function() {
       const mockApiResponse = async (_) => {
         return {
           ok: true,
-          function json() {
+          json: async function() {
             return {
               formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
               geometry: {
