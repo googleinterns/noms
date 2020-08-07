@@ -110,7 +110,7 @@ describe('Geolocation Functionality', function() {
   describe('#translateLocationToLatLong()', function() {
     it('should return the result if it gets back any api results', async function() {
       const address = 'Memorial Union, Corvallis';
-      const mockApiResponse = async (_) => {
+      const mockApiFunction = async (_) => {
         return {
           ok: true,
           json: async function() {
@@ -131,12 +131,12 @@ describe('Geolocation Functionality', function() {
         lat: 44.5649688,
         long: -123.2789571,
       };
-      expect(await translateLocationToLatLong(address, mockApiResponse)).to.be.eql(result);
+      expect(await translateLocationToLatLong(address, mockApiFunction)).to.be.eql(result);
     });
 
     it('should return null if the api returns a non-200 response', async function() {
       const address = 'Memorial Union, Corvallis';
-      const mockApiResponse = async (_) => {
+      const mockApiFunction = async (_) => {
         return {
           ok: false,
           status: 400,
@@ -145,12 +145,12 @@ describe('Geolocation Functionality', function() {
           },
         };
       };
-      expect(await translateLocationToLatLong(address, mockApiResponse)).to.be.null;
+      expect(await translateLocationToLatLong(address, mockApiFunction)).to.be.null;
     });
 
     it('should return null if the api didn\'t return any results', async function() {
       const address = 'Memorial Union, Corvallis';
-      const mockApiResponse = async (_) => {
+      const mockApiFunction = async (_) => {
         return {
           ok: true,
           json: async function() {
@@ -158,12 +158,12 @@ describe('Geolocation Functionality', function() {
           },
         };
       };
-      expect(await translateLocationToLatLong(address, mockApiResponse)).to.be.null;
+      expect(await translateLocationToLatLong(address, mockApiFunction)).to.be.null;
     });
 
     it('should return null if the api didn\'t return a lat/lng', async function() {
       const address = 'Memorial Union, Corvallis';
-      const mockApiResponse = async (_) => {
+      const mockApiFunction = async (_) => {
         return {
           ok: true,
           json: async function() {
@@ -174,7 +174,7 @@ describe('Geolocation Functionality', function() {
           },
         };
       };
-      expect(await translateLocationToLatLong(address, mockApiResponse)).to.be.null;
+      expect(await translateLocationToLatLong(address, mockApiFunction)).to.be.null;
     });
   });
 });
