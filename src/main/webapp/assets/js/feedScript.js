@@ -235,7 +235,7 @@ async function getSecretFor(secretid) {
 /**
  * Translates a location from its name to a pair of latitude and longitudes.
  * @param {string} address - The address to translate to lat/long.
- * @param {async function} apiToCall - Represents the option to dependency-inject a mock api call.
+ * @param {function} apiToCall - Represents the option to dependency-inject a mock api call.
  * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
 async function translateLocationToLatLong(address, apiToCall = fetchTranslateLocation) {
