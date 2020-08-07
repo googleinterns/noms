@@ -158,6 +158,10 @@ select {
   margin-right: 20px;
 }
 
+#modal-day {
+  margin-right: 20px;
+}
+
 .modal-span {
   white-space: nowrap;
 }
