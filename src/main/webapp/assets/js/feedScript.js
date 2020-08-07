@@ -116,10 +116,8 @@ async function onLoad() {
     return;
   }
 
-  // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
   posts = await fetchPosts(collegeId);
-//   posts = fetchFakePosts(collegeId);
   collegeLocation = await fetchFakeCollegeLocation(collegeId);
 
   // Update text elements on page with fetched information.
@@ -285,6 +283,11 @@ function fetchFakePosts(collegeid) {
   return fakePosts;
 }
 
+/**
+ * A GET request that fetches all posts on this current day.
+ * @param {number} collegeId - The ID of the college we want posts for.
+ * @return {array} - The posts.
+ */
 async function fetchPosts(collegeId) {
   // Send the college Id.
   const url = '/postdata?collegeId=' + collegeId;
@@ -292,15 +295,19 @@ async function fetchPosts(collegeId) {
   const message = await response.json();
   console.log(message);
 
-  let posts = [];
+  const posts = [];
 
   for (let i = 0; i < message.length; i++) {
+    const year = message[i]['year'];
+    const month = message[i]['month'];
+    const day = message[i]['day'];
+
     const post = {
       id: message[i]['postId'],
       organizationName: message[i]['organizationName'],
       postDateTime: new Date(),
-      eventStartTime: new Date(message[i]['year'], message[i]['month'], message[i]['day'], message[i]['startHour'], message[i]['startMinute'], 0, 0),
-      eventEndTime: new Date(message[i]['year'], message[i]['month'], message[i]['day'], message[i]['endHour'], message[i]['endMinute'], 0, 0),
+      eventStartTime: new Date(year, month, day, message[i]['startHour'], message[i]['startMinute'], 0, 0),
+      eventEndTime: new Date(year, month, day, message[i]['endHour'], message[i]['endMinute'], 0, 0),
       location: {
         name: message[i]['location'],
         lat: message[i]['lat'],
@@ -331,7 +338,6 @@ function initMap() {
   );
 
   // Get all posts on the page and show them as markers.
-
   posts.forEach((post) => {
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
     const height = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'height');
@@ -445,10 +451,8 @@ function applyLogisticFunction(xValue, bounds) {
  * @param {array} posts
  */
 async function addPosts(posts) {
-//   await posts;
   console.log('addPosts ' + posts);
-  let allPosts = document.getElementById('all-posts');
-//   posts.forEach((post) => {
+  const allPosts = document.getElementById('all-posts');
   for (let i = 0; i < posts.length; i++) {
     let post = posts[i];
     const titleText = post.organizationName + ' @ ' + post.location.name;
@@ -523,7 +527,7 @@ async function submitModal() {
     if (latLngResult) {
       const lat = latLngResult.lat;
       const lng = latLngResult.long;
-      url = '/postdata?' + 'collegeId=' + collegeId + '&lat=' + lat.toString() + '&lng=' + lng.toString();
+      url = '/postdata?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
     } else {
       url = '/postdata?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
     }

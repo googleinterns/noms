@@ -3,9 +3,9 @@ Holds the information in the cards
 - Post ID
 - Organization Name
 - The date (month, day, year)
-- The start time (hour, minute, am/pm)
-- The end time (hour, minute, am/pm)
-- location
+- The start time (hour, minute)
+- The end time (hour, minute)
+- location (lat, long)
 - Number of people it feeds
 - Type of food
 - Description
@@ -40,8 +40,12 @@ public class Post {
     String collegeId = "";
     int timeSort = 0;
 
+    public Post() {
+        // All variables are already initialized.
+    }
+
     /* Fill in the important Post details from the POST request. */
-    public Post(HttpServletRequest request, String collegeId) {
+    public void requestToPost(HttpServletRequest request, String collegeId) {
         organizationName = request.getParameter("organizationName");
         month = Integer.parseInt(request.getParameter("month")) - 1; // Months are indexed at 0.
         day = Integer.parseInt(request.getParameter("day"));
@@ -58,32 +62,31 @@ public class Post {
         description = request.getParameter("description");
         this.collegeId = collegeId;
 
+        // Adjust the start and end hour based on whether the hour is AM or PM.
         String startAMorPM = request.getParameter("startAMorPM");
         if (startAMorPM.equals("pm")) {
             startHour += 12;
         }
-
         String endAMorPM = request.getParameter("endAMorPM");
         if (endAMorPM.equals("pm")) {
             endHour += 12;
         }
 
-        // Translate the start time into minutes.
+        // Translate the start time into minutes to allow for sorting.
         timeSort = startHour * 60 + startMinute;
     }
 
-    public Post() { }
-
     /* Translate the entities from the Datastore query to Post objects and return in an array. */
     public static ArrayList<Post> queryToPosts(PreparedQuery queryResult, DatastoreService datastore) {
-        // TODO: Update Time Zone based off University
         ArrayList<Post> currentPosts = new ArrayList<Post>();
+
+        // Create a calendar based off the current time zone.
+        // TODO: Update Time Zone based off student and university location, instead of "America/Los_Angeles".
         Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
         for (Entity entity: queryResult.asIterable()) {
 
             // Create a calendar based off the post timing.
-            // TODO: change it to the college's timezone, not just "America/Los_Angeles".
             Calendar postTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
             int postMonth = ((Long) entity.getProperty("month")).intValue();
             int postDay = ((Long) entity.getProperty("day")).intValue();
@@ -96,7 +99,7 @@ public class Post {
             if (postTime.before(nowTime)) {
                 datastore.delete(entity.getKey());
             }
-            // Only add if the post is on the same day.
+            // Only add the post to result if it is on the same day.
             else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
                 Post newPost = new Post();
                 newPost.entityToPost(entity);
@@ -106,7 +109,7 @@ public class Post {
         return currentPosts;
     }
 
-    /* Translate an entity from Datastore to a Post object. */
+    /* Translate the fields of an entity from Datastore to a Post object. */
     public void entityToPost(Entity entity) {
         organizationName = (String) entity.getProperty("organizationName");
         month = ((Long) entity.getProperty("month")).intValue();
@@ -127,7 +130,7 @@ public class Post {
         postId = entity.getKey().toString();
     }
 
-    /* Creates a new entity with the college id and the information from the POST request. Sets all the properties. */
+    /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
     public Entity postToEntity() {
         Entity newPost = new Entity(collegeId);
 

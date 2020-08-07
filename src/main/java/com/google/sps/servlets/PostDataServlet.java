@@ -29,9 +29,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that stores and retrieves posts. */
+/* Servlet that stores and retrieves posts. */
 @WebServlet("/postdata")
 public class PostDataServlet extends HttpServlet {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     /* Convert an ArrayList of Post objects to JSON. */
     private String listToJson(ArrayList<Post> alist) {
@@ -40,32 +41,30 @@ public class PostDataServlet extends HttpServlet {
         return json;
     }
 
-     /* 
-      * On the GET request, retrieves all the posts from Datastore and convers them to JSON. 
-      * If a post is outdated, deletes it.
-     */
+    /* On the GET request, retrieves all the posts from Datastore and convers them to JSON. */
+    /* If a post is outdated, deletes it from Datastore. */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         String collegeId = request.getParameter("collegeId");
 
-        // Retrieves the Review comments with a Query.
+        // Queries Datastore with the college ID and receives posts such that the soonest events are shown first.
         Query query = new Query(collegeId).addSort("timeSort", SortDirection.ASCENDING);
         PreparedQuery results = datastore.prepare(query);
         ArrayList<Post> posts = Post.queryToPosts(results, datastore);
 
+        // Prepares the relevant posts in JSON.
         String json = listToJson(posts);
         response.setContentType("application/json");
         response.getWriter().println(json);
     }
 
-    /* On the POST command, stores the name and review as a Review entity in Datastore. */
+    /* On the POST command, serializes the request information into Post objects. */
+    /* Stores the post as entity in Datastore, with the collegeId as the kind. */
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
         String collegeId = request.getParameter("collegeId");
-        Post newPost = new Post(request, collegeId);
+        Post newPost = new Post();
+        newPost.requestToPost(request, collegeId);
         Entity newPostEntity = newPost.postToEntity();
         datastore.put(newPostEntity);
 
