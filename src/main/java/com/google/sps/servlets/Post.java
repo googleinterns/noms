@@ -43,7 +43,7 @@ public class Post {
     /* Fill in the important Post details from the POST request. */
     public Post(HttpServletRequest request, String collegeId) {
         organizationName = request.getParameter("organizationName");
-        month = Integer.parseInt(request.getParameter("month"));
+        month = Integer.parseInt(request.getParameter("month")) - 1; // Months are indexed at 0.
         day = Integer.parseInt(request.getParameter("day"));
         year = Integer.parseInt(request.getParameter("year"));
         startHour = Integer.parseInt(request.getParameter("startHour"));
@@ -81,33 +81,27 @@ public class Post {
         Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
         for (Entity entity: queryResult.asIterable()) {
-            // Create a calendar based off the post timing.
-            Calendar postTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
-            int postTimeSort = ((Long) entity.getProperty("timeSort")).intValue();
+            // Create a calendar based off the post timing.
+            // TODO: change it to the college's timezone, not just "America/Los_Angeles".
+            Calendar postTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
             int postMonth = ((Long) entity.getProperty("month")).intValue();
             int postDay = ((Long) entity.getProperty("day")).intValue();
             int postYear = 2000 + ((Long) entity.getProperty("year")).intValue();
-            int postHour = postTimeSort / 60;
-            int postMinute = postTimeSort % 60;
-
+            int postHour = Integer.parseInt(entity.getProperty("endHour").toString());
+            int postMinute = Integer.parseInt(entity.getProperty("endMinute").toString());
             postTime.set(postYear, postMonth, postDay, postHour, postMinute);
             
             // If the post time is before the current time, delete from Datastore.
             if (postTime.before(nowTime)) {
                 datastore.delete(entity.getKey());
             }
-            else {
+            // Only add if the post is on the same day.
+            else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
                 Post newPost = new Post();
                 newPost.entityToPost(entity);
                 currentPosts.add(newPost);
-            }
-            // TODO: Only add if the post is on the same day.
-            // else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
-            //     Post newPost = new Post();
-            //     newPost.entityToPost(entity);
-            //     currentPosts.add(newPost);
-            // }  
+            } 
         }
         return currentPosts;
     }
