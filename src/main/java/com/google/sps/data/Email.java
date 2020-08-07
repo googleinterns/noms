@@ -21,12 +21,14 @@ import org.apache.commons.io.FileUtils;
 public final class Email {
 
   public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
-  public static final String dailyDigestSubject = "⭐ noms: daily digest of free food!";
-  public static final String welcomeContentPath = "/home/areeta/noms/src/main/java/com/google/sps/data/WelcomeEmail.html";
+  public static final String newPostSubject = "⭐ noms: new free food near you!";
+  public static final String welcomeContentPath = "/noms/src/main/java/com/google/sps/data/WelcomeEmail.html";
+  public static final String newPostPath = "/noms/src/main/java/com/google/sps/data/NewPost.html";
 
   public static String getStringFromHTML(String path) throws IOException {
     File HTMLfile = new File(path);
     String str = FileUtils.readFileToString(HTMLfile, "utf-8");
     return str;
   }
+
 }
