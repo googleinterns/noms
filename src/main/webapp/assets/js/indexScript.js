@@ -31,13 +31,15 @@ document.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
   const collegeLocations = await (await fetch('./assets/college-locations4.json')).json();
 
-  // Add all colleges as dropdown options
+  // Add all colleges as datalist options.
+  // We use document fragments because the DOM is slow if we add
+  // each option individually and let the DOM update in between.
   let frag = document.createDocumentFragment();
   const collegeDataList = document.getElementById('colleges');
   collegeLocations.forEach((location) => {
     const newOption = document.createElement('option');
     newOption.textContent = location.NAME;
-    newOption.value = location.UNITID;
+    newOption.setAttribute('data-value', location.UNITID);
 
     frag.appendChild(newOption);
   });
@@ -53,6 +55,7 @@ async function onLoad() {
  * navigate them to the appropriate college's page.
  */
 function navigateUserToCollegePage() {
-  const collegeid = document.getElementById('colleges').value;
+  const collegename = document.getElementById('colleges').value;
+  const collegeid = document.querySelector(`#colleges option[value=${collegename}]`).dataset.value;
   window.location.href = `/find-events.html?collegeid=${collegeid}`;
 }
