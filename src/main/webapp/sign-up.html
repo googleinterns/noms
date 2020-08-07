@@ -15,7 +15,7 @@
   <body>
     <header>
       <!-- nav bar -->
-      <div class="logo">noms</div>
+      <div class="logo"><a href="/">noms</a></div>
       <ul class="nav">
         <li class="navlink"><a href="/about.html">about</a></li>
         <li class="navlink"><a href="/contact.html">contact</a></li>
@@ -40,8 +40,8 @@
             <label class="input-name">name</label>
             <input type="text" name="name" required>
             <label class="input-name" for="email">email</label>
-            <input type="email" name="email"  pattern=".+@google.com" required>
-            <label class="input-name">univeristy</label>
+            <input type="email" name="email"  pattern=".+@google.com" title="Must be @google.com." required>
+            <label class="input-name">university</label>
             <input type="text" name="university" required>
             <div class="subscription">
               <div class="option">
@@ -53,7 +53,7 @@
                 <label for="unsubscribe">unsubscribe</label>
               </div>
             </div>
-            <input type="submit" value="sign up">
+            <input type="submit" value="submit">
             </form>
         </div>
       </div>
