@@ -316,57 +316,6 @@ async function fetchCollegeLocation(collegeid) {
 }
 
 /**
- * A fake implementation of a GET request that fetches all posts.
- * One post's event hasn't started yet, one has ended, and the
- * other three are in various stages of being completed.
- * This will be removed once our backend has actual posts.
- * @param {number} collegeid - The ID of the college we want posts for.
- * @return {array} - The posts.
- */
-function fetchFakePosts(collegeid) {
-  const fakePosts = [];
-  let collegeAbbreviation = '';
-  let baseLat = 0;
-  let baseLong = 0;
-  if (parseFloat(collegeid) === 209542) {
-    collegeAbbreviation = 'OSU';
-    baseLat = 44.56395;
-    baseLong = -123.274723;
-  } else if (parseFloat(collegeid) === 122931) {
-    collegeAbbreviation = 'SCU';
-    baseLat = 37.348362;
-    baseLong = -121.93784;
-  } else {
-    collegeAbbreviation = 'UCI';
-    baseLat = 33.648434;
-    baseLong = -117.841248;
-  }
-
-  for (let i = 0; i < 5; i++) {
-    const post = {
-      id: i*1000 + i*50 + i*2 + i,
-      organizationName: `Organization ${i}`,
-      postDateTime: new Date(new Date().setHours(new Date().getHours() - i)),
-      eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
-      eventEndTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-0.5)*10)),
-      location: {
-        name: `${collegeAbbreviation} Office ${i}`,
-        lat: baseLat + (i + Math.random()*10 - 5) / 5000,
-        long: baseLong + (i + Math.random()*10 - 5)/ 5000,
-      },
-      numOfPeopleFoodWillFeed: (30 - i*5),
-      foodType: 'Thai Food',
-      description: 'Come join the ACM for free burritos and to learn more ' +
-        'about what our club does! All are welcome to join the club happenings, ' +
-        'regardless of major or year. ' +
-        'We have vegatarian and halal options available.',
-    };
-    fakePosts.push(post);
-  }
-  return fakePosts;
-}
-
-/**
  * A GET request that fetches all posts on this current day.
  * @param {number} collegeId - The ID of the college we want posts for.
  * @return {array} - The posts.
@@ -565,7 +514,7 @@ function applyLogisticFunction(xValue, bounds) {
 }
 
 /**
- * Adds posts to the page (uses mock data).
+ * Adds posts to the page.
  * @param {array} posts
  */
 async function addPosts(posts) {
