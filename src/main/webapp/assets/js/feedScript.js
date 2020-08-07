@@ -70,6 +70,12 @@ let modal;
 /** @type {HTMLElement} */
 let closeModalButton;
 
+/** @type {HTMLElement} */
+let submitModalButton;
+
+/** @type {HTMLElement} */
+let modalForm;
+
 /** @type {HTMLButtonElement} */
 let toggleLegendButton;
 
@@ -105,11 +111,14 @@ async function onLoad() {
   createPostButton = document.getElementById('create-post-button');
   modal = document.getElementById('modal-background');
   closeModalButton = document.getElementById('modal-close');
+  submitModalButton = document.getElementById('modal-submit');
+  modalForm = document.getElementById('modal-form');
   toggleLegendButton = document.getElementById('toggle-legend-button');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
   closeModalButton.addEventListener('click', closeModal);
+  submitModalButton.addEventListener('click', submitModal);
   toggleLegendButton.addEventListener('click', toggleLegend);
 
   // Get the college id from the query string parameters.
@@ -121,14 +130,14 @@ async function onLoad() {
     return;
   }
 
-  // In the future, there will be real GET requests here, but for now, just fake ones.
   // These global variables will be assigned here and never assigned again.
-  posts = fetchFakePosts(collegeId);
+  posts = await fetchPosts(collegeId);
   collegeLocation = await fetchFakeCollegeLocation(collegeId);
 
   // Update text elements on page with fetched information.
   document.getElementById('find-events-title').innerText +=
   ` @ ${collegeLocation.name}`.toLowerCase();
+
   addPosts(posts);
 
   // Add the embedded map to the page.
@@ -379,6 +388,51 @@ function fetchFakePosts(collegeid) {
 }
 
 /**
+ * A GET request that fetches all posts on this current day.
+ * @param {number} collegeId - The ID of the college we want posts for.
+ * @return {array} - The posts.
+ */
+async function fetchPosts(collegeId) {
+  // Send the college Id.
+  const url = '/postData?collegeId=' + collegeId;
+  const response = await fetch(url);
+  const message = await response.json();
+  console.log(message);
+
+  const posts = [];
+
+  for (let i = 0; i < message.length; i++) {
+    const year = message[i]['year'];
+    const month = message[i]['month'];
+    const day = message[i]['day'];
+    const startHour = message[i]['startHour'];
+    const endHour = message[i]['endHour'];
+    const startMinute = message[i]['startMinute'];
+    const endMinute = message[i]['endMinute'];
+
+    const post = {
+      id: message[i]['postId'],
+      organizationName: message[i]['organizationName'],
+      postDateTime: new Date(),
+      eventStartTime: new Date(year, month, day, startHour, startMinute, 0, 0),
+      eventEndTime: new Date(year, month, day, endHour, endMinute, 0, 0),
+      location: {
+        name: message[i]['location'],
+        lat: message[i]['lat'],
+        long: message[i]['lng'],
+      },
+      numOfPeopleFoodWillFeed: message[i]['numberOfPeopleItFeeds'],
+      foodType: message[i]['typeOfFood'],
+      description: message[i]['description'],
+    };
+    posts.push(post);
+  }
+  console.log(typeof posts);
+  console.log(posts);
+  return posts;
+}
+
+/**
  * Initializes the embedded Google Maps map.
  */
 function initMap() {
@@ -536,9 +590,11 @@ function applyLogisticFunction(xValue, bounds) {
  * Adds posts to the page (uses mock data).
  * @param {array} posts
  */
-function addPosts(posts) {
+async function addPosts(posts) {
+  console.log('addPosts ' + posts);
   const allPosts = document.getElementById('all-posts');
-  posts.forEach((post) => {
+  for (let i = 0; i < posts.length; i++) {
+    const post = posts[i];
     const titleText = post.organizationName + ' @ ' + post.location.name;
     const subtitleText = post.foodType + ' | ' +
       post.eventStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
@@ -570,7 +626,7 @@ function addPosts(posts) {
 
     // Add card to the page.
     allPosts.append(postCard);
-  });
+  }
 }
 
 /**
@@ -590,6 +646,42 @@ function showModal() {
 function closeModal() {
   if (modal) {
     modal.style.display = 'none';
+  }
+}
+
+/**
+ * On click of the submit button, sends modal data to the servlet.
+ * @return {void}
+ */
+async function submitModal() {
+  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
+
+  // If one of the fields is empty, don't submit.
+  // Uses formElement.length - 1 to exclude the button element.
+  const formElements = modalForm.elements;
+  for (let i = 0; i < formElements.length - 1; i++) {
+    if (formElements[i].value.length == 0) {
+      return;
+    }
+  }
+
+  if (modalForm && collegeId) {
+    const modalLocation = document.getElementById('modal-location').value;
+    const latLngResult = await translateLocationToLatLong(modalLocation);
+
+    console.log('result ' + latLngResult);
+    let url;
+
+    if (latLngResult) {
+      const lat = latLngResult.lat;
+      const lng = latLngResult.long;
+      url = '/postData?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
+    } else {
+      url = '/postData?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
+    }
+
+    modalForm.action = url;
+    modalForm.submit();
   }
 }
 

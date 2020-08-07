@@ -61,14 +61,14 @@
 #modal-create-post {
   background: white;
   border-radius: 15px;
-  bottom: 15%;
+  bottom: 13%;
   box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
   left: 25%;
-  max-height: 450px;
+  max-height: 550px;
   overflow: auto;
   padding: 30px;
   position: fixed;
-  top: 15%;
+  top: 13%;
   width: 50%;
   z-index: 1;
 }
