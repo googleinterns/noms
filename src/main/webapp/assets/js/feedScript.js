@@ -639,7 +639,7 @@ async function submitModal() {
 
   // If one of the fields is empty, don't submit.
   const formElements = modalForm.elements;
-  for (let i = 0; i < formElements.length; i++) {
+  for (let i = 0; i < formElements.length - 1; i++) { //Excludes the button element.
     if (formElements[i].value.length == 0) {
       return;
     }
