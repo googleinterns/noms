@@ -235,13 +235,12 @@ async function getSecretFor(secretid) {
 /**
  * Translates a location from its name to a pair of latitude and longitudes.
  * @param {string} address - The address to translate to lat/long.
- * @param {any} apiResponse - The function that returns an API response (or mocked one).
+ * @param {any} apiToCall - Option to dependency-inject a mock api call.
  * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
-async function translateLocationToLatLong(address, apiResponse = fetchTranslateLocation) {
+async function translateLocationToLatLong(address, apiToCall = fetchTranslateLocation) {
   try {
-    const response = await apiResponse(address);
-    console.log(response);
+    const response = await apiToCall(address);
 
     if (!response) {
       throw new Error('POST failed for unknown reasons. Please check console.');
@@ -254,7 +253,6 @@ async function translateLocationToLatLong(address, apiResponse = fetchTranslateL
     }
 
     const result = await response.json();
-    console.log(result);
 
     // If our result is empty, then we didn't have any results at all.
     if (Object.keys(result).length === 0) {

@@ -133,5 +133,48 @@ describe('Geolocation Functionality', function() {
       };
       expect(await translateLocationToLatLong(address, mockApiResponse)).to.be.eql(result);
     });
+
+    it('should return null if the api returns a non-200 response', async function() {
+      const address = 'Memorial Union, Corvallis';
+      const mockApiResponse = async (_) => {
+        return {
+          ok: false,
+          status: 400,
+          text: async function() {
+            return "Request failed"
+          },
+        };
+      };
+      expect(await translateLocationToLatLong(address, mockApiResponse)).to.be.null;
+    });
+
+    it('should return null if the api didn\'t return any results', async function() {
+      const address = 'Memorial Union, Corvallis';
+      const mockApiResponse = async (_) => {
+        return {
+          ok: true,
+          json: async function() {
+            return {};
+          },
+        };
+      };
+      expect(await translateLocationToLatLong(address, mockApiResponse)).to.be.null;
+    });
+
+    it('should return null if the api didn\'t return a lat/lng', async function() {
+      const address = 'Memorial Union, Corvallis';
+      const mockApiResponse = async (_) => {
+        return {
+          ok: true,
+          json: async function() {
+            return {
+              formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
+              geometry: {},
+            };
+          },
+        };
+      };
+      expect(await translateLocationToLatLong(address, mockApiResponse)).to.be.null;
+    });
   });
 });
