@@ -637,6 +637,14 @@ async function submitModal() {
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
   console.log('found id: ' + collegeId);
 
+  // If one of the fields is empty, don't submit.
+  const formElements = modalForm.elements;
+  for (let i = 0; i < formElements.length; i++) {
+    if (formElements[i].value.length == 0) {
+        return;
+    }
+  }
+
   if (modalForm && collegeId) {
     const modalLocation = document.getElementById('modal-location').value;
     const latLngResult = await translateLocationToLatLong(modalLocation);
