@@ -22,23 +22,23 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 public class Post {
-    public static String postId = "";
-    public static String organizationName = "";
-    public static int month = 0;
-    public static int day = 0;
-    public static int year = 0;
-    public static int startHour = 0;
-    public static int startMinute = 0;
-    public static int endHour = 0;
-    public static int endMinute = 0;
-    public static String location = "";
-    public static Double lat = 0.0;
-    public static Double lng = 0.0;
-    public static String numberOfPeopleItFeeds = "";
-    public static String typeOfFood = "";
-    public static String description = "";
-    public static String collegeId = "";
-    public static int timeSort = 0;
+    public String postId = "";
+    public String organizationName = "";
+    public int month = 0;
+    public int day = 0;
+    public int year = 0;
+    public int startHour = 0;
+    public int startMinute = 0;
+    public int endHour = 0;
+    public int endMinute = 0;
+    public String location = "";
+    public Double lat = 0.0;
+    public Double lng = 0.0;
+    public String numberOfPeopleItFeeds = "";
+    public String typeOfFood = "";
+    public String description = "";
+    public String collegeId = "";
+    public int timeSort = 0;
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
@@ -77,7 +77,7 @@ public class Post {
     }
 
     /* Translate the entities from the Datastore query to Post objects and return in an array. */
-    public static ArrayList<Post> queryToPosts(PreparedQuery queryResult, DatastoreService datastore) {
+    public  ArrayList<Post> queryToPosts(PreparedQuery queryResult, DatastoreService datastore) {
         ArrayList<Post> currentPosts = new ArrayList<Post>();
 
         // Create a calendar based off the current time zone.

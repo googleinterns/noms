@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/postData")
 public class PostDataServlet extends HttpServlet {
   
-  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   /* Convert an ArrayList of Post objects to JSON. */
   private String listToJson(ArrayList<Post> alist) {
