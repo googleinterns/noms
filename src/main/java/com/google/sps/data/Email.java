@@ -45,7 +45,7 @@ public final class Email {
     * Add new post information to emails.
     *
     * @param post new post object
-    * @return tring of HTML file with new post
+    * @return string of HTML file with new post
     * @throws IOException
     */
   public static String addNewPost(Post post) throws IOException {
