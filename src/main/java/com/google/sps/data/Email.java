@@ -50,15 +50,16 @@ public final class Email {
     */
   public static String addNewPost(Post post) throws IOException {
 
+    // TODO: Include AM/PM and time zone to be more user friendly
     String emailContent = getStringFromHTML(newPostPath);
     emailContent = emailContent.replace("[organizationName]", post.organizationName);
     emailContent = emailContent.replace("[location]", post.location);
-    emailContent = emailContent.replace("[month]", post.month);
-    emailContent = emailContent.replace("[day]", post.day);
-    emailContent = emailContent.replace("[startHour]", post.startHour);
-    emailContent = emailContent.replace("[startMinute]", post.startMinute);
-    emailContent = emailContent.replace("[endHour]", post.endHour);
-    emailContent = emailContent.replace("[endMinute]", post.endMinute);
+    emailContent = emailContent.replace("[month]",  Integer.toString(post.month));
+    emailContent = emailContent.replace("[day]", Integer.toString(post.day));
+    emailContent = emailContent.replace("[startHour]", Integer.toString(post.startHour));
+    emailContent = emailContent.replace("[startMinute]", Integer.toString(post.startMinute));
+    emailContent = emailContent.replace("[endHour]", Integer.toString(post.endHour));
+    emailContent = emailContent.replace("[endMinute]", Integer.toString(post.endMinute));
     emailContent = emailContent.replace("[description]", post.description);
     return emailContent;
   }

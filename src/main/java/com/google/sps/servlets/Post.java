@@ -22,23 +22,23 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 public class Post {
-    String postId = "";
-    String organizationName = "";
-    int month = 0;
-    int day = 0;
-    int year = 0;
-    int startHour = 0;
-    int startMinute = 0;
-    int endHour = 0;
-    int endMinute = 0;
-    String location = "";
-    Double lat = 0.0;
-    Double lng = 0.0;
-    String numberOfPeopleItFeeds = "";
-    String typeOfFood = "";
-    String description = "";
-    String collegeId = "";
-    int timeSort = 0;
+    public static String postId = "";
+    public static String organizationName = "";
+    public static int month = 0;
+    public static int day = 0;
+    public static int year = 0;
+    public static int startHour = 0;
+    public static int startMinute = 0;
+    public static int endHour = 0;
+    public static int endMinute = 0;
+    public static String location = "";
+    public static Double lat = 0.0;
+    public static Double lng = 0.0;
+    public static String numberOfPeopleItFeeds = "";
+    public static String typeOfFood = "";
+    public static String description = "";
+    public static String collegeId = "";
+    public static int timeSort = 0;
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
