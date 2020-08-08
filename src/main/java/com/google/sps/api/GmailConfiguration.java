@@ -125,7 +125,6 @@ public class GmailConfiguration {
     } catch (Exception e) {
 
       System.out.println("ERROR: Unable to send message : " + e.toString());
-
     }
   }	
 }
