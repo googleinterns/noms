@@ -22,8 +22,10 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
-
 import com.google.sps.api.GmailConfiguration;
 import com.google.sps.data.Email;
 import com.google.gson.Gson;
@@ -76,18 +78,18 @@ public class PostDataServlet extends HttpServlet {
     String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
     response.sendRedirect(redirectURL);
 
-    // Find all users that have the same collegeId
-    Query<Entity> query = Query.newEntityQueryBuilder()
-      .setKind("User")
-      .setFilter(PropertyFilter.eq("university", collegeId))
-      .build();
-    QueryResults<Entity> users = datastore.run(query);
+    // Find all users that attend the college
+    Filter universityFilter =
+      new FilterPredicate("university", FilterOperator.EQUAL, collegeId);
+    Query q = new Query("Person").setFilter(universityFilter);
+    PreparedQuery pq = datastore.prepare(q);
 
     // Email the users to notify them that a new post has been added
-    for (Entity user : users) {
+    for (Entity user : pq.asIterable()) {
       Key userKey = user.getKey();
       String email = KeyFactory.keyToString(userKey);
-      GmailConfiguration.sendEmail(email, Email.newPostSubject, Email.getStringFromHTML(Email.newPostPath));	
+      System.out.println("here's the list of emails: " + email);
+      GmailConfiguration.sendEmail(email, Email.newPostSubject, "beep bpp");	
     }
   }
 }
