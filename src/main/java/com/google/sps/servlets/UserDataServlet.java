@@ -33,16 +33,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/** Servlet that adds, updates, and deletes Users in Datastore */
 @WebServlet("/user")
 public class UserDataServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private static final Logger LOGGER = Logger.getLogger(UserDataServlet.class.getName());
 
-  /** Add/update a User into Datastore */
+  /** POST a user's information. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Add posts to emails.
 
     // Get the input from the form.
     String name = request.getParameter("name");
