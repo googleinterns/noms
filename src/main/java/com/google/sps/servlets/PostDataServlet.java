@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PropertyContainer;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -75,21 +76,18 @@ public class PostDataServlet extends HttpServlet {
     Entity newPostEntity = newPost.postToEntity();
     datastore.put(newPostEntity);
 
-    String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
-    response.sendRedirect(redirectURL);
-
-    // Find all users that attend the college
-    Filter universityFilter =
-      new FilterPredicate("university", FilterOperator.EQUAL, collegeId);
-    Query q = new Query("Person").setFilter(universityFilter);
+    // Find all users that attend the college.
+    Filter universityFilter = new FilterPredicate("university", FilterOperator.EQUAL, collegeId);
+    Query q = new Query("User").setFilter(universityFilter);
     PreparedQuery pq = datastore.prepare(q);
 
-    // Email the users to notify them that a new post has been added
+    // Email the users to notify them that a new post has been added.
     for (Entity user : pq.asIterable()) {
-      Key userKey = user.getKey();
-      String email = KeyFactory.keyToString(userKey);
-      System.out.println("here's the list of emails: " + email);
-      GmailConfiguration.sendEmail(email, Email.newPostSubject, "beep bpp");	
+      String email= (user.getKey().getName()).toString();
+      GmailConfiguration.sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
     }
+
+    String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
+    response.sendRedirect(redirectURL);
   }
 }
