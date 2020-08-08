@@ -30,7 +30,7 @@
 
     <!-- main content -->
     <div id="col-container">
-      <h1 id="find-events-title">find events</h1>
+      <h1 id="find-events-title" tabindex="0">find events</h1>
 
       <!-- map legend -->
       <div id="map-legend-container">
@@ -62,53 +62,53 @@
             <button id="toggle-legend-button" type="button">legend</button>
           </div>
         </div>
-        <div id="all-posts">
-          <button id="create-post-button" type="button">create a post</button>
+        <div id="all-posts" tabindex="0">
+          <button id="create-post-button" type="button" tabindex="0">create a post</button>
         </div>
       </div>
     </div>
 
     <!-- modal -->
     <div id="modal-background">
-      <div id="modal-create-post">
-        <button id="modal-close" type="button">&#10005;</button>
-        <h1 id="modal-title">Create a Post</h1>
+      <div id="modal-create-post" tabindex="1">
+        <button id="modal-close" type="button" tabindex="0">&#10005;</button>
+        <h1 id="modal-title" tabindex="0">Create a Post</h1>
         <form id="modal-form" method="post">
-          <input type="text" id="modal-org-name" name="organizationName" placeholder="organization name" required><br>
+          <input type="text" id="modal-org-name" name="organizationName" placeholder="organization name" tabindex="0" required><br>
 
           <span class="modal-span">
-            <p id="modal-time-text">date:</p>
-            <input type="number" id="modal-month" name="month" placeholder="mm" min="1" max="12" step="1">
+            <p id="modal-time-text" tabindex="0">date:</p>
+            <input type="number" id="modal-month" name="month" placeholder="mm" min="1" max="12" step="1" tabindex="0">
             <p id="modal-slash">/</p>
-            <input type="number" id="modal-day" name="day" placeholder="dd" min="1" max="31" step="1">
+            <input type="number" id="modal-day" name="day" placeholder="dd" min="1" max="31" step="1" tabindex="0">
           </span>
 
           <span class="modal-span">
-            <p id="modal-time-text">start:</p>
-            <input type="number" id="modal-start-hour" name="startHour" placeholder="h" min="1" max="12" step="1">
-            <input type="number" id="modal-start-minute" name="startMinute" placeholder="m" min="0" max="60" step="1">
-            <select id="start-am-or-pm" name="startAMorPM">
+            <p id="modal-time-text" tabindex="0">start:</p>
+            <input type="number" id="modal-start-hour" name="startHour" placeholder="h" min="1" max="12" step="1" tabindex="0">
+            <input type="number" id="modal-start-minute" name="startMinute" placeholder="m" min="0" max="60" step="1" tabindex="0">
+            <select id="start-am-or-pm" name="startAMorPM" tabindex="0">
               <option value="am" selected>am</option>
               <option value="pm">pm</option>
             </select>
           </span>
           
           <span class="modal-span">
-            <p id="modal-time-text">end:</p>
-            <input type="number" id="modal-end-hour" name="endHour" placeholder="h" min="1" max="12" step="1">
-            <input type="number" id="modal-end-minute" name="endMinute" placeholder="m" min="0" max="60" step="1">
-            <select id="end-am-or-pm" name="endAMorPM">
+            <p id="modal-time-text" tabindex="0">end:</p>
+            <input type="number" id="modal-end-hour" name="endHour" placeholder="h" min="1" max="12" step="1" tabindex="0">
+            <input type="number" id="modal-end-minute" name="endMinute" placeholder="m" min="0" max="60" step="1" tabindex="0">
+            <select id="end-am-or-pm" name="endAMorPM" tabindex="0">
               <option value="am" selected>am</option>
               <option value="pm">pm</option>
             </select>
           </span>
 
-          <input type="text" id="modal-location" name="location" placeholder="location" required><br>
-          <input type="text" id="modal-type-food" name="typeOfFood" placeholder="type of food" required><br>
-          <input type="text" id="modal-num-people" name="numberOfPeopleItFeeds" placeholder="how many people can it feed?" required><br>
-          <textarea id="modal-description" name="description" placeholder="description" rows="3" maxlength="500"></textarea><br>
+          <input type="text" id="modal-location" name="location" placeholder="location" tabindex="0" required><br>
+          <input type="text" id="modal-type-food" name="typeOfFood" placeholder="type of food" tabindex="0" required><br>
+          <input type="text" id="modal-num-people" name="numberOfPeopleItFeeds" placeholder="how many people can it feed?" tabindex="0" required><br>
+          <textarea id="modal-description" name="description" placeholder="description" rows="3" maxlength="500" tabindex="0"></textarea><br>
           
-          <button id="modal-submit" type="button">submit</button>
+          <button id="modal-submit" type="button" tabindex="0">submit</button>
         <form>
       </div>
     </div>
