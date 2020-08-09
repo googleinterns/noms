@@ -24,6 +24,8 @@ public final class Email {
 
   public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
   public static final String newPostSubject = "⭐ noms: new free food near you!";
+
+  // TODO: Find relative path instead of absolute (FileNotFoundException if just ./WelcomeEmail.html).
   public static final String welcomeContentPath = "/home/areeta/noms/src/main/java/com/google/sps/data/WelcomeEmail.html";
   public static final String newPostPath = "/home/areeta/noms/src/main/java/com/google/sps/data/NewPost.html";
 
@@ -50,7 +52,7 @@ public final class Email {
     */
   public static String addNewPost(Post post) throws IOException {
 
-    // TODO: Include AM/PM and time zone to be more user friendly
+    // TODO: Include AM/PM, date formatted, and time zone to be more user friendly.
     String emailContent = getStringFromHTML(newPostPath);
     emailContent = emailContent.replace("[organizationName]", post.organizationName);
     emailContent = emailContent.replace("[location]", post.location);

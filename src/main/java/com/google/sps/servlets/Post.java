@@ -77,7 +77,7 @@ public class Post {
     }
 
     /* Translate the entities from the Datastore query to Post objects and return in an array. */
-    public  ArrayList<Post> queryToPosts(PreparedQuery queryResult, DatastoreService datastore) {
+    public static ArrayList<Post> queryToPosts(PreparedQuery queryResult, DatastoreService datastore) {
         ArrayList<Post> currentPosts = new ArrayList<Post>();
 
         // Create a calendar based off the current time zone.
