@@ -21,7 +21,6 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.PropertyContainer;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -66,8 +65,9 @@ public class PostDataServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
-  /* On the POST command, serializes the request information into Post objects. */
-  /* Stores the post as entity in Datastore, with the collegeId as the kind. */
+  /* On the POST command, serializes the request information into Post objects,
+    stores the post as entity in Datastore, with the collegeId as the kind, and 
+    send users at the college with a new email about the post. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     String collegeId = request.getParameter("collegeId");
