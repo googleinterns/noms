@@ -37,6 +37,10 @@
   width: 100%;
 }
 
+#create-post-button:focus {
+  background-color: #abcbbc;
+}
+
 #create-post-button:hover {
   background-color: white;
   border: 1px solid #303030;
@@ -78,6 +82,10 @@
   position: absolute;
   right: 15px;
   top: 15px;
+}
+
+#modal-close:focus {
+  background-color: #abcbbc;
 }
 
 #modal-title {
@@ -175,6 +183,10 @@ select {
   position: absolute;
   right: 30px;
   width: 80px;
+}
+
+#modal-submit:focus {
+  background-color: #abcbbc;
 }
 
 #modal-submit:hover {

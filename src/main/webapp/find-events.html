@@ -62,16 +62,16 @@
             <button id="toggle-legend-button" type="button">legend</button>
           </div>
         </div>
-        <div id="all-posts" tabindex="0">
-          <button id="create-post-button" type="button" tabindex="0">create a post</button>
+        <div id="all-posts">
+          <button id="create-post-button" type="button" tabindex="0" aria-label="create a post">create a post</button>
         </div>
       </div>
     </div>
 
     <!-- modal -->
     <div id="modal-background">
-      <div id="modal-create-post" tabindex="1">
-        <button id="modal-close" type="button" tabindex="0">&#10005;</button>
+      <div id="modal-create-post" tabindex="0">
+        <button id="modal-close" type="button" tabindex="0" aria-label="close modal">&#10005;</button>
         <h1 id="modal-title" tabindex="0">Create a Post</h1>
         <form id="modal-form" method="post">
           <input type="text" id="modal-org-name" name="organizationName" placeholder="organization name" tabindex="0" required><br>

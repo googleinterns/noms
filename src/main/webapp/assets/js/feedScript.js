@@ -551,22 +551,26 @@ async function addPosts(posts) {
     const postCard = document.createElement('div');
     postCard.setAttribute('class', 'post-card');
     postCard.setAttribute('id', post.id);
+    postCard.setAttribute('tabindex', '0');
 
     // Create and add title.
     const title = document.createElement('h2');
     title.setAttribute('class', 'card-title');
+    title.setAttribute('tabindex', '0');
     title.innerText = titleText;
     postCard.appendChild(title);
 
     // Create and add subtitle.
     const subtitle = document.createElement('h3');
     subtitle.setAttribute('class', 'card-subtitle');
+    subtitle.setAttribute('tabindex', '0');
     subtitle.innerText = subtitleText;
     postCard.appendChild(subtitle);
 
     // Create and add description.
     const description = document.createElement('p');
     description.setAttribute('class', 'card-description');
+    description.setAttribute('tabindex', '0');
     description.innerText = descriptionText;
     postCard.appendChild(description);
 
@@ -582,6 +586,8 @@ async function addPosts(posts) {
 function showModal() {
   if (modal) {
     modal.style.display = 'block';
+    modalCard = document.getElementById('modal-create-post');
+    modalCard.focus();
   }
 }
 
