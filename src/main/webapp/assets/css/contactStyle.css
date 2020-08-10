@@ -1,7 +1,7 @@
 .mate {
   background: white;
   border-radius: 15px;
-  padding: 1rem;
+  padding: 1rem 1rem 0.5rem 1rem;
   margin: 1rem 1rem 0rem 1rem;
 }
 
@@ -13,16 +13,14 @@
 }
 
 img {
-  height: auto;
-  max-width: 100%;
-}
-
-img.rounded-circle.profile {
-  max-height: 100px;
-}
-
-.rounded-circle {
+  width: auto;
+  max-height: 50px;
   border-radius: 50%;
+}
+
+h4 {
+  margin-block-start: 0;
+  margin-block-end: 0.33em;
 }
 
 .row {
@@ -33,6 +31,7 @@ img.rounded-circle.profile {
 .col {
   display: flex;
   flex-direction: column;
+  padding-left: 1rem;
 }
 
 #googleplex-map {
@@ -45,6 +44,19 @@ a {
   text-decoration: none;
 }
 
-.svg {
-  height: 1.5rem;
+#all-posts {
+  padding: 0px 15px 0 15px;
+  background-color: #a98585;
+}
+
+#map-container { 
+  padding: 0 15px 0 15px;
+}
+
+@media screen and (max-width: 1077px) {
+  #all-posts {
+    height: auto;
+    margin: 2rem 1rem 0 1rem;
+    padding-bottom: 1rem;
+  }
 }
