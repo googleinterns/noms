@@ -50,7 +50,8 @@
   border-radius: 5px;
   color: #484848;
   display: block;
-  padding: 0.8rem;
+  font-size: 1rem;
+  padding: 0.8rem 1.3rem;
   margin: auto;
   width: 100%;
 }
@@ -204,5 +205,9 @@
 
   .emoji {
     height: 3rem;
+  }
+
+  #colleges-input {
+    font-size: 0.9rem;
   }
 }
