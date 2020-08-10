@@ -346,7 +346,6 @@ async function fetchPosts(collegeId) {
   const url = '/postData?collegeId=' + collegeId;
   const response = await fetch(url);
   const message = await response.json();
-  console.log(message);
 
   const posts = [];
 
@@ -538,7 +537,6 @@ function applyLogisticFunction(xValue, bounds) {
  * @param {array} posts
  */
 async function addPosts(posts) {
-  console.log('addPosts ' + posts);
   const allPosts = document.getElementById('all-posts');
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
@@ -616,7 +614,6 @@ async function submitModal() {
     const modalLocation = document.getElementById('modal-location').value;
     const latLngResult = await translateLocationToLatLong(modalLocation);
 
-    console.log('result ' + latLngResult);
     let url;
 
     if (latLngResult) {
