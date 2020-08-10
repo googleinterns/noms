@@ -1,0 +1,50 @@
+.mate {
+  background: white;
+  border-radius: 15px;
+  padding: 1rem;
+  margin: 1rem 1rem 0rem 1rem;
+}
+
+#podmates {
+  background-color: #A98585;
+  flex: 1 1 400px;
+  height: 64vh;
+  padding: 15px 15px 0 15px;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+img.rounded-circle.profile {
+  max-height: 100px;
+}
+
+.rounded-circle {
+  border-radius: 50%;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+#googleplex-map {
+  flex: 1 1 400px;
+  height: 65vh;
+  margin-right: 15px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.svg {
+  height: 1.5rem;
+}
