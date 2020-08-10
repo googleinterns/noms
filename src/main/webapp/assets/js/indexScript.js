@@ -36,9 +36,9 @@ async function onLoad() {
   const collegeDataList = document.getElementById('colleges');
   collegeDataList.removeAttribute('id');
 
-  // Add all colleges as datalist options. We use document fragments because the 
+  // Add all colleges as datalist options. We use document fragments because the
   // DOM is slow if we add each option individually and let the DOM update in between.
-  let frag = document.createDocumentFragment();
+  const frag = document.createDocumentFragment();
   collegeLocations.forEach((location) => {
     const newOption = document.createElement('option');
     newOption.setAttribute('data-value', location.UNITID);

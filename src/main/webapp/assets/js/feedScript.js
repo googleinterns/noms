@@ -135,7 +135,7 @@ async function onLoad() {
   collegeLocation = await fetchCollegeLocation(collegeId);
   document.getElementById('find-events-title').innerText +=
   ` @ ${collegeLocation.name}`.toLowerCase();
-  
+
   // Add the posts to the page, after which we can add the map
   // as well because the map relies on the post information existing.
   posts = await fetchPosts(collegeId);
