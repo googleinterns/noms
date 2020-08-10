@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This file provides the JavaScript induced on the sign up page (sign-up.html) which is 
+// This file provides the JavaScript induced on the sign up page (sign-up.html) which is
 // a replica from the main page (index.html) without additional functionality to load posts.
 
 //
