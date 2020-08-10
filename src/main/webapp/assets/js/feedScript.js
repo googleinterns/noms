@@ -326,7 +326,7 @@ function createSearchParamsFromObject(obj) {
  */
 async function fetchCollegeLocation(collegeid) {
   // Get all colleges
-  const locations = await (await fetch('./assets/college-locations4.json')).json();
+  const locations = await (await fetch('./assets/college-locations.json')).json();
   const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
   const newLocation = {
     name: collegeInfo.NAME,

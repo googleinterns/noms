@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
-  const collegeLocations = await (await fetch('./assets/college-locations4.json')).json();
+  const collegeLocations = await (await fetch('./assets/college-locations.json')).json();
 
   // Grab the datalist and remove its ID (destroying the select-datalist relationship),
   // to improve performance while adding the options to the datalist.
