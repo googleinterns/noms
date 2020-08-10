@@ -132,7 +132,7 @@ async function onLoad() {
 
   // These global variables will be assigned here and never assigned again.
   posts = await fetchPosts(collegeId);
-  collegeLocation = await fetchFakeCollegeLocation(collegeId);
+  collegeLocation = await fetchCollegeLocation(collegeId);
 
   // Update text elements on page with fetched information.
   document.getElementById('find-events-title').innerText +=
@@ -319,12 +319,11 @@ function createSearchParamsFromObject(obj) {
 }
 
 /**
- * A fake implementation of a GET request for the college of the page we are on.
- * This will be removed once our backend has actual college information.
+ * Fetches the college location information from the local JSON storing it.
  * @param {number} collegeid - The ID of the college we want the lat/long for.
  * @return {Promise<LocationInfo>} - The college's location and information.
  */
-async function fetchFakeCollegeLocation(collegeid) {
+async function fetchCollegeLocation(collegeid) {
   // Get all colleges
   const locations = await (await fetch('./assets/college-locations.json')).json();
   const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
@@ -334,57 +333,6 @@ async function fetchFakeCollegeLocation(collegeid) {
     long: parseFloat(collegeInfo.LON),
   };
   return newLocation;
-}
-
-/**
- * A fake implementation of a GET request that fetches all posts.
- * One post's event hasn't started yet, one has ended, and the
- * other three are in various stages of being completed.
- * This will be removed once our backend has actual posts.
- * @param {number} collegeid - The ID of the college we want posts for.
- * @return {array} - The posts.
- */
-function fetchFakePosts(collegeid) {
-  const fakePosts = [];
-  let collegeAbbreviation = '';
-  let baseLat = 0;
-  let baseLong = 0;
-  if (parseFloat(collegeid) === 209542) {
-    collegeAbbreviation = 'OSU';
-    baseLat = 44.56395;
-    baseLong = -123.274723;
-  } else if (parseFloat(collegeid) === 122931) {
-    collegeAbbreviation = 'SCU';
-    baseLat = 37.348362;
-    baseLong = -121.93784;
-  } else {
-    collegeAbbreviation = 'UCI';
-    baseLat = 33.648434;
-    baseLong = -117.841248;
-  }
-
-  for (let i = 0; i < 5; i++) {
-    const post = {
-      id: i*1000 + i*50 + i*2 + i,
-      organizationName: `Organization ${i}`,
-      postDateTime: new Date(new Date().setHours(new Date().getHours() - i)),
-      eventStartTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-3)*8)),
-      eventEndTime: new Date(new Date().setMinutes(new Date().getMinutes() + (i-0.5)*10)),
-      location: {
-        name: `${collegeAbbreviation} Office ${i}`,
-        lat: baseLat + (i + Math.random()*10 - 5) / 5000,
-        long: baseLong + (i + Math.random()*10 - 5)/ 5000,
-      },
-      numOfPeopleFoodWillFeed: (30 - i*5),
-      foodType: 'Thai Food',
-      description: 'Come join the ACM for free burritos and to learn more ' +
-        'about what our club does! All are welcome to join the club happenings, ' +
-        'regardless of major or year. ' +
-        'We have vegatarian and halal options available.',
-    };
-    fakePosts.push(post);
-  }
-  return fakePosts;
 }
 
 /**
@@ -427,8 +375,6 @@ async function fetchPosts(collegeId) {
     };
     posts.push(post);
   }
-  console.log(typeof posts);
-  console.log(posts);
   return posts;
 }
 
@@ -587,7 +533,7 @@ function applyLogisticFunction(xValue, bounds) {
 }
 
 /**
- * Adds posts to the page (uses mock data).
+ * Adds posts to the page.
  * @param {array} posts
  */
 async function addPosts(posts) {

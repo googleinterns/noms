@@ -45,7 +45,6 @@ public class Post {
         organizationName = request.getParameter("organizationName");
         month = Integer.parseInt(request.getParameter("month")) - 1; // Months are indexed at 0.
         day = Integer.parseInt(request.getParameter("day"));
-        year = Integer.parseInt(request.getParameter("year"));
         startHour = Integer.parseInt(request.getParameter("startHour"));
         startMinute = Integer.parseInt(request.getParameter("startMinute"));
         endHour = Integer.parseInt(request.getParameter("endHour"));
@@ -70,6 +69,11 @@ public class Post {
 
         // Translate the start time into minutes to allow for sorting.
         timeSort = startHour * 60 + startMinute;
+
+        // Set the year. Right now time zone is set to "America/Los_Angeles".
+        Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
+        year = nowTime.get(Calendar.YEAR);
+
     }
 
     /* Translate the entities from the Datastore query to Post objects and return in an array. */
@@ -87,7 +91,7 @@ public class Post {
             Calendar postTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
             int postMonth = Integer.parseInt(entity.getProperty("month").toString());
             int postDay = Integer.parseInt(entity.getProperty("day").toString());
-            int postYear = 2000 + Integer.parseInt(entity.getProperty("year").toString());
+            int postYear = Integer.parseInt(entity.getProperty("year").toString());
             int postHour = Integer.parseInt(entity.getProperty("endHour").toString());
             int postMinute = Integer.parseInt(entity.getProperty("endMinute").toString());
             postTime.set(postYear, postMonth, postDay, postHour, postMinute);

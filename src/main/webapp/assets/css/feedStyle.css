@@ -1,7 +1,4 @@
 #col-container {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
   width: 80%;
   margin-bottom: 50px;
   margin-left: 10%;
@@ -158,6 +155,10 @@ select {
   margin-right: 20px;
 }
 
+#modal-day {
+  margin-right: 20px;
+}
+
 .modal-span {
   white-space: nowrap;
 }
@@ -288,8 +289,9 @@ select {
   display: none;
   flex-wrap: nowrap;
   justify-content: center;
+  margin: auto;
   position: relative;
-  width: 100%;
+  width: 60%;
 }
 
 #toggle-legend-button {
