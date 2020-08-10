@@ -595,13 +595,14 @@ function showModal() {
 }
 
 /**
- * Closes the modal.
+ * Closes and resets the modal, refocuses to create post button.
  * @return {void}
  */
 function closeModal() {
   if (modal) {
     modal.style.display = 'none';
     modalForm.reset();
+    createPostButton.focus();
   }
 }
 
