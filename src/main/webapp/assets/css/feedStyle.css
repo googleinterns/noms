@@ -67,11 +67,16 @@
   left: 25%;
   max-height: 550px;
   overflow: auto;
+  outline: none;
   padding: 30px;
   position: fixed;
   top: 13%;
   width: 50%;
   z-index: 1;
+}
+
+#modal-create-post:focus {
+  box-shadow: 0 0 0 5px #abcbbc66;
 }
 
 #modal-close {
@@ -85,7 +90,7 @@
 }
 
 #modal-close:focus {
-  background-color: #abcbbc;
+  color: var(--light-teal);
 }
 
 #modal-title {

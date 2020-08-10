@@ -62,6 +62,9 @@ let map;
 //
 
 /** @type {HTMLElement} */
+let modalCard
+
+/** @type {HTMLElement} */
 let createPostButton;
 
 /** @type {HTMLElement} */
@@ -114,6 +117,7 @@ async function onLoad() {
   submitModalButton = document.getElementById('modal-submit');
   modalForm = document.getElementById('modal-form');
   toggleLegendButton = document.getElementById('toggle-legend-button');
+  modalCard = document.getElementById('modal-create-post');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -586,7 +590,6 @@ async function addPosts(posts) {
 function showModal() {
   if (modal) {
     modal.style.display = 'block';
-    modalCard = document.getElementById('modal-create-post');
     modalCard.focus();
   }
 }
@@ -598,6 +601,7 @@ function showModal() {
 function closeModal() {
   if (modal) {
     modal.style.display = 'none';
+    modalForm.reset();
   }
 }
 
@@ -645,9 +649,29 @@ async function submitModal() {
  */
 window.onclick = function(event) {
   if (modal && event.target == modal) {
-    closeModal();
+    modal.style.display = 'none';
   }
 };
+
+document.addEventListener('keydown', function(e) {
+  let isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+
+  if (!isTabPressed) {
+    return;
+  }
+
+  if (e.shiftKey) { // if shift key pressed for shift + tab combination
+    if (document.activeElement === modalCard) {
+      submitModalButton.focus(); // add focus for the last focusable element
+      e.preventDefault();
+    }
+  } else { // if tab key is pressed
+    if (document.activeElement === submitModalButton) { // if focused has reached to last focusable element then focus first focusable element after pressing tab
+      modalCard.focus(); // add focus for the first focusable element
+      e.preventDefault();
+    }
+  }
+});
 
 /**
  * Toggles the legend next to the map.
