@@ -31,23 +31,28 @@ document.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
   const collegeLocations = await (await fetch('./assets/college-locations4.json')).json();
 
-  // Add all colleges as datalist options.
-  // We use document fragments because the DOM is slow if we add
-  // each option individually and let the DOM update in between.
-  let frag = document.createDocumentFragment();
+  // Grab the datalist and remove its ID (destroying the select-datalist relationship),
+  // to improve performance while adding the options to the datalist.
   const collegeDataList = document.getElementById('colleges');
+  collegeDataList.removeAttribute('id');
+
+  // Add all colleges as datalist options. We use document fragments because the 
+  // DOM is slow if we add each option individually and let the DOM update in between.
+  let frag = document.createDocumentFragment();
   collegeLocations.forEach((location) => {
     const newOption = document.createElement('option');
-    newOption.textContent = location.NAME;
     newOption.setAttribute('data-value', location.UNITID);
+    newOption.value = location.NAME;
 
     frag.appendChild(newOption);
   });
 
+  // Add the options and restore the select-datalist relationship.
   collegeDataList.appendChild(frag);
+  collegeDataList.setAttribute('id', 'colleges');
 
   // When users select an option from the dropdown, send them to that page.
-  collegeDataList.addEventListener('input', navigateUserToCollegePage);
+  document.getElementById('colleges-input').addEventListener('change', navigateUserToCollegePage);
 }
 
 /**
@@ -55,7 +60,13 @@ async function onLoad() {
  * navigate them to the appropriate college's page.
  */
 function navigateUserToCollegePage() {
-  const collegename = document.getElementById('colleges').value;
-  const collegeid = document.querySelector(`#colleges option[value=${collegename}]`).dataset.value;
-  window.location.href = `/find-events.html?collegeid=${collegeid}`;
+  const collegename = document.getElementById('colleges-input').value;
+  const option = document.querySelector(`#colleges option[value='${collegename}']`);
+
+  // Only navigate to the page if that college exists in our list of colleges.
+  // TODO: display 'We haven't heard of that college!"/similar to the user if not recognized.
+  if (option) {
+    const collegeid = option.dataset.value;
+    window.location.href = `/find-events.html?collegeid=${collegeid}`;
+  }
 }

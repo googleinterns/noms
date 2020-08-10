@@ -130,14 +130,15 @@ async function onLoad() {
     return;
   }
 
-  // These global variables will be assigned here and never assigned again.
-  posts = await fetchPosts(collegeId);
+  // Add simple location information to the page - we do this before
+  // loading the posts because it will be much faster.
   collegeLocation = await fetchCollegeLocation(collegeId);
-
-  // Update text elements on page with fetched information.
   document.getElementById('find-events-title').innerText +=
   ` @ ${collegeLocation.name}`.toLowerCase();
-
+  
+  // Add the posts to the page, after which we can add the map
+  // as well because the map relies on the post information existing.
+  posts = await fetchPosts(collegeId);
   addPosts(posts);
 
   // Add the embedded map to the page.
@@ -325,7 +326,7 @@ function createSearchParamsFromObject(obj) {
  */
 async function fetchCollegeLocation(collegeid) {
   // Get all colleges
-  const locations = await (await fetch('./assets/college-locations.json')).json();
+  const locations = await (await fetch('./assets/college-locations4.json')).json();
   const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
   const newLocation = {
     name: collegeInfo.NAME,

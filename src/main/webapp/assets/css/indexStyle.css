@@ -43,26 +43,29 @@
   margin: 0;
 }
 
-datalist:invalid {
-  color: gray;
+#colleges-input {
+  background: #1b18181a;
+  border: 2px solid #ccc;
+  box-sizing: border-box;
+  border-radius: 5px;
+  color: #484848;
+  display: block;
+  padding: 0.8rem;
+  margin: auto;
+  width: 100%;
 }
 
-.selectdiv {
-  position: relative;
-}
-
-datalist::-ms-expand {
+#colleges-input::-webkit-calendar-picker-indicator {
   display: none;
 }
 
-.selectdiv::after {
-  color: #565656;
-  content: 'v';
-  font: 20px monospace;
-  pointer-events: none;
-  position: absolute;
-  right: 25px;
-  top: 12px;
+#colleges-input:focus {
+  border: 2px solid #858585;
+  outline: none;
+}
+
+#colleges-input::placeholder {
+  color: #484848;
 }
 
 .selectdiv datalist {
