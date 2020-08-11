@@ -651,6 +651,7 @@ async function submitModal() {
 window.onclick = function(event) {
   if (modal && event.target == modal) {
     modal.style.display = 'none';
+    createPostButton.focus();
   }
 };
 

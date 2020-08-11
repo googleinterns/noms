@@ -77,29 +77,29 @@
           <input type="text" id="modal-org-name" name="organizationName" placeholder="organization name" tabindex="0" aria-label="organization name" required><br>
 
           <span class="modal-span">
-            <p id="modal-time-text">date:</p>
+            <p id="modal-time-text" tabindex="0">date:</p>
             <input type="number" id="modal-month" name="month" placeholder="mm" min="1" max="12" step="1" tabindex="0" aria-label="month 2 digit">
             <p id="modal-slash">/</p>
             <input type="number" id="modal-day" name="day" placeholder="dd" min="1" max="31" step="1" tabindex="0" aria-label="day 2 digit">
           </span>
 
           <span class="modal-span">
-            <p id="modal-time-text">start:</p>
+            <p id="modal-time-text" tabindex="0">start:</p>
             <input type="number" id="modal-start-hour" name="startHour" placeholder="h" min="1" max="12" step="1" tabindex="0" aria-label="start hour">
             <input type="number" id="modal-start-minute" name="startMinute" placeholder="m" min="0" max="60" step="1" tabindex="0" aria-label="start minute">
-            <select id="start-am-or-pm" name="startAMorPM" tabindex="0" aria-label="start am or pm?">
-              <option value="am" selected>am</option>
-              <option value="pm">pm</option>
+            <select id="start-am-or-pm" name="startAMorPM" size="1" tabindex="0" aria-label="start am or pm?">
+              <option value="am" tabindex="0" selected>am</option>
+              <option value="pm" tabindex="0">pm</option>
             </select>
           </span>
           
           <span class="modal-span">
-            <p id="modal-time-text">end:</p>
+            <p id="modal-time-text" tabindex="0">end:</p>
             <input type="number" id="modal-end-hour" name="endHour" placeholder="h" min="1" max="12" step="1" tabindex="0" aria-label="end hour">
             <input type="number" id="modal-end-minute" name="endMinute" placeholder="m" min="0" max="60" step="1" tabindex="0" aria-label="end minute">
-            <select id="end-am-or-pm" name="endAMorPM" tabindex="0" aria-label="end am or pm?">
-              <option value="am" selected>am</option>
-              <option value="pm">pm</option>
+            <select id="end-am-or-pm" name="endAMorPM" size="1" tabindex="0" aria-label="end am or pm?">
+              <option value="am" tabindex="0" selected>am</option>
+              <option value="pm" tabindex="0">pm</option>
             </select>
           </span>
 
