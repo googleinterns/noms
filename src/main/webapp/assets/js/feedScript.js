@@ -662,8 +662,8 @@ document.addEventListener('keydown', function(e) {
   if (!isTabPressed) {
     return;
   }
-  // If user is trying to go to the previous element, make sure it wraps to the bottom
-  if (e.shiftKey) { // if shift key pressed for shift + tab combination
+  // If user is trying to go to the previous element, make sure it wraps to the bottom.
+  if (e.shiftKey) { // if shift key pressed for shift + tab combination.
     if (document.activeElement === modalCard) {
       submitModalButton.focus();
       e.preventDefault();
