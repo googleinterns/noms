@@ -1,26 +1,23 @@
-.mate {
-  background: white;
-  border-radius: 15px;
-  padding: 1rem 1rem 0.5rem 1rem;
-  margin: 1rem 1rem 0 1rem;
+/*
+ * Containers
+ */
+
+#col-container {
+  width: 80%;
+  margin-bottom: 50px;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
-#podmates {
-  background-color: #a98585;
+#page-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#map-container {
   flex: 1 1 400px;
-  height: 64vh;
-  padding: 15px 15px 0 15px;
-}
-
-img {
-  width: auto;
-  max-height: 50px;
-  border-radius: 50%;
-}
-
-h4 {
-  margin-block-start: 0;
-  margin-block-end: 0.33em;
+  padding: 0 15px 0 15px;
 }
 
 .row {
@@ -34,32 +31,60 @@ h4 {
   padding-left: 1rem;
 }
 
-#googleplex-map {
-  flex: 1 1 400px;
-  height: 65vh;
-  margin-right: 15px;
+/*
+ * Map (will disappear when screen is too small)
+ */
+
+#map {
+  background: var(--grey);
+  height: 100%;
+  min-width: 100px;
+  width: 100%;
 }
 
-a {
-  text-decoration: none;
+#title {
+  padding: 0 0 0 15px;
 }
 
-#all-posts {
-  padding: 0 15px 0 15px;
+/*
+ * Mate
+ */
+
+#podmates {
+  padding: 15px;
   background-color: #a98585;
   display: flex;
   justify-content: space-evenly;
   flex-direction: column;
-}
-
-#map-container {
-  padding: 0 15px 0 15px;
+  flex: 1 1 400px;
 }
 
 @media screen and (max-width: 1077px) {
-  #all-posts {
+  #podmates {
     height: auto;
     margin: 2rem 1rem 0 1rem;
     padding-bottom: 1rem;
   }
+}
+
+.mate {
+  background: #fff;
+  border-radius: 15px;
+  padding: 16px;
+  margin: 16px;
+}
+
+img {
+  width: auto;
+  max-height: 50px;
+  border-radius: 50%;
+}
+
+h4 {
+  margin-block-start: 0;
+  margin-block-end: 0.33em;
+}
+
+a {
+  text-decoration: none;
 }
