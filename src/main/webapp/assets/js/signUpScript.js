@@ -68,7 +68,7 @@ function setCollegeID() {
   // TODO: display 'We haven't heard of that college!"/similar to the user if not recognized.
   if (option) {
     const collegeId = option.dataset.value;
-    var selectedCollege = document.getElementById('cID');
+    const selectedCollege = document.getElementById('cID');
     selectedCollege.value = collegeId;
   }
 }
