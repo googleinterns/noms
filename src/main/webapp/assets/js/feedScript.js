@@ -62,7 +62,7 @@ let map;
 //
 
 /** @type {HTMLElement} */
-let modalCard
+let modalCard;
 
 /** @type {HTMLElement} */
 let createPostButton;
@@ -656,20 +656,22 @@ window.onclick = function(event) {
 };
 
 document.addEventListener('keydown', function(e) {
-  let isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+  const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
 
   if (!isTabPressed) {
     return;
   }
-
+  // If user is trying to go to the previous element, make sure it wraps to the bottom
   if (e.shiftKey) { // if shift key pressed for shift + tab combination
     if (document.activeElement === modalCard) {
-      submitModalButton.focus(); // add focus for the last focusable element
+      submitModalButton.focus();
       e.preventDefault();
     }
-  } else { // if tab key is pressed
-    if (document.activeElement === submitModalButton) { // if focused has reached to last focusable element then focus first focusable element after pressing tab
-      modalCard.focus(); // add focus for the first focusable element
+  }
+  // If user is trying to go to the next element, make sure it wraps to the top
+  else { // if tab key is pressed
+    if (document.activeElement === submitModalButton) {
+      modalCard.focus();
       e.preventDefault();
     }
   }
