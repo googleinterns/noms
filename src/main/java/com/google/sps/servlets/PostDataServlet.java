@@ -27,7 +27,6 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.sps.api.GmailConfiguration;
-import com.google.sps.data.Email;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,29 +75,9 @@ public class PostDataServlet extends HttpServlet {
     Entity newPostEntity = newPost.postToEntity();
     datastore.put(newPostEntity);
 
-    notifyUsers(collegeId, newPost);
+    GmailConfiguration.notifyUsers(collegeId, newPost);
 
     String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
     response.sendRedirect(redirectURL);
-  }
-
-  /**
-    * Send emails to all users associated with the specific college.
-    *
-    * @param collegeId unique id of a college
-    * @throws IOException
-    */
-  public void notifyUsers(String collegeId, Post newPost) throws IOException {
-    
-    // Find all users that attend the college.
-    Filter universityFilter = new FilterPredicate("university", FilterOperator.EQUAL, collegeId);
-    Query q = new Query("User").setFilter(universityFilter);
-    PreparedQuery pq = datastore.prepare(q);
-
-    // Email the users to notify them that a new post has been added.
-    for (Entity user : pq.asIterable()) {
-      String email = user.getKey().getName().toString();
-      GmailConfiguration.sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
-    }
   }
 }
