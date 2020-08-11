@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This file provides the JavaScript induced on the landing page (index.html)
+// This file provides the JavaScript induced on the sign up page (sign-up.html) which is
+// a replica from the main page (index.html) without additional functionality to load posts.
 
 //
 // Event listener registration
@@ -51,22 +52,23 @@ async function onLoad() {
   collegeDataList.appendChild(fragment);
   collegeDataList.setAttribute('id', 'colleges');
 
-  // When users select an option from the dropdown, send them to that page.
-  document.getElementById('colleges-input').addEventListener('change', navigateUserToCollegePage);
+  // When users select an option from the dropdown, set the college id.
+  document.getElementById('colleges-input-form').addEventListener('change', setCollegeID);
 }
 
 /**
  * When the user selects a college from the dropdown, we immediately
- * navigate them to the appropriate college's page.
+ * set the ID to be that college's unique ID.
  */
-function navigateUserToCollegePage() {
-  const collegeName = document.getElementById('colleges-input').value;
+function setCollegeID() {
+  const collegeName = document.getElementById('colleges-input-form').value;
   const option = document.querySelector(`#colleges option[value='${collegeName}']`);
 
-  // Only navigate to the page if that college exists in our list of colleges.
+  // Set hidden input to hold unique college id.
   // TODO: display 'We haven't heard of that college!"/similar to the user if not recognized.
   if (option) {
     const collegeId = option.dataset.value;
-    window.location.href = `/find-events.html?collegeid=${collegeId}`;
+    const selectedCollege = document.getElementById('cID');
+    selectedCollege.value = collegeId;
   }
 }

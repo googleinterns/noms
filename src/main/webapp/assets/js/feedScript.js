@@ -130,14 +130,15 @@ async function onLoad() {
     return;
   }
 
-  // These global variables will be assigned here and never assigned again.
-  posts = await fetchPosts(collegeId);
+  // Add simple location information to the page - we do this before
+  // loading the posts because it will be much faster.
   collegeLocation = await fetchCollegeLocation(collegeId);
-
-  // Update text elements on page with fetched information.
   document.getElementById('find-events-title').innerText +=
   ` @ ${collegeLocation.name}`.toLowerCase();
 
+  // Add the posts to the page, after which we can add the map
+  // as well because the map relies on the post information existing.
+  posts = await fetchPosts(collegeId);
   addPosts(posts);
 
   // Add the embedded map to the page.
@@ -345,7 +346,6 @@ async function fetchPosts(collegeId) {
   const url = '/postData?collegeId=' + collegeId;
   const response = await fetch(url);
   const message = await response.json();
-  console.log(message);
 
   const posts = [];
 
@@ -537,7 +537,6 @@ function applyLogisticFunction(xValue, bounds) {
  * @param {array} posts
  */
 async function addPosts(posts) {
-  console.log('addPosts ' + posts);
   const allPosts = document.getElementById('all-posts');
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
@@ -615,7 +614,6 @@ async function submitModal() {
     const modalLocation = document.getElementById('modal-location').value;
     const latLngResult = await translateLocationToLatLong(modalLocation);
 
-    console.log('result ' + latLngResult);
     let url;
 
     if (latLngResult) {
