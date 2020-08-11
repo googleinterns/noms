@@ -639,6 +639,7 @@ async function submitModal() {
 
     modalForm.action = url;
     modalForm.submit();
+    createPostButton.focus();
   }
 }
 
@@ -667,9 +668,7 @@ document.addEventListener('keydown', function(e) {
       submitModalButton.focus();
       e.preventDefault();
     }
-  }
-  // If user is trying to go to the next element, make sure it wraps to the top
-  else { // if tab key is pressed
+  } else { // If user is trying to go to the next element, make sure it wraps to the top.
     if (document.activeElement === submitModalButton) {
       modalCard.focus();
       e.preventDefault();
