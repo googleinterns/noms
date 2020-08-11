@@ -12,11 +12,17 @@
 }
 
 #find-events-title {
+  outline: none;
   padding: 0 0 0 15px;
 }
 
+#find-events-title:focus {
+  color: var(--dark-green);
+  outline: none;
+}
+
 /*
- * Create Posts
+ * Create Posts (Button + Modal).
  */
 #create-post-button {
   background-color: #303030;
@@ -89,10 +95,6 @@
   top: 15px;
 }
 
-#modal-close:focus {
-  color: var(--light-teal);
-}
-
 #modal-title {
   margin-left: 12px;
 }
@@ -160,14 +162,8 @@ select {
   margin: 0;
 }
 
-#modal-year {
-  margin-right: 20px;
-}
-
-#start-am-or-pm {
-  margin-right: 20px;
-}
-
+#modal-year,
+#start-am-or-pm,
 #modal-day {
   margin-right: 20px;
 }
@@ -210,6 +206,13 @@ select {
 
 ::placeholder {
   color: #404040;
+}
+
+#modal-close:focus,
+#modal-title:focus,
+#modal-time-text:focus {
+  color: var(--dark-green);
+  outline: none;
 }
 
 @media screen and (max-width: 678px) {
@@ -370,6 +373,11 @@ select {
   transition: box-shadow 0.5s;
 }
 
+.post-card:focus {
+  box-shadow: 0 1px 10px var(--light-teal), 0 -1px 10px var(--light-teal);
+  outline: none;
+}
+
 .card-title {
   color: #303030;
   font-size: 1.5rem;
@@ -387,6 +395,13 @@ select {
 .card-description {
   color: black;
   margin-top: 1.25rem;
+}
+
+.card-title:focus,
+.card-description:focus,
+.card-subtitle:focus {
+  color: var(--dark-green);
+  outline: none;
 }
 
 @media screen and (max-width: 678px) {
