@@ -2,11 +2,11 @@
   background: white;
   border-radius: 15px;
   padding: 1rem 1rem 0.5rem 1rem;
-  margin: 1rem 1rem 0rem 1rem;
+  margin: 1rem 1rem 0 1rem;
 }
 
 #podmates {
-  background-color: #A98585;
+  background-color: #a98585;
   flex: 1 1 400px;
   height: 64vh;
   padding: 15px 15px 0 15px;
@@ -45,14 +45,14 @@ a {
 }
 
 #all-posts {
-  padding: 0px 15px 0 15px;
+  padding: 0 15px 0 15px;
   background-color: #a98585;
   display: flex;
   justify-content: space-evenly;
   flex-direction: column;
 }
 
-#map-container { 
+#map-container {
   padding: 0 15px 0 15px;
 }
 
