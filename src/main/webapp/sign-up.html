@@ -43,9 +43,10 @@
             <input type="email" name="email"  pattern=".+@google.com" title="Must be @google.com." required>
             <label class="input-name">university</label>
             <div class="selectdiv">
-              <input list="colleges" id="colleges-input-form">
+              <input type="text" list="colleges" id="colleges-input-form">
               <datalist name="colleges" id="colleges"></datalist>
             </div>
+            <input type="hidden" id="cID" name="cID">
             <div class="subscription">
               <div class="option">
                 <input type="radio" id="subscribe" name="email-notif" value="subscribe" required>
