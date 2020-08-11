@@ -22,23 +22,23 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 public class Post {
-    String postId = "";
-    String organizationName = "";
-    int month = 0;
-    int day = 0;
-    int year = 0;
-    int startHour = 0;
-    int startMinute = 0;
-    int endHour = 0;
-    int endMinute = 0;
-    String location = "";
-    Double lat = 0.0;
-    Double lng = 0.0;
-    String numberOfPeopleItFeeds = "";
-    String typeOfFood = "";
-    String description = "";
-    String collegeId = "";
-    int timeSort = 0;
+    private String postId = "";
+    private String organizationName = "";
+    private int month = 0;
+    private int day = 0;
+    private int year = 0;
+    private int startHour = 0;
+    private int startMinute = 0;
+    private int endHour = 0;
+    private int endMinute = 0;
+    private String location = "";
+    private Double lat = 0.0;
+    private Double lng = 0.0;
+    private String numberOfPeopleItFeeds = "";
+    private String typeOfFood = "";
+    private String description = "";
+    private String collegeId = "";
+    private int timeSort = 0;
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
@@ -158,4 +158,62 @@ public class Post {
 
         return newPost;
     }
+
+    /* Class Getters. */
+    public String getOrganizationName() {
+      return organizationName;
+    }
+
+    public int getMonth() {
+      return month;
+    }
+
+    public int getDay() {
+      return day;
+    }
+
+    public int getStartHour() {
+      return startHour;
+    }
+
+    public int getStartMinute() {
+      return startMinute;
+    }
+
+    public int getEndHour() {
+      return endHour;
+    }
+
+    public int getEndMinute() {
+      return endMinute;
+    }
+
+    public String getLocation() {
+      return location;
+    }
+
+    public Double getLat() {
+      return lat;
+    }
+
+    public Double getLng() {
+      return lng;
+    }
+
+    public String getNumberOfPeopleItFeeds() {
+      return numberOfPeopleItFeeds;
+    }
+
+    public String getTypeOfFood() {
+      return typeOfFood;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public String getCollegeId() {
+      return collegeId;
+    }
 }
+
