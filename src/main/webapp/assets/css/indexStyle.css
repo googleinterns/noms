@@ -211,3 +211,30 @@
     font-size: 0.9rem;
   }
 }
+
+@media screen and (min-width: 1800px) {
+  #main-container {
+    margin: 5vh 2.5%;
+  }
+
+  #map-preview {
+    flex: 0 1 40rem;
+  }
+
+  #slogan {
+    flex: 0 1 40rem;
+  }
+
+  #title-slogan {
+    font-size: 6rem;
+    line-height: 6rem;
+  }
+
+  .subtitle {
+    font-size: 1.4rem;
+  }
+
+  .emoji {
+    height: 7rem;
+  }
+}
