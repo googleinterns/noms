@@ -25,9 +25,10 @@
  * An object containing information about a location,
  * whether an entire college, building, or street.
  * @typedef {Object} LocationInfo
- * @property {string} name - The name of the location
- * @property {number} lat - The latitude of the location
- * @property {number} long - The longitude of the location
+ * @property {string} name - The name of the location.
+ * @property {number} lat - The latitude of the location.
+ * @property {number} long - The longitude of the location.
+ * @property {string} city - The city the location is in.
  */
 
 /**
@@ -248,9 +249,12 @@ async function getSecretFor(secretid) {
  * @param {function} apiToCall - Represents the option to dependency-inject a mock api call.
  * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
-async function translateLocationToLatLong(address, apiToCall = fetchTranslateLocation) {
+async function translateLocationToLatLong(address, apiToCall = fetchTranslateLocation, locality = collegeLocation) {
   try {
-    const response = await apiToCall(address);
+    // Add the college's city if it isn't already present in the query so that
+    // geolocator has a better chance at succeeding in finding lat/longs.
+    const city = locality ? locality.city : '';
+    const response = await apiToCall(address.includes(city) ? address : `${address}, ${city}`);
 
     if (!response) {
       throw new Error('POST failed for unknown reasons. Please check console.');
@@ -278,7 +282,7 @@ async function translateLocationToLatLong(address, apiToCall = fetchTranslateLoc
     return {
       name: 'formattedAddress' in result ? result.formattedAddress : address,
       lat: result.geometry.location.lat,
-      long: result.geometry.location.lng,
+      long: result.geometry.location.lng
     };
   } catch (err) {
     console.warn(err);
@@ -332,6 +336,7 @@ async function fetchCollegeLocation(collegeid) {
     name: collegeInfo.NAME,
     lat: parseFloat(collegeInfo.LAT),
     long: parseFloat(collegeInfo.LON),
+    city: collegeInfo.CITY
   };
   return newLocation;
 }

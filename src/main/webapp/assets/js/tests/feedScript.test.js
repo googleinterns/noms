@@ -126,6 +126,72 @@ describe('Geolocation Functionality', function() {
           },
         };
       };
+      const mockLocality = {
+        city: 'Corvallis'
+      };
+      const result = {
+        name: 'Southwest Jefferson Way, Corvallis OR, 97331',
+        lat: 44.5649688,
+        long: -123.2789571,
+      };
+      expect(await translateLocationToLatLong(address, mockApiFunction, mockLocality)).to.be.eql(result);
+    });
+
+    it('should add the city to the query if it wasn\'t already present', async function() {
+      const address = 'Memorial Union';
+      const mockApiFunction = async (address) => {
+        return {
+          ok: true,
+          json: async function() {
+            if (address === 'Memorial Union, Corvallis') {
+              return {
+                formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
+                geometry: {
+                  location: {
+                    lat: 44.5649688,
+                    lng: -123.2789571,
+                  },
+                },
+              };
+            } else {
+              return {};
+            }
+          },
+        };
+      };
+      const mockLocality = {
+        city: 'Corvallis'
+      };
+      const result = {
+        name: 'Southwest Jefferson Way, Corvallis OR, 97331',
+        lat: 44.5649688,
+        long: -123.2789571,
+      };
+      expect(await translateLocationToLatLong(address, mockApiFunction, mockLocality)).to.be.eql(result);
+    });
+
+    it('shouldn\'t add the city to the query if it was already present', async function() {
+      const address = 'Memorial Union, Corvallis';
+      const mockApiFunction = async (address) => {
+        return {
+          ok: true,
+          json: async function() {
+            if (address === 'Memorial Union, Corvallis') {
+              return {
+                formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
+                geometry: {
+                  location: {
+                    lat: 44.5649688,
+                    lng: -123.2789571,
+                  },
+                },
+              };
+            } else {
+              return {};
+            }
+          },
+        };
+      };
       const result = {
         name: 'Southwest Jefferson Way, Corvallis OR, 97331',
         lat: 44.5649688,
