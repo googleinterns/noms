@@ -66,8 +66,8 @@ public class PostDataServlet extends HttpServlet {
   }
 
   /* On the POST command, serializes the request information into Post objects,
-    stores the post as entity in Datastore, with the collegeId as the kind, and 
-    send users at the college with a new email about the post. */
+   * stores the post as entity in Datastore.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     String collegeId = request.getParameter("collegeId");
@@ -76,6 +76,20 @@ public class PostDataServlet extends HttpServlet {
     Entity newPostEntity = newPost.postToEntity();
     datastore.put(newPostEntity);
 
+    notifyUsers(collegeId, newPost);
+
+    String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
+    response.sendRedirect(redirectURL);
+  }
+
+  /**
+    * Send emails to all users associated with the specific college.
+    *
+    * @param collegeId unique id of a college
+    * @throws IOException
+    */
+  public void notifyUsers(String collegeId, Post newPost) throws IOException {
+    
     // Find all users that attend the college.
     Filter universityFilter = new FilterPredicate("university", FilterOperator.EQUAL, collegeId);
     Query q = new Query("User").setFilter(universityFilter);
@@ -83,11 +97,8 @@ public class PostDataServlet extends HttpServlet {
 
     // Email the users to notify them that a new post has been added.
     for (Entity user : pq.asIterable()) {
-      String email= (user.getKey().getName()).toString();
+      String email = user.getKey().getName().toString();
       GmailConfiguration.sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
     }
-
-    String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
-    response.sendRedirect(redirectURL);
   }
 }
