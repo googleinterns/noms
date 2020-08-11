@@ -64,7 +64,7 @@ function setCollegeID() {
   const collegeName = document.getElementById('colleges-input-form').value;
   const option = document.querySelector(`#colleges option[value='${collegeName}']`);
 
-  // Set hidden input to hold unique college id
+  // Set hidden input to hold unique college id.
   // TODO: display 'We haven't heard of that college!"/similar to the user if not recognized.
   if (option) {
     const collegeId = option.dataset.value;
