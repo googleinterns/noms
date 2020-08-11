@@ -39,16 +39,36 @@ async function onLoad() {
 
   // Add all colleges as datalist options. We use a document fragment because the
   // DOM is slow if we add each option individually and let the DOM update in between.
-  const frag = document.createDocumentFragment();
+  const fragment = document.createDocumentFragment();
   collegeLocations.forEach((location) => {
     const newOption = document.createElement('option');
     newOption.setAttribute('data-value', location.UNITID);
     newOption.value = location.NAME;
 
-    frag.appendChild(newOption);
+    fragment.appendChild(newOption);
   });
 
   // Add the options and restore the select-datalist relationship.
-  collegeDataList.appendChild(frag);
+  collegeDataList.appendChild(fragment);
   collegeDataList.setAttribute('id', 'colleges');
+
+  // When users select an option from the dropdown, set the college id.
+  document.getElementById('colleges-input-form').addEventListener('change', setCollegeID);
+}
+
+/**
+ * When the user selects a college from the dropdown, we immediately
+ * set the ID to be that college's unique ID.
+ */
+function setCollegeID() {
+  const collegeName = document.getElementById('colleges-input-form').value;
+  const option = document.querySelector(`#colleges option[value='${collegeName}']`);
+
+  // Set hidden input to hold unique college id.
+  // TODO: display 'We haven't heard of that college!"/similar to the user if not recognized.
+  if (option) {
+    const collegeId = option.dataset.value;
+    const selectedCollege = document.getElementById('cID');
+    selectedCollege.value = collegeId;
+  }
 }
