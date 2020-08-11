@@ -3,8 +3,8 @@
  */
 
 #col-container {
-  width: 80%;
   margin: 0 10% 50px 10%;
+  width: 80%;
 }
 
 #page-container {
@@ -49,12 +49,12 @@
  */
 
 #podmates {
-  padding: 15px;
   background-color: #a98585;
   display: flex;
-  justify-content: space-evenly;
   flex-direction: column;
   flex: 1 1 400px;
+  justify-content: space-evenly;
+  padding: 15px;
 }
 
 @media screen and (max-width: 1077px) {
@@ -72,14 +72,14 @@
 .mate {
   background: #fff;
   border-radius: 15px;
-  padding: 16px;
   margin: 16px;
+  padding: 16px;
 }
 
 img {
-  width: auto;
-  max-height: 50px;
   border-radius: 50%;
+  max-height: 50px;
+  width: auto;
 }
 
 .svg {
@@ -92,9 +92,9 @@ h4 {
 }
 
 a {
-  text-decoration: none;
   color: var(--light-maroon);
   margin-right: 5px;
+  text-decoration: none;
 }
 
 p {
