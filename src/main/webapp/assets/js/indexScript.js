@@ -60,13 +60,13 @@ async function onLoad() {
  * navigate them to the appropriate college's page.
  */
 function navigateUserToCollegePage() {
-  const collegename = document.getElementById('colleges-input').value;
-  const option = document.querySelector(`#colleges option[value='${collegename}']`);
+  const collegeName = document.getElementById('colleges-input').value;
+  const option = document.querySelector(`#colleges option[value='${collegeName}']`);
 
   // Only navigate to the page if that college exists in our list of colleges.
   // TODO: display 'We haven't heard of that college!"/similar to the user if not recognized.
   if (option) {
-    const collegeid = option.dataset.value;
-    window.location.href = `/find-events.html?collegeid=${collegeid}`;
+    const collegeId = option.dataset.value;
+    window.location.href = `/find-events.html?collegeid=${collegeId}`;
   }
 }
