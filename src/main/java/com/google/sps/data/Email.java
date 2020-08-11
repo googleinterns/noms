@@ -25,9 +25,9 @@ public final class Email {
   public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
   public static final String newPostSubject = "⭐ noms: new free food near you!";
 
-  // TODO: Find relative path instead of absolute (FileNotFoundException if just ./WelcomeEmail.html).
-  public static final String welcomeContentPath = "/home/areeta/noms/src/main/java/com/google/sps/data/WelcomeEmail.html";
-  public static final String newPostPath = "/home/areeta/noms/src/main/java/com/google/sps/data/NewPost.html";
+  // Set paths from /noms/target folder to accommodate maven run/deploy.
+  public static final String welcomeContentPath = "./assets/html_templates/WelcomeEmail.html";
+  public static final String newPostPath = "./assets/html_templates/NewPost.html";
 
   /**
     * Convert HTML to String for MimeMessage to configure it into emails.
