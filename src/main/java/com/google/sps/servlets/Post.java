@@ -158,4 +158,62 @@ public class Post {
 
         return newPost;
     }
+
+    /* Class Getters. */
+    public String getOrganizationName() {
+      return organizationName;
+    }
+
+    public int getMonth() {
+      return month;
+    }
+
+    public int getDay() {
+      return day;
+    }
+
+    public int getStartHour() {
+      return startHour;
+    }
+
+    public int getStartMinute() {
+      return startMinute;
+    }
+
+    public int getEndHour() {
+      return endHour;
+    }
+
+    public int getEndMinute() {
+      return endMinute;
+    }
+
+    public String getLocation() {
+      return location;
+    }
+
+    public Double getLat() {
+      return lat;
+    }
+
+    public Double getLng() {
+      return lng;
+    }
+
+    public String getNumberOfPeopleItFeeds() {
+      return numberOfPeopleItFeeds;
+    }
+
+    public String getTypeOfFood() {
+      return typeOfFood;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public String getCollegeId() {
+      return collegeId;
+    }
 }
+
