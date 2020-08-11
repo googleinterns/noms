@@ -90,3 +90,7 @@ h4 {
 a {
   text-decoration: none;
 }
+
+p {
+  margin-block-end: 0;
+}
