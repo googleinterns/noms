@@ -24,7 +24,7 @@
  * Create Posts (Button + Modal).
  */
 #create-post-button {
-  background-color: #303030;
+  background-color: var(--dark-grey);
   border: none;
   border-radius: 50px;
   box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
@@ -48,8 +48,8 @@
 
 #create-post-button:hover {
   background-color: white;
-  border: 1px solid #303030;
-  color: #303030;
+  border: 1px solid var(--dark-grey);
+  color: var(--dark-grey);
   cursor: pointer;
 }
 
@@ -186,7 +186,7 @@ select {
 }
 
 #modal-submit:focus {
-  background-color: #abcbbc;
+  background-color: var(--light-teal);
 }
 
 #modal-submit:hover {
@@ -378,7 +378,7 @@ select {
 }
 
 .card-title {
-  color: #303030;
+  color: var(--dark-grey);
   font-size: 1.5rem;
   margin-bottom: 0;
 }
