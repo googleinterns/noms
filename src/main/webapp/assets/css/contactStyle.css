@@ -47,6 +47,9 @@ a {
 #all-posts {
   padding: 0px 15px 0 15px;
   background-color: #a98585;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
 }
 
 #map-container { 
