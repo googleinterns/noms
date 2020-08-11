@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This file provides the JavaScript induced on the sign up page (sign-up.html) which is 
+// This file provides the JavaScript induced on the sign up page (sign-up.html) which is
 // a replica from the main page (index.html) without additional functionality to load posts.
 
 //
@@ -37,7 +37,7 @@ async function onLoad() {
   const collegeDataList = document.getElementById('colleges');
   collegeDataList.removeAttribute('id');
 
-  // Add all colleges as datalist options. We use document fragments because the
+  // Add all colleges as datalist options. We use a document fragment because the
   // DOM is slow if we add each option individually and let the DOM update in between.
   const frag = document.createDocumentFragment();
   collegeLocations.forEach((location) => {
