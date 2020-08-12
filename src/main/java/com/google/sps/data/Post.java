@@ -12,7 +12,8 @@ Holds the information in the cards
   - College Id
 */
 
-package com.google.sps.servlets;
+package com.google.sps.data;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -22,6 +23,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 public class Post {
+
     private String postId = "";
     private String organizationName = "";
     private int month = 0;
@@ -216,4 +218,3 @@ public class Post {
       return collegeId;
     }
 }
-
