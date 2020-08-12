@@ -44,3 +44,23 @@ function toggleNav() {
   burger.classList.toggle('fa-times');
   nav.classList.toggle('nav-active');
 }
+
+/**
+ * Gets the secret value corresponding to a secret ID from GCP secrets store.
+ * @param {string} secretid - The secret's id, as defined in the secrets store.
+ * @return {string | null} - Either the secret for the requested ID, or else null.
+ */
+async function getSecretFor(secretid) {
+  try {
+    const response = await fetch('/secretsManager?id=' + secretid, {method: 'POST'});
+    if (!response.ok) {
+      throw new Error(response.status);
+    } else {
+      return await response.text();
+    }
+  } catch (err) {
+    console.warn(err);
+    removeMapSpinner();
+    return null;
+  }
+}

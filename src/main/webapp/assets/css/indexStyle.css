@@ -95,12 +95,16 @@
   border: #9d5a5a solid 1px;
   border-radius: 4px;
   flex: 0 1 30rem;
+  height: 30rem;
   margin: 3rem;
   padding: 2rem;
   width: 100%;
 }
 
-#map-preview-img {
+#map {
+  background: var(--grey);
+  height: 90%;
+  min-width: 100px;
   width: 100%;
 }
 
@@ -214,7 +218,7 @@
 
 @media screen and (min-width: 1800px) {
   #main-container {
-    margin: 5vh 2.5%;
+    margin: 10vh 2.5%;
   }
 
   #map-preview {

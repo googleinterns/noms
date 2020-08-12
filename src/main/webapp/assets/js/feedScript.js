@@ -224,26 +224,6 @@ function onKeyUp(event) {
 }
 
 /**
- * Gets the secret value corresponding to a secret ID from GCP secrets store.
- * @param {string} secretid - The secret's id, as defined in the secrets store.
- * @return {string | null} - Either the secret for the requested ID, or else null.
- */
-async function getSecretFor(secretid) {
-  try {
-    const response = await fetch('/secretsManager?id=' + secretid, {method: 'POST'});
-    if (!response.ok) {
-      throw new Error(response.status);
-    } else {
-      return await response.text();
-    }
-  } catch (err) {
-    console.warn(err);
-    removeMapSpinner();
-    return null;
-  }
-}
-
-/**
  * Translates a location from its name to a pair of latitude and longitudes.
  * @param {string} address - The address to translate to lat/long.
  * @param {function} apiToCall - Represents the option to dependency-inject a mock api call.
