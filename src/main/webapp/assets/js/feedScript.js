@@ -630,7 +630,7 @@ async function submitModal() {
       const modalError = document.createElement('div');
       modalError.setAttribute('id', 'modal-error');
       modalError.innerText =
-        `We couldn't find address '${modalLocation}' ` +
+        `We couldn't find address '${modalLocation}'. ` +
         'Please check your address for errors. ' +
         'If you wish to submit anyway, no pin will be added to the map.';
       document.getElementById('modal-form')

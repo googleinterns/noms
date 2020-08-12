@@ -1,6 +1,14 @@
 // ESLint doesn't know that our functions are defined in other files.
 /* eslint-disable no-undef */
 
+const MEMORIAL_UNION_FORMATTED_ADDRESS = 'Southwest Jefferson Way, Corvallis OR, 97331';
+const MEMORIAL_UNION_GEOMETRY = {
+  location: {
+    lat: 44.5649688,
+    lng: -123.2789571,
+  },
+};
+
 /**
  * Test suite for all functions that control the placement/sizing of map markers.
  */
@@ -115,13 +123,8 @@ describe('Geolocation Functionality', function() {
           ok: true,
           json: async function() {
             return {
-              formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
-              geometry: {
-                location: {
-                  lat: 44.5649688,
-                  lng: -123.2789571,
-                },
-              },
+              formattedAddress: MEMORIAL_UNION_FORMATTED_ADDRESS,
+              geometry: MEMORIAL_UNION_GEOMETRY,
             };
           },
         };
@@ -130,9 +133,9 @@ describe('Geolocation Functionality', function() {
         city: 'Corvallis',
       };
       const result = {
-        name: 'Southwest Jefferson Way, Corvallis OR, 97331',
-        lat: 44.5649688,
-        long: -123.2789571,
+        name: MEMORIAL_UNION_FORMATTED_ADDRESS,
+        lat: MEMORIAL_UNION_GEOMETRY.location.lat,
+        long: MEMORIAL_UNION_GEOMETRY.location.lng,
       };
       expect(await translateLocationToLatLong(address, mockApiFunction, mockLocality))
           .to.be.eql(result);
@@ -146,13 +149,8 @@ describe('Geolocation Functionality', function() {
           json: async function() {
             if (address === 'Memorial Union, Corvallis') {
               return {
-                formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
-                geometry: {
-                  location: {
-                    lat: 44.5649688,
-                    lng: -123.2789571,
-                  },
-                },
+                formattedAddress: MEMORIAL_UNION_FORMATTED_ADDRESS,
+                geometry: MEMORIAL_UNION_GEOMETRY,
               };
             } else {
               return {};
@@ -164,9 +162,9 @@ describe('Geolocation Functionality', function() {
         city: 'Corvallis',
       };
       const result = {
-        name: 'Southwest Jefferson Way, Corvallis OR, 97331',
-        lat: 44.5649688,
-        long: -123.2789571,
+        name: MEMORIAL_UNION_FORMATTED_ADDRESS,
+        lat: MEMORIAL_UNION_GEOMETRY.location.lat,
+        long: MEMORIAL_UNION_GEOMETRY.location.lng,
       };
       expect(await translateLocationToLatLong(address, mockApiFunction, mockLocality))
           .to.be.eql(result);
@@ -180,13 +178,8 @@ describe('Geolocation Functionality', function() {
           json: async function() {
             if (address === 'Memorial Union, Corvallis') {
               return {
-                formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
-                geometry: {
-                  location: {
-                    lat: 44.5649688,
-                    lng: -123.2789571,
-                  },
-                },
+                formattedAddress: MEMORIAL_UNION_FORMATTED_ADDRESS,
+                geometry: MEMORIAL_UNION_GEOMETRY,
               };
             } else {
               return {};
@@ -195,9 +188,9 @@ describe('Geolocation Functionality', function() {
         };
       };
       const result = {
-        name: 'Southwest Jefferson Way, Corvallis OR, 97331',
-        lat: 44.5649688,
-        long: -123.2789571,
+        name: MEMORIAL_UNION_FORMATTED_ADDRESS,
+        lat: MEMORIAL_UNION_GEOMETRY.location.lat,
+        long: MEMORIAL_UNION_GEOMETRY.location.lng,
       };
       expect(await translateLocationToLatLong(address, mockApiFunction)).to.be.eql(result);
     });
@@ -236,7 +229,7 @@ describe('Geolocation Functionality', function() {
           ok: true,
           json: async function() {
             return {
-              formattedAddress: 'Southwest Jefferson Way, Corvallis OR, 97331',
+              formattedAddress: MEMORIAL_UNION_FORMATTED_ADDRESS,
               geometry: {},
             };
           },
