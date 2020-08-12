@@ -31,7 +31,7 @@ let collegeLocations = null;
 // Constants
 //
 
-const GOOGLEPLEX_LOCATION = { lat: 37.422, lng: -122.084 };
+const GOOGLEPLEX_LOCATION = { lat: 37.4225, lng: -122.084 };
 
 //
 // Functions
@@ -78,11 +78,11 @@ function initMap() {
   // Turn off the labels on the map and change the water color
   // so that the map fits the landing page's aesthetic better.
   map = new google.maps.Map(document.getElementById('map'),
-      {
-        center: {lat: GOOGLEPLEX_LOCATION.lat, lng: GOOGLEPLEX_LOCATION},
-        zoom: 3,
-        disableDefaultUI: true,
-      },
+    {
+      center: {lat: GOOGLEPLEX_LOCATION.lat, lng: GOOGLEPLEX_LOCATION.lng},
+      zoom: 17,
+      disableDefaultUI: true,
+    },
   );
 
   new google.maps.Marker({

@@ -104,14 +104,14 @@ function initMap() {
   // so that the map fits the landing page's aesthetic better.
   map = new google.maps.Map(document.getElementById('map'),
       {
-        center: {lat: US_GEOGRAPHICAL_CENTER.lat, lng: US_GEOGRAPHICAL_CENTER},
+        center: {lat: US_GEOGRAPHICAL_CENTER.lat, lng: US_GEOGRAPHICAL_CENTER.lng},
         zoom: 3,
         disableDefaultUI: true,
         styles: [
           {
             featureType: 'water',
             elementType: 'geometry',
-            stylers: [{color: '#e3e3e3'}]
+            stylers: [{color: '#f0f5f7'}]
           },
           {
             featureType: 'all',
