@@ -95,7 +95,6 @@
   border: #9d5a5a solid 1px;
   border-radius: 4px;
   flex: 0 1 30rem;
-  height: 30rem;
   margin: 3rem;
   padding: 2rem;
   width: 100%;
@@ -103,7 +102,7 @@
 
 #map {
   background: var(--grey);
-  height: 90%;
+  height: 23rem;
   min-width: 100px;
   width: 100%;
 }
