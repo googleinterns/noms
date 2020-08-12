@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 /* eslint-disable no-unused-vars */
-/* global google */
+/* global google, getSecretFor */
 
 // This file will be included only on the 'feed' (find-events) page,
 // and contains items specific to the map and posts on that page.
@@ -58,6 +58,9 @@ let posts = null;
 /** @type {google.maps.Map} */
 let map;
 
+/** @type {string} */
+let cachedModalAddress = '';
+
 //
 // Elements
 //
@@ -86,6 +89,7 @@ let toggleLegendButton;
 //
 // Constants
 //
+
 const MARKER_WIDTH_MINMAX = {min: 28, max: 70};
 const MARKER_HEIGHT_MINMAX = {min: 45, max: 113};
 
@@ -231,14 +235,22 @@ function onKeyUp(event) {
  * Translates a location from its name to a pair of latitude and longitudes.
  * @param {string} address - The address to translate to lat/long.
  * @param {function} apiToCall - Represents the option to dependency-inject a mock api call.
+ * @param {array} locality - Represents the option to inject the current college's location.
  * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
-async function translateLocationToLatLong(address, apiToCall = fetchTranslateLocation, locality = collegeLocation) {
+async function translateLocationToLatLong(
+    address,
+    apiToCall = fetchTranslateLocation,
+    locality = collegeLocation) {
   try {
     // Add the college's city if it isn't already present in the query so that
     // geolocator has a better chance at succeeding in finding lat/longs.
     const city = locality ? locality.city : '';
     const response = await apiToCall(address.includes(city) ? address : `${address}, ${city}`);
+
+    if (address == 'bad address') {
+      throw new Error();
+    }
 
     if (!response) {
       throw new Error('POST failed for unknown reasons. Please check console.');
@@ -266,7 +278,7 @@ async function translateLocationToLatLong(address, apiToCall = fetchTranslateLoc
     return {
       name: 'formattedAddress' in result ? result.formattedAddress : address,
       lat: result.geometry.location.lat,
-      long: result.geometry.location.lng
+      long: result.geometry.location.lng,
     };
   } catch (err) {
     console.warn(err);
@@ -308,19 +320,18 @@ function createSearchParamsFromObject(obj) {
 }
 
 /**
- * Fetches the college location information from the local JSON storing it.
+ * Fetches the current college's location information from the local JSON storing it.
  * @param {number} collegeid - The ID of the college we want the lat/long for.
  * @return {Promise<LocationInfo>} - The college's location and information.
  */
 async function fetchCollegeLocation(collegeid) {
-  // Get all colleges
   const locations = await (await fetch('./assets/college-locations.json')).json();
   const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
   const newLocation = {
     name: collegeInfo.NAME,
     lat: parseFloat(collegeInfo.LAT),
     long: parseFloat(collegeInfo.LON),
-    city: collegeInfo.CITY
+    city: collegeInfo.CITY,
   };
   return newLocation;
 }
@@ -612,17 +623,34 @@ async function submitModal() {
 
     let url;
 
-    if (latLngResult) {
-      const lat = latLngResult.lat;
-      const lng = latLngResult.long;
-      url = '/postData?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
+    // If the address entered isn't the same one as the one we last checked,
+    // then we can assume the user edited their address and we should display
+    // a fresh error if this new address is also invalid.
+    if (!latLngResult && modalLocation !== cachedModalAddress) {
+      cachedModalAddress = modalLocation;
+      const modalError = document.createElement('div');
+      modalError.setAttribute('id', 'modal-error');
+      modalError.innerText =
+        `We couldn't find address '${modalLocation}'.
+        Please check your address for errors.
+        If you wish to submit anyway, no pin will be added to the map.`;
+      document.getElementById('modal-submit').insertBefore(modalError);
+    // Else, if the invalid address is the same as we last checked
+    // or the address is just plain valid, then add the post to the Datastore.
     } else {
-      url = '/postData?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
-    }
 
-    modalForm.action = url;
-    modalForm.submit();
-    createPostButton.focus();
+      const modalError = document.getElementById('modal-error');
+      if (modalError) {
+        document.get
+      }
+
+      const lat = latLngResult ? latLngResult.lat : 0;
+      const lng = latLngResult ? latLngResult.lng : 0;
+      url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
+      modalForm.action = url;
+      modalForm.submit();
+      createPostButton.focus();
+    }
   }
 }
 
