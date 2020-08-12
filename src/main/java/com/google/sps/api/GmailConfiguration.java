@@ -27,7 +27,7 @@ import com.google.api.client.util.Base64;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.google.sps.data.Email;
-import com.google.sps.servlets.Post;
+import com.google.sps.data.Post;
 import com.google.sps.servlets.PostDataServlet;
 
 import java.io.ByteArrayOutputStream;
@@ -148,7 +148,7 @@ public class GmailConfiguration {
   public static void notifyUsers(String collegeId, Post newPost) throws IOException {
     
     // Find all users that attend the college.
-    Filter universityFilter = new FilterPredicate("university", FilterOperator.EQUAL, collegeId);
+    Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
     Query q = new Query("User").setFilter(universityFilter);
     PreparedQuery pq = PostDataServlet.datastore.prepare(q);
 

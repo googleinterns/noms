@@ -27,6 +27,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.sps.api.GmailConfiguration;
+import com.google.sps.data.Post;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;

@@ -14,7 +14,7 @@
 
 package com.google.sps.data;
 
-import com.google.sps.servlets.Post;
+import com.google.sps.data.Post;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
@@ -54,10 +54,11 @@ public final class Email {
 
     // TODO: Include AM/PM, date formatted, and time zone to be more user friendly.
     String emailContent = getStringFromHTML(newPostPath);
+    System.out.println("email content reached");
     emailContent = emailContent.replace("[organizationName]", post.getOrganizationName());
     emailContent = emailContent.replace("[location]", post.getLocation());
     emailContent = emailContent.replace("[month]",  Integer.toString(post.getMonth()));
-    emailContent = emailContent.replace("[day]", Integer.toString(post.getMonth()))
+    emailContent = emailContent.replace("[day]", Integer.toString(post.getMonth()));
     emailContent = emailContent.replace("[startHour]", Integer.toString(post.getStartHour()));
     emailContent = emailContent.replace("[startMinute]", Integer.toString(post.getStartMinute()));
     emailContent = emailContent.replace("[endHour]", Integer.toString(post.getEndHour()));

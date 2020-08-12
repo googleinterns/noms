@@ -12,7 +12,8 @@ Holds the information in the cards
   - College Id
 */
 
-package com.google.sps.servlets;
+package com.google.sps.data;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
