@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', onLoad);
 
 let collegeLocations = null;
 
+//
+// Constants
+//
+
+const US_GEOGRAPHICAL_CENTER = { lat: 39.50, lng: -98.35 };
 
 //
 // Functions
@@ -99,14 +104,14 @@ function initMap() {
   // so that the map fits the landing page's aesthetic better.
   map = new google.maps.Map(document.getElementById('map'),
       {
-        center: {lat: 39.50, lng: -98.35},
+        center: {lat: US_GEOGRAPHICAL_CENTER.lat, lng: US_GEOGRAPHICAL_CENTER},
         zoom: 3,
         disableDefaultUI: true,
         styles: [
           {
             featureType: 'water',
             elementType: 'geometry',
-            stylers: [{color: '#c7c7c7'}]
+            stylers: [{color: '#e3e3e3'}]
           },
           {
             featureType: 'all',
@@ -122,7 +127,7 @@ function initMap() {
   // We only show 300 of the colleges to the user because a 
   // map with 7000 pins doesn't look good.
   const lessColleges =
-    new Array(300)
+    new Array(30)
       .fill(0)
       .map((c) => Math.floor(Math.random() * collegeLocations.length))
       .map((i) => collegeLocations[i]);
@@ -132,7 +137,6 @@ function initMap() {
       position: {lat: college.LAT, lng: college.LON},
       map: map,
       title: college.NAME,
-      icon: icon,
     });
   }
 }
