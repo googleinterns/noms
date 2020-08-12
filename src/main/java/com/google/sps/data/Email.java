@@ -54,15 +54,15 @@ public final class Email {
 
     // TODO: Include AM/PM, date formatted, and time zone to be more user friendly.
     String emailContent = getStringFromHTML(newPostPath);
-    emailContent = emailContent.replace("[organizationName]", post.organizationName);
-    emailContent = emailContent.replace("[location]", post.location);
-    emailContent = emailContent.replace("[month]",  Integer.toString(post.month));
-    emailContent = emailContent.replace("[day]", Integer.toString(post.day));
-    emailContent = emailContent.replace("[startHour]", Integer.toString(post.startHour));
-    emailContent = emailContent.replace("[startMinute]", Integer.toString(post.startMinute));
-    emailContent = emailContent.replace("[endHour]", Integer.toString(post.endHour));
-    emailContent = emailContent.replace("[endMinute]", Integer.toString(post.endMinute));
-    emailContent = emailContent.replace("[description]", post.description);
+    emailContent = emailContent.replace("[organizationName]", post.getOrganizationName());
+    emailContent = emailContent.replace("[location]", post.getLocation());
+    emailContent = emailContent.replace("[month]",  Integer.toString(post.getMonth()));
+    emailContent = emailContent.replace("[day]", Integer.toString(post.getMonth()))
+    emailContent = emailContent.replace("[startHour]", Integer.toString(post.getStartHour()));
+    emailContent = emailContent.replace("[startMinute]", Integer.toString(post.getStartMinute()));
+    emailContent = emailContent.replace("[endHour]", Integer.toString(post.getEndHour()));
+    emailContent = emailContent.replace("[endMinute]", Integer.toString(post.getEndMinute()));
+    emailContent = emailContent.replace("[description]", post.getDescription());
     return emailContent;
   }
 }
