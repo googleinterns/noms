@@ -68,8 +68,6 @@ function addMapToPage() {
  * Initializes the embedded Google Maps map.
  */
 function initMap() {
-  // Turn off the labels on the map and change the water color
-  // so that the map fits the landing page's aesthetic better.
   const map = new google.maps.Map(document.getElementById('map'),
       {
         center: {lat: GOOGLEPLEX_LOCATION.lat, lng: GOOGLEPLEX_LOCATION.lng},
