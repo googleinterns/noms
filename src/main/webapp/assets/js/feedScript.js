@@ -248,10 +248,6 @@ async function translateLocationToLatLong(
     const city = locality ? locality.city : '';
     const response = await apiToCall(address.includes(city) ? address : `${address}, ${city}`);
 
-    if (address == 'bad address') {
-      throw new Error();
-    }
-
     if (!response) {
       throw new Error('POST failed for unknown reasons. Please check console.');
     }
@@ -634,18 +630,19 @@ async function submitModal() {
         `We couldn't find address '${modalLocation}'.
         Please check your address for errors.
         If you wish to submit anyway, no pin will be added to the map.`;
-      document.getElementById('modal-submit').insertBefore(modalError);
+      document.getElementById('modal-form')
+        .insertBefore(modalError, document.getElementById('modal-submit'));
     // Else, if the invalid address is the same as we last checked
     // or the address is just plain valid, then add the post to the Datastore.
     } else {
 
       const modalError = document.getElementById('modal-error');
       if (modalError) {
-        document.get
+        document.getElementById('modal-form').removeChild(modalError);
       }
 
       const lat = latLngResult ? latLngResult.lat : 0;
-      const lng = latLngResult ? latLngResult.lng : 0;
+      const lng = latLngResult ? latLngResult.long : 0;
       url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
       modalForm.action = url;
       modalForm.submit();
