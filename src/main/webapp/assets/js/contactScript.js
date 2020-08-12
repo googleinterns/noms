@@ -11,8 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// This file provides the JavaScript induced on the landing page (index.html)
+/* global getSecretFor, google */
 
 //
 // Event listener registration
@@ -22,16 +21,10 @@
 document.addEventListener('DOMContentLoaded', onLoad);
 
 //
-// Globals
-//
-
-let collegeLocations = null;
-
-//
 // Constants
 //
 
-const GOOGLEPLEX_LOCATION = { lat: 37.4225, lng: -122.084 };
+const GOOGLEPLEX_LOCATION = {lat: 37.4225, lng: -122.084};
 
 //
 // Functions
@@ -50,25 +43,25 @@ async function onLoad() {
 * to retrieve the secret for the map, then we display an error to the user.
 */
 function addMapToPage() {
- getSecretFor('javascript-maps-api').then((key) => {
-   if (key === null) {
-     const mapElement = document.getElementById('map-info-container');
-     const errorElement = document.createElement('div');
-     errorElement.setAttribute('id', 'map-error');
-     errorElement.innerText = `An error occured while fetching the credentials
-                               needed to view the map. Try refreshing the page;
-                               if the error persists, please contact us above.`;
-     mapElement.appendChild(errorElement);
-     return;
-   }
+  getSecretFor('javascript-maps-api').then((key) => {
+    if (key === null) {
+      const mapElement = document.getElementById('map-info-container');
+      const errorElement = document.createElement('div');
+      errorElement.setAttribute('id', 'map-error');
+      errorElement.innerText = `An error occured while fetching the credentials
+                                needed to view the map. Try refreshing the page;
+                                if the error persists, please contact us above.`;
+      mapElement.appendChild(errorElement);
+      return;
+    }
 
-   const script = document.createElement('script');
-   script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
-   script.defer = true;
-   script.async = true;
-   window.initMap = initMap;
-   document.head.appendChild(script);
- });
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
+    script.defer = true;
+    script.async = true;
+    window.initMap = initMap;
+    document.head.appendChild(script);
+  });
 }
 
 /**
@@ -77,12 +70,12 @@ function addMapToPage() {
 function initMap() {
   // Turn off the labels on the map and change the water color
   // so that the map fits the landing page's aesthetic better.
-  map = new google.maps.Map(document.getElementById('map'),
-    {
-      center: {lat: GOOGLEPLEX_LOCATION.lat, lng: GOOGLEPLEX_LOCATION.lng},
-      zoom: 17,
-      disableDefaultUI: true,
-    },
+  const map = new google.maps.Map(document.getElementById('map'),
+      {
+        center: {lat: GOOGLEPLEX_LOCATION.lat, lng: GOOGLEPLEX_LOCATION.lng},
+        zoom: 17,
+        disableDefaultUI: true,
+      },
   );
 
   new google.maps.Marker({
