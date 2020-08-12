@@ -403,26 +403,28 @@ function initMap() {
       origin: new google.maps.Point(0, 0),
     };
 
-    const marker = new google.maps.Marker({
-      position: {lat: post.location.lat, lng: post.location.long},
-      map: map,
-      title: post.eventStartTime > new Date() ?
-        `${post.organizationName} (not started yet)` :
-        `${post.organizationName} (happening now)`,
-      opacity: getMapMarkerOpacity(now, post.eventStartTime, post.eventEndTime),
-      icon: icon,
-    });
-
-    marker.addListener('click', function() {
-      const postElement = document.getElementById(post.id);
-      postElement.scrollIntoView({block: 'center'});
-      postElement.style.boxShadow = '0 1px 20px #939393, 0 -1px 20px #939393';
-
-      // JS does not have native sleep(), so we can spoof the behavior with Promises.
-      new Promise((r) => setTimeout(r, 1000)).then(() => {
-        postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
+    if (post.location.lat && post.location.lng) {
+      const marker = new google.maps.Marker({
+        position: {lat: post.location.lat, lng: post.location.long},
+        map: map,
+        title: post.eventStartTime > new Date() ?
+          `${post.organizationName} (not started yet)` :
+          `${post.organizationName} (happening now)`,
+        opacity: getMapMarkerOpacity(now, post.eventStartTime, post.eventEndTime),
+        icon: icon,
       });
-    });
+
+      marker.addListener('click', function() {
+        const postElement = document.getElementById(post.id);
+        postElement.scrollIntoView({block: 'center'});
+        postElement.style.boxShadow = '0 1px 20px #939393, 0 -1px 20px #939393';
+
+        // JS does not have native sleep(), so we can spoof the behavior with Promises.
+        new Promise((r) => setTimeout(r, 1000)).then(() => {
+          postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
+        });
+      });
+    }
   });
 
   // Get the user's position and show it as a marker, if they consent and their browser supports
