@@ -190,6 +190,7 @@ function addMapButtons() {
 function addMapToPage() {
   getSecretFor('javascript-maps-api').then((key) => {
     if (key === null) {
+      removeMapSpinner();
       const mapElement = document.getElementById('map-info-container');
       const errorElement = document.createElement('div');
       errorElement.setAttribute('id', 'map-error');
@@ -403,7 +404,7 @@ function initMap() {
       origin: new google.maps.Point(0, 0),
     };
 
-    if (post.location.lat && post.location.lng) {
+    if (post.location.lat && post.location.long) {
       const marker = new google.maps.Marker({
         position: {lat: post.location.lat, lng: post.location.long},
         map: map,

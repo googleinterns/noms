@@ -63,7 +63,6 @@ async function getSecretFor(secretid) {
     }
   } catch (err) {
     console.warn(err);
-    removeMapSpinner();
     return null;
   }
 }
