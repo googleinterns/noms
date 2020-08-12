@@ -127,14 +127,15 @@ describe('Geolocation Functionality', function() {
         };
       };
       const mockLocality = {
-        city: 'Corvallis'
+        city: 'Corvallis',
       };
       const result = {
         name: 'Southwest Jefferson Way, Corvallis OR, 97331',
         lat: 44.5649688,
         long: -123.2789571,
       };
-      expect(await translateLocationToLatLong(address, mockApiFunction, mockLocality)).to.be.eql(result);
+      expect(await translateLocationToLatLong(address, mockApiFunction, mockLocality))
+          .to.be.eql(result);
     });
 
     it('should add the city to the query if it wasn\'t already present', async function() {
@@ -160,14 +161,15 @@ describe('Geolocation Functionality', function() {
         };
       };
       const mockLocality = {
-        city: 'Corvallis'
+        city: 'Corvallis',
       };
       const result = {
         name: 'Southwest Jefferson Way, Corvallis OR, 97331',
         lat: 44.5649688,
         long: -123.2789571,
       };
-      expect(await translateLocationToLatLong(address, mockApiFunction, mockLocality)).to.be.eql(result);
+      expect(await translateLocationToLatLong(address, mockApiFunction, mockLocality))
+          .to.be.eql(result);
     });
 
     it('shouldn\'t add the city to the query if it was already present', async function() {

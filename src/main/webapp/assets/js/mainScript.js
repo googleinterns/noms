@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Functions on this page might be used in other files, so we don't want those lint errors.
+/* eslint-disable no-unused-vars */
+
 // This file will be included on every page, and contains items
 // that are applicable application-wide, such as nav-bar functionality
 
