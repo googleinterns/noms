@@ -47,7 +47,7 @@ public class UserDataServlet extends HttpServlet {
     // Get the input from the form.
     String name = request.getParameter("name");
     String email = request.getParameter("email");
-    String university = request.getParameter("university");
+    String college = request.getParameter("cID");
     String subscription = request.getParameter("email-notif");
 
     // Check if user wants to unsubscribe.
@@ -66,7 +66,7 @@ public class UserDataServlet extends HttpServlet {
 
       Entity userEntity = new Entity("User", email);
       userEntity.setProperty("name", name);
-      userEntity.setProperty("university", university);
+      userEntity.setProperty("college", college);
 
       // Datastores updates the entity if it existed before based on email key.
       datastore.put(userEntity);

@@ -39,33 +39,37 @@
  * Colleges dropdown
  */
 
-#colleges-select {
+#colleges-datalist {
   margin: 0;
 }
 
-select:invalid {
-  color: gray;
+#colleges-input {
+  background: #dddbdb;
+  border: 2px solid #dddbdb;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: #484848;
+  display: block;
+  font-size: 1rem;
+  padding: 0.8rem 1.3rem;
+  margin: auto;
+  width: 100%;
 }
 
-.selectdiv {
-  position: relative;
-}
-
-select::-ms-expand {
+#colleges-input::-webkit-calendar-picker-indicator {
   display: none;
 }
 
-.selectdiv::after {
-  color: #565656;
-  content: 'v';
-  font: 20px monospace;
-  pointer-events: none;
-  position: absolute;
-  right: 25px;
-  top: 12px;
+#colleges-input:focus {
+  border: 2px solid #858585;
+  outline: none;
 }
 
-.selectdiv select {
+#colleges-input::placeholder {
+  color: #484848;
+}
+
+.selectdiv datalist {
   appearance: none;
   border: 2px solid #d8d8d8;
   -webkit-appearance: none;
@@ -77,7 +81,7 @@ select::-ms-expand {
   padding: 0 24px;
 }
 
-.selectdiv select:focus {
+.selectdiv datalist:focus {
   border: 2px solid #ababab;
   outline: none;
 }
@@ -201,5 +205,9 @@ select::-ms-expand {
 
   .emoji {
     height: 3rem;
+  }
+
+  #colleges-input {
+    font-size: 0.9rem;
   }
 }

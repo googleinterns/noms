@@ -9,6 +9,7 @@
   --off-white: #f2f0f0;
   --peach: #f2ddc9;
   --tan: #e4c492;
+  --dark-grey: #303030;
 }
 
 html,
@@ -199,10 +200,11 @@ header {
   padding: 1rem;
 }
 
+#colleges-input-form,
 input[type=text],
 input[type=email],
 select {
-  background: rgba(27, 24, 24, 0.1);
+  background: #ffffff54;
   border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 10px;
@@ -213,9 +215,10 @@ select {
 }
 
 input[type=radio] {
-  background: rgba(242, 221, 201, 0.5);
+  background: #f2ddc9;
   border-radius: 20px;
   height: 30px;
+  opacity: 0.5;
   width: 50px;
 }
 

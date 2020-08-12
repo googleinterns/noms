@@ -15,11 +15,16 @@
   padding: 0 0 0 15px;
 }
 
+#find-events-title:focus {
+  color: var(--dark-green);
+  outline: none;
+}
+
 /*
- * Create Posts
+ * Create Posts (Button + Modal).
  */
 #create-post-button {
-  background-color: #303030;
+  background-color: var(--dark-grey);
   border: none;
   border-radius: 50px;
   box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
@@ -37,10 +42,14 @@
   width: 100%;
 }
 
+#create-post-button:focus {
+  background-color: var(--light-teal);
+}
+
 #create-post-button:hover {
   background-color: white;
-  border: 1px solid #303030;
-  color: #303030;
+  border: 1px solid var(--dark-grey);
+  color: var(--dark-grey);
   cursor: pointer;
 }
 
@@ -68,6 +77,11 @@
   top: 13%;
   width: 50%;
   z-index: 1;
+}
+
+#modal-create-post:focus {
+  box-shadow: 0 1px 10px var(--light-teal), 0 -1px 10px var(--light-teal);
+  outline: none;
 }
 
 #modal-close {
@@ -147,14 +161,8 @@ select {
   margin: 0;
 }
 
-#modal-year {
-  margin-right: 20px;
-}
-
-#start-am-or-pm {
-  margin-right: 20px;
-}
-
+#modal-year,
+#start-am-or-pm,
 #modal-day {
   margin-right: 20px;
 }
@@ -177,6 +185,10 @@ select {
   width: 80px;
 }
 
+#modal-submit:focus {
+  background-color: var(--light-teal);
+}
+
 #modal-submit:hover {
   background: white;
   border: 1px solid var(--dark-green);
@@ -193,6 +205,13 @@ select {
 
 ::placeholder {
   color: #404040;
+}
+
+#modal-close:focus,
+#modal-title:focus,
+#modal-time-text:focus {
+  color: var(--dark-green);
+  outline: none;
 }
 
 @media screen and (max-width: 678px) {
@@ -353,8 +372,13 @@ select {
   transition: box-shadow 0.5s;
 }
 
+.post-card:focus {
+  box-shadow: 0 1px 10px var(--light-teal), 0 -1px 10px var(--light-teal);
+  outline: none;
+}
+
 .card-title {
-  color: #303030;
+  color: var(--dark-grey);
   font-size: 1.5rem;
   margin-bottom: 0;
 }
@@ -370,6 +394,13 @@ select {
 .card-description {
   color: black;
   margin-top: 1.25rem;
+}
+
+.card-title:focus,
+.card-description:focus,
+.card-subtitle:focus {
+  color: var(--dark-green);
+  outline: none;
 }
 
 @media screen and (max-width: 678px) {
