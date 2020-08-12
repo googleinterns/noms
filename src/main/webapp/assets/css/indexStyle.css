@@ -102,7 +102,7 @@
 
 #map {
   background: var(--grey);
-  height: 23rem;
+  height: 20rem;
   min-width: 100px;
   width: 100%;
 }

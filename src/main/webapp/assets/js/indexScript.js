@@ -33,6 +33,7 @@ let collegeLocations = null;
 //
 
 const US_GEOGRAPHICAL_CENTER = {lat: 39.50, lng: -98.35};
+const MINIMUM_DEGREES_SEPARATION = 2.5;
 
 //
 // Functions
@@ -126,12 +127,13 @@ function initMap() {
   );
 
   // We only show 30 of the colleges to the user because a
-  // map with 7000 pins doesn't look good.
+  // map with thousands of pins doesn't look good.
+  const representativeColleges = getRepresentativeCollegeSample(collegeLocations);
   const lessColleges =
     new Array(30)
         .fill(0)
-        .map((c) => Math.floor(Math.random() * collegeLocations.length))
-        .map((i) => collegeLocations[i]);
+        .map((c) => Math.floor(Math.random() * representativeColleges.length))
+        .map((i) => representativeColleges[i]);
 
   for (const college of lessColleges) {
     new google.maps.Marker({
@@ -143,12 +145,38 @@ function initMap() {
 }
 
 /**
- * Gets a (somewhat) representative sample of a bunch of colleges
- * throughout the U.S. to place on the landing page's map.
+ * Gets a relatively evenly spaced sample of a bunch of colleges
+ * throughout the U.S. to place on the landing page's map. By capping
+ * the colleges in high-density areas, rural areas will be more likely
+ * to have pins on the map and feel more represented by the graphic.
  * @param {array} collegeLocations - All possible college locations.
+ * @return {array} - A list of colleges that are evenly spaced.
  */
 function getRepresentativeCollegeSample(collegeLocations) {
-  const minimumSpace = 
+  // Seed the final array with a single random college so that each run
+  // provides a different array of colleges.
+  const representativeColleges =
+    [collegeLocations[Math.floor(Math.random() * collegeLocations.length)]];
+
+  // Cycling through every college, we check if it's at least MINIMUM_DEGREES_SEPARATION
+  // away from all other previously chosen colleges, and only select it if it is.
+  for (const college of collegeLocations) {
+    let collegeFarAwayEnough = true;
+
+    for (const comparisonCollege of representativeColleges) {
+      if (Math.abs(college.LAT - comparisonCollege.LAT) < MINIMUM_DEGREES_SEPARATION &&
+        Math.abs(college.LON - comparisonCollege.LON) < MINIMUM_DEGREES_SEPARATION) {
+        collegeFarAwayEnough = false;
+        break;
+      }
+    }
+
+    if (collegeFarAwayEnough) {
+      representativeColleges.push(college);
+    }
+  }
+
+  return representativeColleges;
 }
 
 /**
