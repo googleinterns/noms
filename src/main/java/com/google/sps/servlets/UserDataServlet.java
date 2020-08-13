@@ -30,15 +30,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Servlet that adds, updates, and deletes Users in Datastore */
 @WebServlet("/user")
 public class UserDataServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static final Logger LOGGER = Logger.getLogger(UserDataServlet.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserDataServlet.class);
 
   /** POST a user's information. */
   @Override
@@ -59,11 +59,11 @@ public class UserDataServlet extends HttpServlet {
 
         datastore.get(userKey);
         datastore.delete(userKey);
-        LOGGER.log(Level.INFO, "User was unsubscribed and removed from Datastore.");
+        LOGGER.info("User was unsubscribed and removed from Datastore.");
 
       } catch (EntityNotFoundException e) {
 
-        LOGGER.log(Level.SEVERE, "User wants to unsubscribe but was never subscribed in the first place.", e);
+        LOGGER.warn("EntityNotFoundException: User wants to unsubscribe but was never subscribed in the first place.");
       }
 
     } else {
