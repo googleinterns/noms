@@ -624,6 +624,11 @@ function validateModal() {
     console.log("date wrong!");    
     return false;
   }
+
+  if (!validateModalTime(formElements)) {
+    console.log("time wrong!");    
+    return false;
+  }
   // If one of the fields is empty, don't submit.
   // Uses formElement.length - 1 to exclude the button element.
   
@@ -636,17 +641,13 @@ function validateModal() {
 }
 
 function validateModalDate(formElements) {
-  console.log('in validate date');
   const month = formElements.namedItem('modal-month').value;
   const day = formElements.namedItem('modal-day').value;
-  console.log('month ' + month + 'date ' + day);
   monthDayLengths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  if (month > 12 || month < 1) {  
-    console.log('month wrong');
+  if (month > 12 || month < 1) {
     return false;
   }
   else if (day < 1 || day > monthDayLengths[month - 1]) {
-    console.log('day wrong');
     return false;
   }
   else {
@@ -654,8 +655,31 @@ function validateModalDate(formElements) {
   }
 }
 
-function validateModalTime(startHour, startMinute, startAMorPM, endHour, endMinute, endAMorPM) {
+function validateModalTime(formElements) {
+  const startHour = formElements.namedItem('modal-start-hour').value;
+  const startMinute = formElements.namedItem('modal-start-minute').value;
+  const startAMorPM = formElements.namedItem('start-am-or-pm').value;
+  const endHour = formElements.namedItem('modal-end-hour').value;
+  const endMinute = formElements.namedItem('modal-end-minute').value;
+  const endAMorPM = formElements.namedItem('end-am-or-pm').value;
 
+  // Check if the hours fall between 1-12.
+  if (startHour < 1 || startHour > 12 || endHour < 1 || endHour > 12) {
+    return false;
+  }
+  // Check if the minutes fall between 0 - 60.
+  if (startMinute < 0 || startMinute >= 60 || endMinute < 0 || endMinute >= 60) {
+    return false;
+  }
+  // Check if the end time is after the start time.
+  if (startAMorPM === 'pm' && endAMorPM == 'am') {
+    return false;
+  }
+  else if (startAMorPM === endAMorPM && 
+  (endHour < startHour || (endHour === startHour && endMinute < startMinute))) {
+    return false;
+  }
+  return true;
 }
 
 async function checkLocationAndSubmit() {
