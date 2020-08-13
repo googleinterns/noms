@@ -16,7 +16,7 @@ public final class PostTest {
   public void testRequestToPost(String collegeId, String organizationName, int month, int day, int startHour, int startMinute, String startAMorPM, int endHour, 
   int endMinute, String endAMorPM, String location, Double lat, Double lng, String numberOfPeopleItFeeds, String typeOfFood, String description) {
 
-    // Construct Mock HTTP Request
+    // Construct Mock HTTP Request.
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter("organizationName")).thenReturn(organizationName);
     when(request.getParameter("month")).thenReturn(Integer.toString(month));
@@ -34,6 +34,7 @@ public final class PostTest {
     when(request.getParameter("typeOfFood")).thenReturn(typeOfFood);
     when(request.getParameter("description")).thenReturn(description);
 
+    // Run requestToPost() on the Mock HTTP Request.
     Post testPost = new Post();
     testPost.requestToPost(request, collegeId);
 
@@ -91,7 +92,7 @@ public final class PostTest {
     }
   }
 
-  // Test  functionality of requestToPost(): an event in the morning
+  // Test functionality of requestToPost(): an event in the morning.
   @Test
   public void testRequestToPostAM() {
 
@@ -116,8 +117,8 @@ public final class PostTest {
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
   }
 
-  // Test functionality of requestToPost(): an event in the morning ending in the afternoon
-   @Test
+  // Test functionality of requestToPost(): an event starting in the morning ending in the afternoon.
+  @Test
   public void testRequestToPostAMandPM() {
 
     String collegeId = "110653";
@@ -141,7 +142,7 @@ public final class PostTest {
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
   }
 
-  // Test functionality of requestToPost(): an event in the evening
+  // Test functionality of requestToPost(): an event in the evening.
   @Test
   public void testRequestToPostPM() {
 
@@ -166,7 +167,7 @@ public final class PostTest {
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
   }
 
-  // Test functionality of requestToPost(): an event in the first month
+  // Test functionality of requestToPost(): an event in the first month.
   @Test
   public void testRequestToPostFirstMonth() {
 
@@ -191,7 +192,7 @@ public final class PostTest {
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
   }
 
-  // Test basic functionality of requestToPost(): an event in the last month
+  // Test basic functionality of requestToPost(): an event in the last month.
   @Test
   public void testRequestToPostLastMonth() {
 
@@ -215,11 +216,5 @@ public final class PostTest {
     testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
   }
-
-
-  // No tests needed for queryToPost, etc bc google api
-  // Invalid options tested in javascript
-
-  // Test basic functionality: postToEntity()
   
 }
