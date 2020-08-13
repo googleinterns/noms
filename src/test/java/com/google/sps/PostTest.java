@@ -91,7 +91,7 @@ public final class PostTest {
     }
   }
 
-  // Test basic functionality of requestToPost(): an event in the morning
+  // Test  functionality of requestToPost(): an event in the morning
   @Test
   public void testRequestToPostAM() {
 
@@ -116,7 +116,7 @@ public final class PostTest {
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
   }
 
-  // Test basic functionality of requestToPost(): an event in the morning ending in the afternoon
+  // Test functionality of requestToPost(): an event in the morning ending in the afternoon
    @Test
   public void testRequestToPostAMandPM() {
 
@@ -141,7 +141,7 @@ public final class PostTest {
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
   }
 
-  // Test basic functionality of requestToPost(): an event in the evening
+  // Test functionality of requestToPost(): an event in the evening
   @Test
   public void testRequestToPostPM() {
 
@@ -166,11 +166,60 @@ public final class PostTest {
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
   }
 
+  // Test functionality of requestToPost(): an event in the first month
+  @Test
+  public void testRequestToPostFirstMonth() {
+
+    String collegeId = "122931";
+    String organizationName = "SWE";
+    int month = 1;
+    int day = 1;
+    int startHour = 4;
+    int startMinute = 30;
+    String startAMorPM = "am";
+    int endHour = 5;
+    int endMinute = 00;
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    Double lat = 37.3476132;
+    Double lng = -121.9394005;
+    String numberOfPeopleItFeeds = "20";
+    String typeOfFood = "Chocolate cake";
+    String description = "Birthday Party!!!";
+
+    testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+  }
+
+  // Test basic functionality of requestToPost(): an event in the last month
+  @Test
+  public void testRequestToPostLastMonth() {
+
+    String collegeId = "122931";
+    String organizationName = "SWE";
+    int month = 12;
+    int day = 31;
+    int startHour = 4;
+    int startMinute = 30;
+    String startAMorPM = "am";
+    int endHour = 5;
+    int endMinute = 00;
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    Double lat = 37.3476132;
+    Double lng = -121.9394005;
+    String numberOfPeopleItFeeds = "20";
+    String typeOfFood = "Chocolate cake";
+    String description = "Birthday Party!!!";
+
+    testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+  }
+
+
   // No tests needed for queryToPost, etc bc google api
   // Invalid options tested in javascript
 
   // Test basic functionality: postToEntity()
-
-  // ENd month, beginning month
   
 }
