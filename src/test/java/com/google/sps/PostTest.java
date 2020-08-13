@@ -1,6 +1,6 @@
 package com.google.sps;
 
-import com.google.sps.servlets.Post;
+import com.google.sps.data.Post;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,19 +57,44 @@ public final class PostTest {
 
     boolean postMatchesRequest = true;
     if (!testPost.getOrganizationName().equals(organizationName)) {
-        postMatchesRequest = false;
+      Assert.fail("organization name failed");
     }
-    if (testPost.getMonth() != month) {
-        postMatchesRequest = false;
+    if (testPost.getMonth() != (month - 1)) {
+      Assert.fail("month failed");
     }
     if (testPost.getDay() != day) {
-        postMatchesRequest = false;
+      Assert.fail("day failed");
     }
-
-    Assert.assertTrue(postMatchesRequest);
-
-
-    
+    if (testPost.getStartHour() != startHour) {
+      Assert.fail("start hour failed");
+    }
+    if (testPost.getStartMinute() != startMinute) {
+      Assert.fail("start minute failed");
+    }
+    if (testPost.getEndHour() != (endHour + 12)) {
+      Assert.fail("end hour failed");
+    }
+    if (testPost.getEndMinute() != endMinute) {
+      Assert.fail("end minute failed");
+    }
+    if (!testPost.getLocation().equals(location)) {
+      Assert.fail("location failed");
+    }
+    if (!testPost.getLat().equals(lat)) {
+      Assert.fail("lat failed");
+    }
+    if (!testPost.getLng().equals(lng)) {
+      Assert.fail("lng failed");
+    }
+    if (!testPost.getNumberOfPeopleItFeeds().equals(numberOfPeopleItFeeds)) {
+      Assert.fail("number of people it feeds failed");
+    }
+    if (!testPost.getTypeOfFood().equals(typeOfFood)) {
+      Assert.fail("type of food failed");
+    }
+    if (!testPost.getDescription().equals(description)) {
+      Assert.fail("description failed");
+    }
   }
 
   // Invalid Date

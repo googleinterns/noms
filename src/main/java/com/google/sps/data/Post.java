@@ -44,7 +44,6 @@ public class Post {
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
-        System.out.println("REQUEST: " + request.getParameterMap().toString());
         System.out.println("ORGNAME: " + request.getParameter("organizationName"));
         organizationName = request.getParameter("organizationName");
         System.out.println("MONTH: " + request.getParameter("month"));
