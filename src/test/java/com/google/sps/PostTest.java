@@ -11,7 +11,9 @@ import static org.mockito.Mockito.*;
 @RunWith(JUnit4.class)
 public final class PostTest {
 
-  public void testRequestToPost(String collegeId, String organizationName, int month, int day, int startHour, int startMinute, String startAMorPM, int endHour, 
+  // Given inputs for an HTTP Request, tests if the conversion to a Post object is valid.
+  // User must check start/end hour and month manually.
+  public Post testRequestToPost(String collegeId, String organizationName, int month, int day, int startHour, int startMinute, String startAMorPM, int endHour, 
   int endMinute, String endAMorPM, String location, Double lat, Double lng, String numberOfPeopleItFeeds, String typeOfFood, String description) {
 
     // Construct Mock HTTP Request.
@@ -40,32 +42,11 @@ public final class PostTest {
     if (!testPost.getOrganizationName().equals(organizationName)) {
       Assert.fail("organization name failed");
     }
-    if (testPost.getMonth() != (month - 1)) {
-      Assert.fail("month failed");
-    }
     if (testPost.getDay() != day) {
-      Assert.fail("day failed");
-    }
-    if (startAMorPM.equals("pm")) {
-      if (testPost.getStartHour() != (startHour + 12)) {
-        Assert.fail("start hour failed");
-      }
-    } else {
-      if (testPost.getStartHour() != startHour) {
-        Assert.fail("start hour failed");
-      } 
+      Assert.fail("day failed"); 
     }
     if (testPost.getStartMinute() != startMinute) {
       Assert.fail("start minute failed");
-    }
-    if (endAMorPM.equals("pm")) {
-      if (testPost.getEndHour() != (endHour + 12)) {
-        Assert.fail("end hour failed");
-      }
-    } else {
-      if (testPost.getEndHour() != endHour) {
-        Assert.fail("end hour failed");
-      } 
     }
     if (testPost.getEndMinute() != endMinute) {
       Assert.fail("end minute failed");
@@ -88,6 +69,8 @@ public final class PostTest {
     if (!testPost.getDescription().equals(description)) {
       Assert.fail("description failed");
     }
+
+    return testPost;
   }
 
   // Test functionality of requestToPost(): an event in the morning.
@@ -111,8 +94,15 @@ public final class PostTest {
     String typeOfFood = "Chocolate cake";
     String description = "Birthday Party!!!";
 
-    testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    if (testPost.getStartHour() != startHour) {
+      Assert.fail("start hour failed");
+    }
+    if (testPost.getEndHour() != endHour) {
+      Assert.fail("end hour failed");
+    }
   }
 
   // Test functionality of requestToPost(): an event starting in the morning ending in the afternoon.
@@ -136,8 +126,15 @@ public final class PostTest {
     String typeOfFood = "Pizza";
     String description = "We ordered too much pizza! Drop by during our workshop to pick it up";
 
-    testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    if (testPost.getStartHour() != startHour) {
+      Assert.fail("start hour failed");
+    }
+    if (testPost.getEndHour() != (endHour + 12)) {
+      Assert.fail("end hour failed");
+    }
   }
 
   // Test functionality of requestToPost(): an event in the evening.
@@ -161,8 +158,15 @@ public final class PostTest {
     String typeOfFood = "Popcorn";
     String description = "We have some popcorn left after our weekly Duck watching meeting, come pick some up!";
 
-    testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    if (testPost.getStartHour() != (startHour + 12)) {
+      Assert.fail("start hour failed");
+    }
+    if (testPost.getEndHour() != (endHour + 12)) {
+      Assert.fail("end hour failed");
+    }
   }
 
   // Test functionality of requestToPost(): an event in the first month.
@@ -186,8 +190,12 @@ public final class PostTest {
     String typeOfFood = "Chocolate cake";
     String description = "Birthday Party!!!";
 
-    testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    if (testPost.getMonth() != (month - 1)) {
+      Assert.fail("first month failed");
+    }
   }
 
   // Test basic functionality of requestToPost(): an event in the last month.
@@ -211,8 +219,12 @@ public final class PostTest {
     String typeOfFood = "Chocolate cake";
     String description = "Birthday Party!!!";
 
-    testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    if (testPost.getMonth() != (month - 1)) {
+      Assert.fail("last month failed");
+    }
   }
   
 }
