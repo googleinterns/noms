@@ -1,15 +1,16 @@
 :root {
   --auburn: #ce853f;
   --dark-green: #667d51;
+  --dark-grey: #303030;
   --dark-maroon: #955757;
   --grey: #e5e3df;
   --light-teal: #abcbbc;
   --light-green: #b9c9a7;
   --light-maroon: #a98585;
+  --modal-grey: #1b18181a;
   --off-white: #f2f0f0;
   --peach: #f2ddc9;
   --tan: #e4c492;
-  --dark-grey: #303030;
 }
 
 html,

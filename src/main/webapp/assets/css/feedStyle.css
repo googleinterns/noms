@@ -99,16 +99,21 @@
 }
 
 input[type=text] {
+  background: var(--modal-grey);
   border: none;
   border-radius: 50px;
+  box-sizing: border-box;
   font-size: 1rem;
-  margin-bottom: 0;
+  height: 40px;
+  margin-bottom: 20px;
   margin-top: 0;
   outline: none;
+  padding: 12px 20px;
+  width: 100%;
 }
 
 input[type=number] {
-  background: #1b18181a;
+  background: var(--modal-grey);
   border: none;
   border-radius: 50px;
   font: 400 1rem Arial, sans-serif;
@@ -138,7 +143,7 @@ select {
 }
 
 #modal-description {
-  background: rgba(27, 24, 24, 0.1);
+  background: var(--modal-grey);
   border: none;
   border-radius: 25px;
   box-sizing: border-box;
