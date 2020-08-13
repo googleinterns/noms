@@ -6,7 +6,8 @@ import org.junit.Assert;
 import org.junit.runners.JUnit4;
 import org.junit.runner.RunWith;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public final class PostTest {
