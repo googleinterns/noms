@@ -56,10 +56,10 @@ function toggleNav() {
 async function getSecretFor(secretid) {
   try {
     const response = await fetch('/secretsManager?id=' + secretid, {method: 'POST'});
-    if (!response.ok) {
-      throw new Error(response.status);
-    } else {
+    if (response.ok) {
       return await response.text();
+    } else {
+      throw new Error(response.status);
     }
   } catch (err) {
     console.warn(err);

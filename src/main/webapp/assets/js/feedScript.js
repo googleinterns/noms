@@ -250,7 +250,7 @@ async function translateLocationToLatLong(
     const response = await apiToCall(address.includes(city) ? address : `${address}, ${city}`);
 
     if (!response) {
-      throw new Error('POST failed for unknown reasons. Please check console.');
+      throw new Error('POST failed for unknown reasons.');
     }
 
     // If we get a non-200 status response, then fail.
@@ -643,6 +643,7 @@ async function submitModal() {
         document.getElementById('modal-form').removeChild(modalError);
       }
 
+      // (0,0) denotes a nonexistent lat/long, since it's a location in the ocean + is falsy.
       const lat = latLngResult ? latLngResult.lat : 0;
       const lng = latLngResult ? latLngResult.long : 0;
       url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
