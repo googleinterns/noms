@@ -609,16 +609,28 @@ async function submitModal() {
   // Disable multiple submissions.
   submitModalButton.disabled = true;
 
-  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
+  if (validateModal()) {
+    checkLocationAndSubmit();
+  }
+  else {
+    submitModalButton.disabled = false;
+  }
+}
 
+function validateModal() {
   // If one of the fields is empty, don't submit.
   // Uses formElement.length - 1 to exclude the button element.
   const formElements = modalForm.elements;
   for (let i = 0; i < formElements.length - 1; i++) {
     if (formElements[i].value.length == 0) {
-      return;
+      return false;
     }
   }
+  return true;
+}
+
+async function checkLocationAndSubmit() {
+  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
   if (modalForm && collegeId) {
     const modalLocation = document.getElementById('modal-location').value;
@@ -639,6 +651,7 @@ async function submitModal() {
         'If you wish to submit anyway, no pin will be added to the map.';
       document.getElementById('modal-form')
           .insertBefore(modalError, document.getElementById('modal-submit'));
+      submitModalButton.disabled = false;
     // Else, if the invalid address is the same as we last checked
     // or the address is just plain valid, then add the post to the Datastore.
     } else {
