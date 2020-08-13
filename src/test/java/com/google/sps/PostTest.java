@@ -145,22 +145,22 @@ public final class PostTest {
   @Test
   public void testRequestToPostPM() {
 
-    String collegeId = "122931";
-    String organizationName = "SWE";
-    int month = 8;
-    int day = 24;
-    int startHour = 4;
-    int startMinute = 30;
-    String startAMorPM = "am";
+    String collegeId = "209542";
+    String organizationName = "Duck Club";
+    int month = 10;
+    int day = 30;
+    int startHour = 5;
+    int startMinute = 00;
+    String startAMorPM = "pm";
     int endHour = 5;
-    int endMinute = 0;
-    String endAMorPM = "am";
-    String location = "Benson Memorial Center";
-    Double lat = 37.3476132;
-    Double lng = -121.9394005;
-    String numberOfPeopleItFeeds = "20";
-    String typeOfFood = "Chocolate cake";
-    String description = "Birthday Party!!!";
+    int endMinute = 15;
+    String endAMorPM = "pm";
+    String location = "Goss Stadium";
+    Double lat = 44.562842;
+    Double lng = -123.2771362;
+    String numberOfPeopleItFeeds = "5";
+    String typeOfFood = "Popcorn";
+    String description = "We have some popcorn left after our weekly Duck watching meeting, come pick some up!";
 
     testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
