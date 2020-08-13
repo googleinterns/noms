@@ -56,10 +56,14 @@ public class UserDataServlet extends HttpServlet {
       // Remove user if in database.
       Key userKey = KeyFactory.createKey("User", email);
       try {
+
         datastore.get(userKey);
         datastore.delete(userKey);
+        LOGGER.log(Level.INFO, "User was unsubscribed and removed from Datastore.");
+
       } catch (EntityNotFoundException e) {
-        LOGGER.log(Level.SEVERE, "User wants to unsubscribe but was never subscribed in the first place. ", e);
+
+        LOGGER.log(Level.SEVERE, "User wants to unsubscribe but was never subscribed in the first place.", e);
       }
 
     } else {
