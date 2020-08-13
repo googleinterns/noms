@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 public final class PostTest {
 
   // Given inputs for an HTTP Request, tests if the conversion to a Post object is valid.
-  // User must check start/end hour and month manually.
+  // Tester must check if start/end hour and month are valid manually.
   public Post testRequestToPost(String collegeId, String organizationName, int month, int day, int startHour, int startMinute, String startAMorPM, int endHour, 
   int endMinute, String endAMorPM, String location, Double lat, Double lng, String numberOfPeopleItFeeds, String typeOfFood, String description) {
 
