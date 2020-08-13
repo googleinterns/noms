@@ -131,7 +131,7 @@ public class GmailConfiguration {
       Gmail service = GmailAPI.getGmailService();	
       MimeMessage Mimemessage = createEmail(to, subject, content);	
       Message message = createMessageWithEmail(Mimemessage);	
-      message = service.users().messages().send("me", message).execute();	
+      message = service.users().messages().send(FROM, message).execute();	
 
     } catch (Exception e) {
 
