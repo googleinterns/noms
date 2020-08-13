@@ -14,15 +14,28 @@
 
 package com.google.sps.api;
 
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.api.client.util.Base64;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.google.sps.data.Email;
+import com.google.sps.data.Post;
+import com.google.sps.servlets.PostDataServlet;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Properties;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -59,7 +72,7 @@ public class GmailConfiguration {
     email.setFrom(new InternetAddress(FROM));
     email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to));
     email.setSubject(subject);
-    email.setContent(bodyText, "text/html;charset=UTF-8");
+    email.setContent(bodyText, "text/html;charset=utf-8");
 
     return email;
   }
@@ -123,7 +136,26 @@ public class GmailConfiguration {
     } catch (Exception e) {
 
       System.out.println("ERROR: Unable to send message : " + e.toString());
-
     }
   }	
+
+  /**
+    * Send emails to all users associated with the specific college.
+    *
+    * @param collegeId unique id of a college
+    * @throws IOException
+    */
+  public static void notifyUsers(String collegeId, Post newPost) throws IOException {
+    
+    // Find all users that attend the college.
+    Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
+    Query q = new Query("User").setFilter(universityFilter);
+    PreparedQuery pq = PostDataServlet.datastore.prepare(q);
+
+    // Email the users to notify them that a new post has been added.
+    for (Entity user : pq.asIterable()) {
+      String email = user.getKey().getName().toString();
+      sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
+    }
+  }
 }

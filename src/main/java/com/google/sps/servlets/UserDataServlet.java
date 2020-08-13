@@ -33,13 +33,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/** Servlet that adds, updates, and deletes Users in Datastore */
 @WebServlet("/user")
 public class UserDataServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private static final Logger LOGGER = Logger.getLogger(UserDataServlet.class.getName());
 
-  /** Add/update a User into Datastore */
+  /** POST a user's information. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -71,7 +72,7 @@ public class UserDataServlet extends HttpServlet {
       datastore.put(userEntity);
 
       // Send a welcome email.
-      GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.welcomeContent);	
+      GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.getStringFromHTML(Email.welcomeContentPath));	
     }
 
     response.sendRedirect("/index.html");

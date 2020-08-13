@@ -17,9 +17,17 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.sps.api.GmailConfiguration;
+import com.google.sps.data.Post;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,41 +40,45 @@ import javax.servlet.http.HttpServletResponse;
 /* Servlet that stores and retrieves posts. */
 @WebServlet("/postData")
 public class PostDataServlet extends HttpServlet {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  
+  public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    /* Convert an ArrayList of Post objects to JSON. */
-    private String listToJson(ArrayList<Post> alist) {
-        Gson gson = new Gson();
-        String json = gson.toJson(alist);
-        return json;
-    }
+  /* Convert an ArrayList of Post objects to JSON. */
+  private String listToJson(ArrayList<Post> alist) {
+    Gson gson = new Gson();
+    String json = gson.toJson(alist);
+    return json;
+  }
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String collegeId = request.getParameter("collegeId");
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String collegeId = request.getParameter("collegeId");
 
-        // Queries Datastore with the college ID and receives posts such that the soonest events are shown first.
-        Query query = new Query(collegeId).addSort("timeSort", SortDirection.ASCENDING);
-        PreparedQuery results = datastore.prepare(query);
-        ArrayList<Post> posts = Post.queryToPosts(results, datastore);
+    // Queries Datastore with the college ID and receives posts such that the soonest events are shown first.
+    Query query = new Query(collegeId).addSort("timeSort", SortDirection.ASCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    ArrayList<Post> posts = Post.queryToPosts(results, datastore);
 
-        // Prepares the relevant posts in JSON.
-        String json = listToJson(posts);
-        response.setContentType("application/json");
-        response.getWriter().println(json);
-    }
+    // Prepares the relevant posts in JSON.
+    String json = listToJson(posts);
+    response.setContentType("application/json");
+    response.getWriter().println(json);
+  }
 
-    /* On the POST command, serializes the request information into Post objects. */
-    /* Stores the post as entity in Datastore, with the collegeId as the kind. */
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
-        String collegeId = request.getParameter("collegeId");
-        Post newPost = new Post();
-        newPost.requestToPost(request, collegeId);
-        Entity newPostEntity = newPost.postToEntity();
-        datastore.put(newPostEntity);
+  /* On the POST command, serializes the request information into Post objects,
+   * stores the post as entity in Datastore.
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+    String collegeId = request.getParameter("collegeId");
+    Post newPost = new Post();
+    newPost.requestToPost(request, collegeId);
+    Entity newPostEntity = newPost.postToEntity();
+    datastore.put(newPostEntity);
 
-        String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
-        response.sendRedirect(redirectURL);
-    }
+    GmailConfiguration.notifyUsers(collegeId, newPost);
+
+    String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
+    response.sendRedirect(redirectURL);
+  }
 }

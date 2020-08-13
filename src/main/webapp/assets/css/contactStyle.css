@@ -1,0 +1,129 @@
+/*
+ * Containers
+ */
+
+#col-container {
+  margin: 0 10% 50px 10%;
+  width: 80%;
+}
+
+#page-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#map-container {
+  flex: 1 1 400px;
+  padding: 0 15px 0 15px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+}
+
+/*
+ * Map (will disappear when screen is too small)
+ */
+
+#map {
+  background: var(--grey);
+  height: 100%;
+  min-width: 100px;
+  width: 100%;
+}
+
+#title {
+  padding: 0 0 0 15px;
+}
+
+/*
+ * Mate
+ */
+
+#podmates {
+  background-color: #a98585;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 400px;
+  justify-content: space-evenly;
+  padding: 15px;
+}
+
+.mate {
+  background: #fff;
+  border-radius: 15px;
+  margin: 16px;
+  padding: 16px;
+}
+
+img {
+  border-radius: 50%;
+  max-height: 50px;
+  width: auto;
+}
+
+.svg {
+  border-radius: 0%;
+  padding-left: 10px;
+  width: 15px;
+}
+
+h4 {
+  margin-block-end: 0.33em;
+  margin-block-start: 0;
+}
+
+a {
+  color: var(--light-maroon);
+  margin-right: 5px;
+  text-decoration: none;
+}
+
+p {
+  margin-block-end: 0;
+}
+
+@media screen and (max-width: 1077px) {
+  #podmates {
+    height: auto;
+    margin: 0 16px 0 16px;
+    padding: 0 0 16px 0;
+  }
+}
+
+@media screen and (max-width: 414px) {
+  #podmates {
+    height: auto;
+    margin: 0 16px 0 16px;
+    padding: 0 0 16px 0;
+  }
+
+  #page-container {
+    flex: none;
+  }
+
+  #col-container {
+    margin: 0 5% 50px 5%;
+    width: 90%;
+  }
+
+  .svg {
+    padding-left: 0;
+  }
+
+  a {
+    margin-right: 0;
+  }
+
+  .row .links {
+    flex-direction: column;
+  }
+}
