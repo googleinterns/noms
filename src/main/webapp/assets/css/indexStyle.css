@@ -100,7 +100,25 @@
   width: 100%;
 }
 
-#map-preview-img {
+#map {
+  background: var(--grey);
+  height: 20rem;
+  min-width: 100px;
+  width: 100%;
+}
+
+#map-info-container {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+#map-error {
+  color: #797979;
+  margin: 0 auto;
+  text-align: center;
   width: 100%;
 }
 
@@ -209,5 +227,36 @@
 
   #colleges-input {
     font-size: 0.9rem;
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  #main-container {
+    margin: 10vh 2.5%;
+  }
+
+  #map-preview {
+    flex: 0 1 40rem;
+  }
+
+  #slogan {
+    flex: 0 1 40rem;
+  }
+
+  #title-slogan {
+    font-size: 6rem;
+    line-height: 6rem;
+  }
+
+  .subtitle {
+    font-size: 1.4rem;
+  }
+
+  .emoji {
+    height: 7rem;
+  }
+
+  #map {
+    height: 25rem;
   }
 }
