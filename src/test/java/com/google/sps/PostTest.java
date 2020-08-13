@@ -13,29 +13,11 @@ import static org.mockito.Mockito.*;
 @RunWith(JUnit4.class)
 public final class PostTest {
 
-  // Test basic functionality: requestToPost()
-  @Test
-  public void testRequestToPost() {
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    String collegeId = "122931"; // SCU
-
-    String organizationName = "SWE";
-    int month = 8;
-    int day = 24;
-    int startHour = 4;
-    int startMinute = 30;
-    String startAMorPM = "am";
-    int endHour = 5;
-    int endMinute = 0;
-    String endAMorPM = "pm";
-    String location = "Benson Memorial Center";
-    Double lat = 37.3476132;
-    Double lng = -121.9394005;
-    String numberOfPeopleItFeeds = "20";
-    String typeOfFood = "Chocolate cake";
-    String description = "Birthday Party!!!";
+  public void testRequestToPostBasic(String collegeId, String organizationName, int month, int day, int startHour, int startMinute, String startAMorPM, int endHour, 
+  int endMinute, String endAMorPM, String location, Double lat, Double lng, String numberOfPeopleItFeeds, String typeOfFood, String description) {
 
     // Construct Mock HTTP Request
+    HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter("organizationName")).thenReturn(organizationName);
     when(request.getParameter("month")).thenReturn(Integer.toString(month));
     when(request.getParameter("day")).thenReturn(Integer.toString(day));
@@ -55,7 +37,7 @@ public final class PostTest {
     Post testPost = new Post();
     testPost.requestToPost(request, collegeId);
 
-    boolean postMatchesRequest = true;
+    // Check if requestToPost() delivered expected results.
     if (!testPost.getOrganizationName().equals(organizationName)) {
       Assert.fail("organization name failed");
     }
@@ -65,14 +47,26 @@ public final class PostTest {
     if (testPost.getDay() != day) {
       Assert.fail("day failed");
     }
-    if (testPost.getStartHour() != startHour) {
-      Assert.fail("start hour failed");
+    if (startAMorPM.equals("pm")) {
+      if (testPost.getStartHour() != (startHour + 12)) {
+        Assert.fail("start hour failed");
+      }
+    } else {
+      if (testPost.getStartHour() != startHour) {
+        Assert.fail("start hour failed");
+      } 
     }
     if (testPost.getStartMinute() != startMinute) {
       Assert.fail("start minute failed");
     }
-    if (testPost.getEndHour() != (endHour + 12)) {
-      Assert.fail("end hour failed");
+    if (endAMorPM.equals("pm")) {
+      if (testPost.getEndHour() != (endHour + 12)) {
+        Assert.fail("end hour failed");
+      }
+    } else {
+      if (testPost.getEndHour() != endHour) {
+        Assert.fail("end hour failed");
+      } 
     }
     if (testPost.getEndMinute() != endMinute) {
       Assert.fail("end minute failed");
@@ -97,7 +91,60 @@ public final class PostTest {
     }
   }
 
-  // Invalid Date
+  // Test basic functionality of requestToPost(): an event in the morning
+  @Test
+  public void testRequestToPostBasic() {
+
+    String collegeId = "122931";
+    String organizationName = "SWE";
+    int month = 8;
+    int day = 24;
+    int startHour = 4;
+    int startMinute = 30;
+    String startAMorPM = "am";
+    int endHour = 5;
+    int endMinute = 0;
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    Double lat = 37.3476132;
+    Double lng = -121.9394005;
+    String numberOfPeopleItFeeds = "20";
+    String typeOfFood = "Chocolate cake";
+    String description = "Birthday Party!!!";
+
+    testRequestToPostBasic(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+  }
+
+  // Test basic functionality of requestToPost(): an event in the morning ending in the afternoon
+    @Test
+  public void testRequestToPostBasic() {
+
+    String collegeId = "122931";
+    String organizationName = "SWE";
+    int month = 8;
+    int day = 24;
+    int startHour = 4;
+    int startMinute = 30;
+    String startAMorPM = "am";
+    int endHour = 5;
+    int endMinute = 0;
+    String endAMorPM = "pm";
+    String location = "Benson Memorial Center";
+    Double lat = 37.3476132;
+    Double lng = -121.9394005;
+    String numberOfPeopleItFeeds = "20";
+    String typeOfFood = "Chocolate cake";
+    String description = "Birthday Party!!!";
+
+    testRequestToPostBasic(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+  }
+
+  // Test basic functionality of requestToPost(): an event in the evening
+
+  // No tests needed for queryToPost, etc bc google api
+  // Invalid options tested in javascript
 
   // Test basic functionality: postToEntity()
 
