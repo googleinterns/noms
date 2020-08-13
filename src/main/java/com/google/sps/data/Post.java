@@ -44,9 +44,7 @@ public class Post {
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
-        System.out.println("ORGNAME: " + request.getParameter("organizationName"));
         organizationName = request.getParameter("organizationName");
-        System.out.println("MONTH: " + request.getParameter("month"));
         month = Integer.parseInt(request.getParameter("month")) - 1; // Months are indexed at 0.
         day = Integer.parseInt(request.getParameter("day"));
         startHour = Integer.parseInt(request.getParameter("startHour"));
