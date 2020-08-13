@@ -618,15 +618,44 @@ async function submitModal() {
 }
 
 function validateModal() {
+  const formElements = modalForm.elements;
+
+  if (!validateModalDate(formElements)) {
+    console.log("date wrong!");    
+    return false;
+  }
   // If one of the fields is empty, don't submit.
   // Uses formElement.length - 1 to exclude the button element.
-  const formElements = modalForm.elements;
+  
   for (let i = 0; i < formElements.length - 1; i++) {
     if (formElements[i].value.length == 0) {
       return false;
     }
   }
   return true;
+}
+
+function validateModalDate(formElements) {
+  console.log('in validate date');
+  const month = formElements.namedItem('modal-month').value;
+  const day = formElements.namedItem('modal-day').value;
+  console.log('month ' + month + 'date ' + day);
+  monthDayLengths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (month > 12 || month < 1) {  
+    console.log('month wrong');
+    return false;
+  }
+  else if (day < 1 || day > monthDayLengths[month - 1]) {
+    console.log('day wrong');
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+function validateModalTime(startHour, startMinute, startAMorPM, endHour, endMinute, endAMorPM) {
+
 }
 
 async function checkLocationAndSubmit() {
