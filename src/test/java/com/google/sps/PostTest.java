@@ -39,36 +39,16 @@ public final class PostTest {
     testPost.requestToPost(request, collegeId);
 
     // Check if requestToPost() delivered expected results.
-    if (!testPost.getOrganizationName().equals(organizationName)) {
-      Assert.fail("organization name failed");
-    }
-    if (testPost.getDay() != day) {
-      Assert.fail("day failed"); 
-    }
-    if (testPost.getStartMinute() != startMinute) {
-      Assert.fail("start minute failed");
-    }
-    if (testPost.getEndMinute() != endMinute) {
-      Assert.fail("end minute failed");
-    }
-    if (!testPost.getLocation().equals(location)) {
-      Assert.fail("location failed");
-    }
-    if (!testPost.getLat().equals(lat)) {
-      Assert.fail("lat failed");
-    }
-    if (!testPost.getLng().equals(lng)) {
-      Assert.fail("lng failed");
-    }
-    if (!testPost.getNumberOfPeopleItFeeds().equals(numberOfPeopleItFeeds)) {
-      Assert.fail("number of people it feeds failed");
-    }
-    if (!testPost.getTypeOfFood().equals(typeOfFood)) {
-      Assert.fail("type of food failed");
-    }
-    if (!testPost.getDescription().equals(description)) {
-      Assert.fail("description failed");
-    }
+    Assert.assertEquals(testPost.getOrganizationName(), organizationName);
+    Assert.assertEquals(testPost.getDay(), day);
+    Assert.assertEquals(testPost.getStartMinute(), startMinute);
+    Assert.assertEquals(testPost.getEndMinute(), endMinute);
+    Assert.assertEquals(testPost.getLocation(), location);
+    Assert.assertEquals(testPost.getLat(), lat);
+    Assert.assertEquals(testPost.getLng(), lng);
+    Assert.assertEquals(testPost.getNumberOfPeopleItFeeds(), numberOfPeopleItFeeds);
+    Assert.assertEquals(testPost.getTypeOfFood(), typeOfFood);
+    Assert.assertEquals(testPost.getDescription(), description);
 
     return testPost;
   }
@@ -97,12 +77,8 @@ public final class PostTest {
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    if (testPost.getStartHour() != startHour) {
-      Assert.fail("start hour failed");
-    }
-    if (testPost.getEndHour() != endHour) {
-      Assert.fail("end hour failed");
-    }
+    Assert.assertEquals(testPost.getStartHour(), startHour);
+    Assert.assertEquals(testPost.getEndHour(), endHour);
   }
 
   // Test functionality of requestToPost(): an event starting in the morning ending in the afternoon.
@@ -129,12 +105,8 @@ public final class PostTest {
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    if (testPost.getStartHour() != startHour) {
-      Assert.fail("start hour failed");
-    }
-    if (testPost.getEndHour() != (endHour + 12)) {
-      Assert.fail("end hour failed");
-    }
+    Assert.assertEquals(testPost.getStartHour(), startHour);
+    Assert.assertEquals(testPost.getEndHour(), (endHour + 12));
   }
 
   // Test functionality of requestToPost(): an event in the evening.
@@ -161,12 +133,8 @@ public final class PostTest {
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    if (testPost.getStartHour() != (startHour + 12)) {
-      Assert.fail("start hour failed");
-    }
-    if (testPost.getEndHour() != (endHour + 12)) {
-      Assert.fail("end hour failed");
-    }
+    Assert.assertEquals(testPost.getStartHour(), (startHour + 12));
+    Assert.assertEquals(testPost.getEndHour(), (endHour + 12));
   }
 
   // Test functionality of requestToPost(): an event in the first month.
@@ -193,9 +161,7 @@ public final class PostTest {
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    if (testPost.getMonth() != (month - 1)) {
-      Assert.fail("first month failed");
-    }
+    Assert.assertEquals(testPost.getMonth(), (month - 1));
   }
 
   // Test basic functionality of requestToPost(): an event in the last month.
@@ -222,9 +188,7 @@ public final class PostTest {
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    if (testPost.getMonth() != (month - 1)) {
-      Assert.fail("last month failed");
-    }
+    Assert.assertEquals(testPost.getMonth(), (month - 1));
   }
   
 }
