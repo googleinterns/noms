@@ -56,14 +56,11 @@ public class UserDataServlet extends HttpServlet {
       // Remove user if in database.
       Key userKey = KeyFactory.createKey("User", email);
       try {
-
         datastore.get(userKey);
         datastore.delete(userKey);
         LOGGER.info("User was unsubscribed and removed from Datastore.");
-
       } catch (EntityNotFoundException e) {
-
-        LOGGER.warn("EntityNotFoundException: User wants to unsubscribe but was never subscribed in the first place.");
+        LOGGER.warn("User was unable to unsubscribe but was never subscribed.");
       }
 
     } else {
@@ -74,6 +71,7 @@ public class UserDataServlet extends HttpServlet {
 
       // Datastores updates the entity if it existed before based on email key.
       datastore.put(userEntity);
+      LOGGER.info("User was subscribed to email notifications and added to Datastore.");
 
       // Send a welcome email.
       GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.getStringFromHTML(Email.welcomeContentPath));	
