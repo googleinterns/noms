@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps;
+package com.google.sps.api;
 
 import static org.mockito.Mockito.when;
 
@@ -36,6 +36,8 @@ import com.google.api.services.gmail.model.Message;
 import com.google.sps.data.Email;
 import com.google.sps.data.Post;
 import com.google.sps.servlets.PostDataServlet;
+import com.google.sps.api.GmailConfiguration;
+import com.google.sps.api.GmailAPI;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,7 +56,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /** Tests querying users and sending emails from an authorized account.*/
-@RunWith(JUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public final class GmailConfigurationTest {
 
   private static final String FROM = "me";
@@ -62,32 +64,29 @@ public final class GmailConfigurationTest {
   private static final String SUBJECT = "test";
   private static final String BODYTEXT = "<h1>test</h1>";
 
-  private static final GmailConfiguration mGmailConfiguration;
-  private static final Post mPost;
-  private static final Gmail mGmail;
+  private static GmailConfiguration mGmailConfiguration;
+  private static Post mPost;
+  private static Gmail mGmail;
 
-  private static final LocalServiceTestHelper helper =
+  private static LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-  private static final DatastoreService datastore;
+  private static DatastoreService datastore;
 
-  @Override
   @Before
   public void setUp() throws Exception {
 
-    super.setUp();
     helper.setUp();
 
     datastore = DatastoreServiceFactory.getDatastoreService();
-    mGmailConfiguration= Mockito.mock(GmailConfiguration.class);
-    mPost = Mockito.mock(Post.class);
-    mGmail = Mockito.mock(Gmail.class);
+    mGmailConfiguration= mock(GmailConfiguration.class);
+    mPost = mock(Post.class);
+    mGmail = mock(Gmail.class);
   }
 
   @Override
   @After
   public void tearDown() {
 
-    super.tearDown();
     helper.tearDown();
   }
 
