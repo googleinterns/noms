@@ -585,6 +585,7 @@ function showModal() {
   if (modal) {
     modal.style.display = 'block';
     modalCard.focus();
+    submitModalButton.disabled = false;
   }
 }
 
@@ -605,6 +606,9 @@ function closeModal() {
  * @return {void}
  */
 async function submitModal() {
+  // Disable multiple submissions.
+  submitModalButton.disabled = true;
+
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
   // If one of the fields is empty, don't submit.
