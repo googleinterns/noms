@@ -1,13 +1,11 @@
 package com.google.sps;
 
 import com.google.sps.data.Post;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import javax.servlet.http.HttpServletRequest;
-
+import org.junit.Assert;
+import org.junit.runners.JUnit4;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 @RunWith(JUnit4.class)
