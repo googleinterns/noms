@@ -48,11 +48,14 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Create and send emails from an authorized account. */
 public class GmailConfiguration {
 
   private static final String FROM = "me";
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserDataServlet.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GmailConfiguration.class);
   
   /**
     * Create a MimeMessage using the parameters provided.
@@ -157,7 +160,7 @@ public class GmailConfiguration {
     for (Entity user : pq.asIterable()) {
       String email = user.getKey().getName().toString();
       sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
-      LOGGER.info("Successfully sent a new post email to: " + email)
+      LOGGER.info("Successfully sent a new post email to: " + email);
     }
   }
 }
