@@ -622,44 +622,41 @@ function validateModal() {
   const formElements = modalForm.elements;
 
   validateModalText(invalidIds, formElements);
+  validateModalDate(invalidIds, formElements);
+  validateModalTime(invalidIds,formElements);
   console.log(invalidIds);
 
-  if (!validateModalDate(formElements)) {
-    console.log("date wrong!");    
+  if (invalidIds.length === 0) {
+    return true;
+  }
+  else {
     return false;
   }
 
-  if (!validateModalTime(formElements)) {
-    console.log("time wrong!");    
-    return false;
-  }
   // If one of the fields is empty, don't submit.
   // Uses formElement.length - 1 to exclude the button element.
   
-  for (let i = 0; i < formElements.length - 1; i++) {
-    if (formElements[i].value.length == 0) {
-      return false;
-    }
-  }
-  return true;
+//   for (let i = 0; i < formElements.length - 1; i++) {
+//     if (formElements[i].value.length == 0) {
+//       return false;
+//     }
+//   }
+//   return true;
 }
 
-function validateModalDate(formElements) {
+function validateModalDate(invalidIds, formElements) {
   const month = formElements.namedItem('modal-month').value;
   const day = formElements.namedItem('modal-day').value;
   monthDayLengths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   if (month > 12 || month < 1) {
-    return false;
+    invalidIds.push('modal-month');
   }
   else if (day < 1 || day > monthDayLengths[month - 1]) {
-    return false;
-  }
-  else {
-    return true;
+    invalidIds.push('modal-day');
   }
 }
 
-function validateModalTime(formElements) {
+function validateModalTime(invalidIds, formElements) {
   const startHour = formElements.namedItem('modal-start-hour').value;
   const startMinute = formElements.namedItem('modal-start-minute').value;
   const startAMorPM = formElements.namedItem('start-am-or-pm').value;
@@ -668,22 +665,30 @@ function validateModalTime(formElements) {
   const endAMorPM = formElements.namedItem('end-am-or-pm').value;
 
   // Check if the hours fall between 1-12.
-  if (startHour < 1 || startHour > 12 || endHour < 1 || endHour > 12) {
-    return false;
+  if (startHour < 1 || startHour > 12) {
+    invalidIds.push('modal-start-hour');
+  }
+  if (endHour < 1 || endHour > 12) {
+    invalidIds.push('modal-end-hour');
   }
   // Check if the minutes fall between 0 - 60.
-  if (startMinute < 0 || startMinute >= 60 || endMinute < 0 || endMinute >= 60) {
-    return false;
+  if (startMinute < 0 || startMinute >= 60 || isBlank(startMinute)) {
+    invalidIds.push('modal-start-minute');
+  }
+  if (endMinute < 0 || endMinute >= 60 || isBlank(startMinute)) {
+    invalidIds.push('modal-end-minute');
   }
   // Check if the end time is after the start time.
-  if (startAMorPM === 'pm' && endAMorPM == 'am') {
-    return false;
+  if ((startAMorPM === 'pm' && endAMorPM === 'am') || 
+  (startAMorPM == endAMorPM && 
+  (endHour < startHour || (endHour === startHour && endMinute < startMinute)))) {
+    invalidIds.push('modal-start-hour');
+    invalidIds.push('modal-start-minute');
+    invalidIds.push('start-am-or-pm');
+    invalidIds.push('modal-end-hour');
+    invalidIds.push('modal-end-minute');
+    invalidIds.push('end-am-or-pm');
   }
-  else if (startAMorPM === endAMorPM && 
-  (endHour < startHour || (endHour === startHour && endMinute < startMinute))) {
-    return false;
-  }
-  return true;
 }
 
 function isBlank(input) {
@@ -700,8 +705,7 @@ function validateModalText(invalidIds, formElements) {
   for (let i = 0; i < formElements.length; i++) {
     if (formElements[i].type === 'text' || formElements[i].type === 'textarea') {
       if(isBlank(formElements[i].value)) {
-          invalidIds.push(formElements[i].id);
-          console.log(formElements[i].id);
+        invalidIds.push(formElements[i].id);
       }
     }
   }
