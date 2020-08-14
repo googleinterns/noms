@@ -74,7 +74,7 @@ public class UserDataServlet extends HttpServlet {
       LOGGER.info("User was subscribed to email notifications and added to Datastore.");
 
       // Send a welcome email.
-      GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.getStringFromHTML(Email.welcomeContentPath));	
+      GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.getWeclomeString());	
     }
 
     response.sendRedirect("/index.html");

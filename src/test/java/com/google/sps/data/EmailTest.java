@@ -34,8 +34,8 @@ import org.mockito.MockitoAnnotations;
 @RunWith(JUnit4.class)
 public final class UserDataServletTest {
   
-  private static final String WELCOME_SUBJECT = "test_welcome";
-  private static final String NEW_POST_SUBJECT = "test_welcome";
+  public static final String WELCOME_PATH = "./assets/html_templates/WelcomeEmail.html";
+  public static final String NEW_POST_PATH = "./assets/html_templates/NewPost.html";
 
   @Mock private static File mfile;
   @Mock private static FileUtils mFileUtils;
@@ -52,6 +52,10 @@ public final class UserDataServletTest {
 
   @Test
   public void getStringFromAvailableHTML() {
+
+    File file = new File(WELCOME_PATH);
+    assertTrue(file.exists());
+    
 
   }
 
