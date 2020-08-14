@@ -157,6 +157,7 @@ public class GmailConfiguration {
     for (Entity user : pq.asIterable()) {
       String email = user.getKey().getName().toString();
       sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
+      LOGGER.info("Successfully sent a new post email to: " + email)
     }
   }
 }

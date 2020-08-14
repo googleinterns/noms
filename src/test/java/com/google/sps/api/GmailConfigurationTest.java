@@ -59,13 +59,22 @@ import org.mockito.MockitoAnnotations;
 @RunWith(JUnit4.class)
 public final class GmailConfigurationTest {
 
-  private static final String FROM = "me";
   private static final String TO = "test@google.com";
   private static final String SUBJECT = "test";
-  private static final String BODYTEXT = "<h1>test</h1>";
+  private static final String CONTENT = "<h1>test</h1>";
+
+  private static final String NAME = "test";
+  private static final String EMAIL = "test@google.com";
+  private static final String COLLEGE_A = "000000";
+  private static final String COLLEGE_B = "000001";
+
+  private static final String SUCCESS_MSG = "Successfully sent a new post email to: ";
+  private static final String LOGGER_NAME = "com.google.sps.api";
 
   @Mock private static Post mPost;
   @Mock private static Gmail mGmail;
+  @Mock private static MimeMessage mMimeMessage;
+  @Mock private static Message mMessage;
 
   private static LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -76,6 +85,14 @@ public final class GmailConfigurationTest {
   public void setUp() throws Exception {
 
     helper.setUp();
+
+    Logger logger = (Logger) LoggerFactory.getLogger(LOGGER_NAME);
+    memoryAppender = new MemoryAppender();
+    memoryAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+    logger.setLevel(Level.DEBUG);
+    logger.addAppender(memoryAppender);
+    memoryAppender.start();
+
     datastore = DatastoreServiceFactory.getDatastoreService();
     gmailConfiguration = new GmailConfiguration();
     MockitoAnnotations.initMocks(this);
@@ -84,28 +101,53 @@ public final class GmailConfigurationTest {
   @After
   public void tearDown() {
 
+    memoryAppender.reset();
+    memoryAppender.stop();
     helper.tearDown();
   }
 
   @Test
   public void userAttendingCollege() {
+    // Tests notifying users when the query for a college has users.
+    
+    Entity userEntity = new Entity("User", EMAIL);
+    userEntity.setProperty("name", NAME);
+    userEntity.setProperty("college", COLLEGE_A);
 
+    when(PostDataServlet.(any(DatastoreService.class))).thenReturn(datastore);
+    GmailConfiguration.notifyUsers(COLLEGE_A, mPost);
+
+    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);  
+    Assert.assertTrue(memoryAppender.contains(SUCCESS_MSG+EMAIL, Level.INFO));    
+    memoryAppender.reset();
   }
 
   @Test
   public void noUserAttendingCollege() {
+    // Tests notifying users when the query for a college has no users.
 
+    when(PostDataServlet.(any(DatastoreService.class))).thenReturn(datastore);
+    GmailConfiguration.notifyUsers(COLLEGE_B, mPost);
+    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(0);
   }
 
   @Test
-  public void sendEmailWithAuthenticatedService() {
+  public void sendEmailWithAuthorizedService() {
+    // Test if able to send an email with authorized Gmail service credentials.
 
+    when(GmailAPI.getGmailService()).thenReturn(mGmail);
+    when(GmailConfiguration.createEmail(TO, SUBJECT, CONTENT)).thenReturn(mGmail);
+    when(GmailAPI.getGmailService()).thenReturn(mGmail);
+
+
+    userDataServlet.sendEmail(TO, SUBJECT, CONTENT);
+
+    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(0);
   }
 
   @Test
-  public void sendEmailWithNotAuthenticatedService() {
+  public void sendEmailWithUnauthorizedService() {
+    // Test if able to send an email with unauthorized Gmail service credentials.
 
   }
-
-
 }

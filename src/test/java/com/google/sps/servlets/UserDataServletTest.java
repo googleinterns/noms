@@ -113,8 +113,8 @@ public final class UserDataServletTest {
 
   @Test
   public void newUserSubscribe() {
-
     // Test if a new user, attempting to subscribe, can be added to Datastore.
+    
     helper.setEnvEmail(EMAIL_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
 
     when(mRequest.getParameter("name")).thenReturn(NAME);
@@ -126,14 +126,14 @@ public final class UserDataServletTest {
     userDataServlet.doPost(mRequest, mResponse);
 
     Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
-    Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO)).isTrue());
+    Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO));
     memoryAppender.reset();
   }
 
   @Test
   public void newUserUnsubscribe() {
-
     // Tests if a new user, attempting to unsubscribe, can not be added to Datastore.
+    
     helper.setEnvEmail(EMAIL_B).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
 
     when(mRequest.getParameter("name")).thenReturn(NAME);
@@ -145,14 +145,14 @@ public final class UserDataServletTest {
     userDataServlet.doPost(mRequest, mResponse);
 
     Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
-    Assert.assertTrue(memoryAppender.contains(UNSUB_FAIL_MSG, Level.WARN)).isTrue());
+    Assert.assertTrue(memoryAppender.contains(UNSUB_FAIL_MSG, Level.WARN));
     memoryAppender.reset();
   }
 
   @Test
   public void oldUserSubscribe() {
-
     // Tests if an old user, attempting to subscribe, can be added to Datastore with updated information.
+    
     helper.setEnvEmail(USER_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
 
     when(mRequest.getParameter("name")).thenReturn(NAME);
@@ -164,13 +164,13 @@ public final class UserDataServletTest {
     userDataServlet.doPost(mRequest, mResponse);
 
     Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
-    Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO)).isTrue());
+    Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO));
   }
 
   @Test
   public void oldUserUnsubscribe() {
-
     // Test if an old user, attempting to unsubscribe, can be deleted from Datastore.
+    
     helper.setEnvEmail(USER_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
 
     when(mRequest.getParameter("name")).thenReturn(NAME);
@@ -182,6 +182,6 @@ public final class UserDataServletTest {
     userDataServlet.doPost(mRequest, mResponse);
 
     Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
-    Assert.assertTrue(memoryAppender.contains(UNSUB_SUCCESS_MSG, Level.INFO)).isTrue());
+    Assert.assertTrue(memoryAppender.contains(UNSUB_SUCCESS_MSG, Level.INFO));
   }
 }
