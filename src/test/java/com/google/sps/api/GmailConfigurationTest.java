@@ -133,21 +133,26 @@ public final class GmailConfigurationTest {
 
   @Test
   public void sendEmailWithAuthorizedService() {
-    // Test if able to send an email with authorized Gmail service credentials.
+    // Tests if able to send an email with authorized Gmail service credentials.
 
     when(GmailAPI.getGmailService()).thenReturn(mGmail);
     when(GmailConfiguration.createEmail(TO, SUBJECT, CONTENT)).thenReturn(mGmail);
     when(GmailAPI.getGmailService()).thenReturn(mGmail);
 
-
     userDataServlet.sendEmail(TO, SUBJECT, CONTENT);
-
     Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(0);
   }
 
   @Test
   public void sendEmailWithUnauthorizedService() {
-    // Test if able to send an email with unauthorized Gmail service credentials.
+    // Tests if able to send an email with unauthorized Gmail service credentials.
+    
+    when(GmailAPI.getGmailService()).thenReturn(null);
+    when(GmailConfiguration.createEmail(TO, SUBJECT, CONTENT)).thenReturn(mGmail);
+    when(GmailAPI.getGmailService()).thenReturn(mGmail);
 
+    userDataServlet.sendEmail(TO, SUBJECT, CONTENT);
+    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
+    memoryAppender.reset();
   }
 }
