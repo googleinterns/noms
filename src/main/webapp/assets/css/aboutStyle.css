@@ -68,7 +68,6 @@ body {
 
 /* XL screens */
 @media screen and (min-width: 1800px) {
-
   #main {
     margin: 10vh 20vw;
   }
