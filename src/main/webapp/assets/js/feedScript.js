@@ -618,7 +618,11 @@ async function submitModal() {
 }
 
 function validateModal() {
+  const invalidIds = [];
   const formElements = modalForm.elements;
+
+  validateModalText(invalidIds, formElements);
+  console.log(invalidIds);
 
   if (!validateModalDate(formElements)) {
     console.log("date wrong!");    
@@ -681,6 +685,31 @@ function validateModalTime(formElements) {
   }
   return true;
 }
+
+function isBlank(input) {
+  const trimmed = input.trim();
+  if (trimmed) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+function validateModalText(invalidIds, formElements) {
+  for (let i = 0; i < formElements.length; i++) {
+    if (formElements[i].type === 'text' || formElements[i].type === 'textarea') {
+      if(isBlank(formElements[i].value)) {
+          invalidIds.push(formElements[i].id);
+          console.log(formElements[i].id);
+      }
+    }
+  }
+}
+
+// function validateModalText(formElements) {
+//   const organizationName  
+// }
 
 async function checkLocationAndSubmit() {
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
