@@ -114,7 +114,7 @@ public final class GmailConfigurationTest {
     userEntity.setProperty("name", NAME);
     userEntity.setProperty("college", COLLEGE_A);
 
-    when(PostDataServlet.(any(DatastoreService.class))).thenReturn(datastore);
+    when(PostDataServlet.class.(any(DatastoreService.class))).thenReturn(datastore);
     GmailConfiguration.notifyUsers(COLLEGE_A, mPost);
 
     Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);  
