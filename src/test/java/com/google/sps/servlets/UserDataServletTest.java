@@ -44,10 +44,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Mockito.when;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -66,19 +62,19 @@ public final class UserDataServletTest {
   private static final String UNSUB_FAIL_MSG = 
     "User was unable to unsubscribe but was never subscribed.";
 
-  private static final String NEW_USER_NAME = "test1";
-  private static final String NEW_USER_EMAIL = "test1@google.com";
-  private static final String NEW_USER_COLLEGE = "000001";
-
-  private static final String OLD_USER_NAME = "test2";
-  private static final String OLD_USER_EMAIL = "test2@google.com";
-  private static final String OLD_USER_COLLEGE = "000002";
-
+  private static final String NAME = "test";
+  private static final String EMAIL_A = "testa@google.com";
+  private static final String EMAIL_B = "testb@google.com";
+  private static final String COLLEGE_A = "000001";
+  private static final String COLLEGE_B = "000002";
   private static final String UNSUB = "unsubscribe";
   private static final String SUB = "subscribe";
 
   @Mock private static HttpServletRequest mRequest;
   @Mock private static HttpServletResponse mResponse;
+  @Mock private static Key mKey;
+  @Mock private static KeyFactory mKeyFactory;
+
   private static UserDataServlet userDataServlet;
   private static DatastoreService datastore;
   private static MemoryAppender memoryAppender;
@@ -109,6 +105,7 @@ public final class UserDataServletTest {
 
   @After
   public void tearDown() {
+
     memoryAppender.reset();
     memoryAppender.stop();
     helper.tearDown();
@@ -117,12 +114,52 @@ public final class UserDataServletTest {
   @Test
   public void newUserSubscribe() {
 
-    helper.setEnvEmail(NEW_USER_EMAIL).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
+    // Test if a new user, attempting to subscribe, can be added to Datastore.
+    helper.setEnvEmail(EMAIL_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
 
-    when(mRequest.getParameter("name")).thenReturn(NEW_USER_NAME);
-    when(mRequest.getParameter("email")).thenReturn(NEW_USER_EMAIL);
-    when(mRequest.getParameter("cID")).thenReturn(NEW_USER_COLLEGE);
+    when(mRequest.getParameter("name")).thenReturn(NAME);
+    when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
+    when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
     when(mRequest.getParameter("email-notif")).thenReturn(SUB);
+    when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
+
+    userDataServlet.doPost(mRequest, mResponse);
+
+    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
+    Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO)).isTrue());
+    memoryAppender.reset();
+  }
+
+  @Test
+  public void newUserUnsubscribe() {
+
+    // Tests if a new user, attempting to unsubscribe, can not be added to Datastore.
+    helper.setEnvEmail(EMAIL_B).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
+
+    when(mRequest.getParameter("name")).thenReturn(NAME);
+    when(mRequest.getParameter("email")).thenReturn(EMAIL_B);
+    when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
+    when(mRequest.getParameter("email-notif")).thenReturn(UNSUB);
+    when(mKeyFactory.createKey("User", EMAIL_B)).thenReturn(mKey);
+
+    userDataServlet.doPost(mRequest, mResponse);
+
+    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
+    Assert.assertTrue(memoryAppender.contains(UNSUB_FAIL_MSG, Level.WARN)).isTrue());
+    memoryAppender.reset();
+  }
+
+  @Test
+  public void oldUserSubscribe() {
+
+    // Tests if an old user, attempting to subscribe, can be added to Datastore with updated information.
+    helper.setEnvEmail(USER_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
+
+    when(mRequest.getParameter("name")).thenReturn(NAME);
+    when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
+    when(mRequest.getParameter("cID")).thenReturn(COLLEGE_B);
+    when(mRequest.getParameter("email-notif")).thenReturn(SUB);
+    when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
 
     userDataServlet.doPost(mRequest, mResponse);
 
@@ -131,18 +168,20 @@ public final class UserDataServletTest {
   }
 
   @Test
-  public void newUserUnsubscribe() {
-    
-  }
-
-  @Test
-  public void oldUserSubscribe() {
-
-  }
-
-  @Test
   public void oldUserUnsubscribe() {
 
-  }
+    // Test if an old user, attempting to unsubscribe, can be deleted from Datastore.
+    helper.setEnvEmail(USER_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
 
+    when(mRequest.getParameter("name")).thenReturn(NAME);
+    when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
+    when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
+    when(mRequest.getParameter("email-notif")).thenReturn(SUB);
+    when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
+
+    userDataServlet.doPost(mRequest, mResponse);
+
+    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
+    Assert.assertTrue(memoryAppender.contains(UNSUB_SUCCESS_MSG, Level.INFO)).isTrue());
+  }
 }
