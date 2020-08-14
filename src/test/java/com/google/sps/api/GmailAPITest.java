@@ -53,4 +53,23 @@ import org.mockito.MockitoAnnotations;
 @RunWith(JUnit4.class)
 public final class GmailAPITest {
 
+  @Test
+  public void POSTrequestSuccess() {
+    // POST request is successfully built, sent, and returns a nresponse.
+    
+  }
+
+  @Test(expected = UnsupportedEncodingException.class)
+  public void POSTrequestFailedWithEncoding() {
+    // POST request build fails on encoding.
+
+
+  }
+
+  @Test(expected = IOException.class)
+  public void POSTrequestFailedWithResponse() {
+    // POST request fails on retrieving a response.
+
+
+  }
 }
