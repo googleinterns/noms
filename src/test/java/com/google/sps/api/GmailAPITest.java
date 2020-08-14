@@ -53,6 +53,26 @@ import org.mockito.MockitoAnnotations;
 @RunWith(JUnit4.class)
 public final class GmailAPITest {
 
+  @Mock public static StringBuilder mStringBuilder;
+  @Mock public static byte[] mBytes;
+  @Mock public static URL mURL;
+  @Mock public static HttpURLConnection mHttpURLConnection;
+  
+
+  public static final String CLIENT_ID = "client_id_test";
+  public static final String CLIENT_SECRET = "client_secret_test";
+  public static final String REFRESH_TOKEN = "refresh_token_test";
+  public static Map<String, Object> params = new LinkedHashMap<>();
+
+  @Before
+  public void setUp() throws Exception {
+
+    params.put("grant_type", "refresh_token");
+    params.put("client_id", CLIENT_ID);
+    params.put("client_secret", CLIENT_SECRET); 
+    params.put("refresh_token", REFRESH_TOKEN);
+  }
+
   @Test
   public void POSTrequestSuccess() {
     // POST request is successfully built, sent, and returns a nresponse.
