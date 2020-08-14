@@ -621,6 +621,7 @@ function validateModal() {
   const invalidIds = [];
   const formElements = modalForm.elements;
 
+  disableInjection(formElements);
   validateModalText(invalidIds, formElements);
   validateModalDate(invalidIds, formElements);
   validateModalTime(invalidIds,formElements);
@@ -632,6 +633,13 @@ function validateModal() {
   }
   else {
     return false;
+  }
+}
+
+function disableInjection(formElements) {
+  for (let i = 0; i < formElements.length - 1; i++) {
+    let eltValue = formElements[i].value;
+    eltValue = eltValue.replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 }
 
