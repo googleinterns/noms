@@ -56,7 +56,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /** Tests querying users and sending emails from an authorized account.*/
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnit4.class)
 public final class GmailConfigurationTest {
 
   private static final String FROM = "me";
@@ -64,26 +64,23 @@ public final class GmailConfigurationTest {
   private static final String SUBJECT = "test";
   private static final String BODYTEXT = "<h1>test</h1>";
 
-  private static GmailConfiguration mGmailConfiguration;
-  private static Post mPost;
-  private static Gmail mGmail;
+  @Mock private static Post mPost;
+  @Mock private static Gmail mGmail;
 
   private static LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private static DatastoreService datastore;
+  private static GmailConfiguration gmailConfiguration;
 
   @Before
   public void setUp() throws Exception {
 
     helper.setUp();
-
     datastore = DatastoreServiceFactory.getDatastoreService();
-    mGmailConfiguration= mock(GmailConfiguration.class);
-    mPost = mock(Post.class);
-    mGmail = mock(Gmail.class);
+    gmailConfiguration = new GmailConfiguration();
+    MockitoAnnotations.initMocks(this);
   }
 
-  @Override
   @After
   public void tearDown() {
 
@@ -91,11 +88,24 @@ public final class GmailConfigurationTest {
   }
 
   @Test
-  public void noUsersAttendingCollege() {
+  public void userAttendingCollege() {
 
   }
 
   @Test
-  public void usersAttendingCollege() {
+  public void noUserAttendingCollege() {
+
   }
+
+  @Test
+  public void sendEmailWithAuthenticatedService() {
+
+  }
+
+  @Test
+  public void sendEmailWithNotAuthenticatedService() {
+
+  }
+
+
 }
