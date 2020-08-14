@@ -54,7 +54,6 @@ public final class Email {
 
     // TODO: Include AM/PM, date formatted, and time zone to be more user friendly.
     String emailContent = getStringFromHTML(newPostPath);
-    System.out.println("email content reached");
     emailContent = emailContent.replace("[organizationName]", post.getOrganizationName());
     emailContent = emailContent.replace("[location]", post.getLocation());
     emailContent = emailContent.replace("[month]",  Integer.toString(post.getMonth()));

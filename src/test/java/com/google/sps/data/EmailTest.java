@@ -30,8 +30,43 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-/** Tests querying users and sending emails from an authorized account.*/
+/** Tests creating and converting HTML for email sending. */
 @RunWith(JUnit4.class)
 public final class UserDataServletTest {
+  
+  private static final String WELCOME_SUBJECT = "test_welcome";
+  private static final String NEW_POST_SUBJECT = "test_welcome";
 
+  @Mock private static File mfile;
+  @Mock private static FileUtils mFileUtils;
+  @Mock private static Post mPost;
+
+  private static Email email;
+ 
+  @Before
+  public void setUp() {
+    
+    email = new Email();
+    MockitoAnnotations.initMocks(this);
+  }
+
+  @Test
+  public void getStringFromAvailableHTML() {
+
+  }
+
+  @Test(expected = IOException.class)
+  public void getStringFromMisingHTML() {
+
+  }
+
+  @Test
+  public void addNewPostWithInformation() {
+
+  }
+
+  @Test(expected = IOException.class)
+  public void addNewPostWithNoInformation() {
+    
+  }
 }
