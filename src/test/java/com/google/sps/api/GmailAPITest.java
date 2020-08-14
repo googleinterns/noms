@@ -12,15 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
+package com.google.sps.api;
 
 import static org.mockito.Mockito.when;
 
 import com.google.sps.data.Post;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,8 +49,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-/** Tests querying users and sending emails from an authorized account.*/
+/** Tests retrieving access tokens based on refresh token. */
 @RunWith(JUnit4.class)
-public final class UserDataServletTest {
+public final class GmailAPITest {
 
 }
