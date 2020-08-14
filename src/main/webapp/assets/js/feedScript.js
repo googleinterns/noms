@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 /* eslint-disable no-unused-vars */
-/* global google */
+/* global google, getSecretFor */
 
 // This file will be included only on the 'feed' (find-events) page,
 // and contains items specific to the map and posts on that page.
@@ -25,9 +25,10 @@
  * An object containing information about a location,
  * whether an entire college, building, or street.
  * @typedef {Object} LocationInfo
- * @property {string} name - The name of the location
- * @property {number} lat - The latitude of the location
- * @property {number} long - The longitude of the location
+ * @property {string} name - The name of the location.
+ * @property {number} lat - The latitude of the location.
+ * @property {number} long - The longitude of the location.
+ * @property {string} city - The city the location is in.
  */
 
 /**
@@ -57,6 +58,9 @@ let posts = null;
 /** @type {google.maps.Map} */
 let map;
 
+/** @type {string} */
+let cachedModalAddress = '';
+
 //
 // Elements
 //
@@ -85,6 +89,7 @@ let toggleLegendButton;
 //
 // Constants
 //
+
 const MARKER_WIDTH_MINMAX = {min: 28, max: 70};
 const MARKER_HEIGHT_MINMAX = {min: 45, max: 113};
 
@@ -185,6 +190,7 @@ function addMapButtons() {
 function addMapToPage() {
   getSecretFor('javascript-maps-api').then((key) => {
     if (key === null) {
+      removeMapSpinner();
       const mapElement = document.getElementById('map-info-container');
       const errorElement = document.createElement('div');
       errorElement.setAttribute('id', 'map-error');
@@ -227,37 +233,24 @@ function onKeyUp(event) {
 }
 
 /**
- * Gets the secret value corresponding to a secret ID from GCP secrets store.
- * @param {string} secretid - The secret's id, as defined in the secrets store.
- * @return {string | null} - Either the secret for the requested ID, or else null.
- */
-async function getSecretFor(secretid) {
-  try {
-    const response = await fetch('/secretsManager?id=' + secretid, {method: 'POST'});
-    if (!response.ok) {
-      throw new Error(response.status);
-    } else {
-      return await response.text();
-    }
-  } catch (err) {
-    console.warn(err);
-    removeMapSpinner();
-    return null;
-  }
-}
-
-/**
  * Translates a location from its name to a pair of latitude and longitudes.
  * @param {string} address - The address to translate to lat/long.
  * @param {function} apiToCall - Represents the option to dependency-inject a mock api call.
+ * @param {array} locality - Represents the option to inject the current college's location.
  * @return {Promise<LocationInfo>} or null if no such location exists or an error occurs.
  */
-async function translateLocationToLatLong(address, apiToCall = fetchTranslateLocation) {
+async function translateLocationToLatLong(
+    address,
+    apiToCall = fetchTranslateLocation,
+    locality = collegeLocation) {
   try {
-    const response = await apiToCall(address);
+    // Add the college's city if it isn't already present in the query so that
+    // geolocator has a better chance at succeeding in finding lat/longs.
+    const city = locality ? locality.city : '';
+    const response = await apiToCall(address.includes(city) ? address : `${address}, ${city}`);
 
     if (!response) {
-      throw new Error('POST failed for unknown reasons. Please check console.');
+      throw new Error('POST failed for unknown reasons.');
     }
 
     // If we get a non-200 status response, then fail.
@@ -324,18 +317,18 @@ function createSearchParamsFromObject(obj) {
 }
 
 /**
- * Fetches the college location information from the local JSON storing it.
+ * Fetches the current college's location information from the local JSON storing it.
  * @param {number} collegeid - The ID of the college we want the lat/long for.
  * @return {Promise<LocationInfo>} - The college's location and information.
  */
 async function fetchCollegeLocation(collegeid) {
-  // Get all colleges
   const locations = await (await fetch('./assets/college-locations.json')).json();
   const collegeInfo = locations.find((l) => parseInt(l.UNITID) === parseInt(collegeid));
   const newLocation = {
     name: collegeInfo.NAME,
     lat: parseFloat(collegeInfo.LAT),
     long: parseFloat(collegeInfo.LON),
+    city: collegeInfo.CITY,
   };
   return newLocation;
 }
@@ -411,26 +404,28 @@ function initMap() {
       origin: new google.maps.Point(0, 0),
     };
 
-    const marker = new google.maps.Marker({
-      position: {lat: post.location.lat, lng: post.location.long},
-      map: map,
-      title: post.eventStartTime > new Date() ?
-        `${post.organizationName} (not started yet)` :
-        `${post.organizationName} (happening now)`,
-      opacity: getMapMarkerOpacity(now, post.eventStartTime, post.eventEndTime),
-      icon: icon,
-    });
-
-    marker.addListener('click', function() {
-      const postElement = document.getElementById(post.id);
-      postElement.scrollIntoView({block: 'center'});
-      postElement.style.boxShadow = '0 1px 20px #939393, 0 -1px 20px #939393';
-
-      // JS does not have native sleep(), so we can spoof the behavior with Promises.
-      new Promise((r) => setTimeout(r, 1000)).then(() => {
-        postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
+    if (post.location.lat && post.location.long) {
+      const marker = new google.maps.Marker({
+        position: {lat: post.location.lat, lng: post.location.long},
+        map: map,
+        title: post.eventStartTime > new Date() ?
+          `${post.organizationName} (not started yet)` :
+          `${post.organizationName} (happening now)`,
+        opacity: getMapMarkerOpacity(now, post.eventStartTime, post.eventEndTime),
+        icon: icon,
       });
-    });
+
+      marker.addListener('click', function() {
+        const postElement = document.getElementById(post.id);
+        postElement.scrollIntoView({block: 'center'});
+        postElement.style.boxShadow = '0 1px 20px #939393, 0 -1px 20px #939393';
+
+        // JS does not have native sleep(), so we can spoof the behavior with Promises.
+        new Promise((r) => setTimeout(r, 1000)).then(() => {
+          postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
+        });
+      });
+    }
   });
 
   // Get the user's position and show it as a marker, if they consent and their browser supports
@@ -627,17 +622,35 @@ async function submitModal() {
 
     let url;
 
-    if (latLngResult) {
-      const lat = latLngResult.lat;
-      const lng = latLngResult.long;
-      url = '/postData?' + 'collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
+    // If the address entered isn't the same one as the one we last checked,
+    // then we can assume the user edited their address and we should display
+    // a fresh error if this new address is also invalid.
+    if (!latLngResult && modalLocation !== cachedModalAddress) {
+      cachedModalAddress = modalLocation;
+      const modalError = document.createElement('div');
+      modalError.setAttribute('id', 'modal-error');
+      modalError.innerText =
+        `We couldn't find address '${modalLocation}'. ` +
+        'Please check your address for errors. ' +
+        'If you wish to submit anyway, no pin will be added to the map.';
+      document.getElementById('modal-form')
+          .insertBefore(modalError, document.getElementById('modal-submit'));
+    // Else, if the invalid address is the same as we last checked
+    // or the address is just plain valid, then add the post to the Datastore.
     } else {
-      url = '/postData?' + 'collegeId=' + collegeId + '&lat=0&lng=0';
-    }
+      const modalError = document.getElementById('modal-error');
+      if (modalError) {
+        document.getElementById('modal-form').removeChild(modalError);
+      }
 
-    modalForm.action = url;
-    modalForm.submit();
-    createPostButton.focus();
+      // (0,0) denotes a nonexistent lat/long, since it's a location in the ocean + is falsy.
+      const lat = latLngResult ? latLngResult.lat : 0;
+      const lng = latLngResult ? latLngResult.long : 0;
+      url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
+      modalForm.action = url;
+      modalForm.submit();
+      createPostButton.focus();
+    }
   }
 }
 

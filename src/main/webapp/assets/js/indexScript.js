@@ -10,7 +10,8 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
+// limitations under the License
+/* global getSecretFor, google */
 
 // This file provides the JavaScript induced on the landing page (index.html)
 
@@ -22,6 +23,19 @@
 document.addEventListener('DOMContentLoaded', onLoad);
 
 //
+// Globals
+//
+
+let collegeLocations = null;
+
+//
+// Constants
+//
+
+const US_GEOGRAPHICAL_CENTER = {lat: 39.50, lng: -98.35};
+const MINIMUM_DEGREES_SEPARATION = 2.5;
+
+//
 // Functions
 //
 
@@ -29,7 +43,9 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
-  const collegeLocations = await (await fetch('./assets/college-locations.json')).json();
+  collegeLocations = await (await fetch('./assets/college-locations.json')).json();
+
+  addMapToPage();
 
   // Grab the datalist and remove its ID (destroying the select-datalist relationship),
   // to improve performance while adding the options to the datalist.
@@ -53,6 +69,114 @@ async function onLoad() {
 
   // When users select an option from the dropdown, send them to that page.
   document.getElementById('colleges-input').addEventListener('change', navigateUserToCollegePage);
+}
+
+/**
+* Tries to add the map to the page. The map URL calls the initMap() function as
+* its callback, which then positions the map and adds markers. If we are unable
+* to retrieve the secret for the map, then we display an error to the user.
+*/
+function addMapToPage() {
+  getSecretFor('javascript-maps-api').then((key) => {
+    if (key === null) {
+      const mapElement = document.getElementById('map-info-container');
+      const errorElement = document.createElement('div');
+      errorElement.setAttribute('id', 'map-error');
+      errorElement.innerText = `An error occured while fetching the credentials
+                                needed to view the map. Try refreshing the page;
+                                if the error persists, please contact us above.`;
+      mapElement.appendChild(errorElement);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
+    script.defer = true;
+    script.async = true;
+    window.initMap = initMap;
+    document.head.appendChild(script);
+  });
+}
+
+/**
+ * Initializes the embedded Google Maps map.
+ */
+function initMap() {
+  // Turn off the labels on the map and change the water color
+  // so that the map fits the landing page's aesthetic better.
+  const map = new google.maps.Map(document.getElementById('map'),
+      {
+        center: {lat: US_GEOGRAPHICAL_CENTER.lat, lng: US_GEOGRAPHICAL_CENTER.lng},
+        zoom: 3,
+        disableDefaultUI: true,
+        styles: [
+          {
+            featureType: 'water',
+            elementType: 'geometry',
+            stylers: [{color: '#f0f5f7'}],
+          },
+          {
+            featureType: 'all',
+            elementType: 'labels',
+            stylers: [
+              {visibility: 'off'},
+            ],
+          },
+        ],
+      },
+  );
+
+  // We only show 30 of the colleges to the user because a
+  // map with thousands of pins doesn't look good.
+  const representativeColleges = getRepresentativeCollegeSample(collegeLocations);
+  const lessColleges =
+    new Array(30)
+        .fill(0)
+        .map((c) => Math.floor(Math.random() * representativeColleges.length))
+        .map((i) => representativeColleges[i]);
+
+  for (const college of lessColleges) {
+    new google.maps.Marker({
+      position: {lat: college.LAT, lng: college.LON},
+      map: map,
+      title: college.NAME,
+    });
+  }
+}
+
+/**
+ * Gets a relatively evenly spaced sample of a bunch of colleges
+ * throughout the U.S. to place on the landing page's map. By capping
+ * the colleges in high-density areas, rural areas will be more likely
+ * to have pins on the map and feel more represented by the graphic.
+ * @param {array} collegeLocations - All possible college locations.
+ * @return {array} - A list of colleges that are evenly spaced.
+ */
+function getRepresentativeCollegeSample(collegeLocations) {
+  // Seed the final array with a single random college so that each run
+  // provides a different array of colleges.
+  const representativeColleges =
+    [collegeLocations[Math.floor(Math.random() * collegeLocations.length)]];
+
+  // Cycling through every college, we check if it's at least MINIMUM_DEGREES_SEPARATION
+  // away from all other previously chosen colleges, and only select it if it is.
+  for (const college of collegeLocations) {
+    let collegeFarAwayEnough = true;
+
+    for (const comparisonCollege of representativeColleges) {
+      if (Math.abs(college.LAT - comparisonCollege.LAT) < MINIMUM_DEGREES_SEPARATION &&
+        Math.abs(college.LON - comparisonCollege.LON) < MINIMUM_DEGREES_SEPARATION) {
+        collegeFarAwayEnough = false;
+        break;
+      }
+    }
+
+    if (collegeFarAwayEnough) {
+      representativeColleges.push(college);
+    }
+  }
+
+  return representativeColleges;
 }
 
 /**
