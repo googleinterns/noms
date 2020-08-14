@@ -625,6 +625,7 @@ function validateModal() {
   validateModalDate(invalidIds, formElements);
   validateModalTime(invalidIds,formElements);
   console.log(invalidIds);
+  markInvalidInputs(invalidIds, formElements);
 
   if (invalidIds.length === 0) {
     return true;
@@ -632,16 +633,23 @@ function validateModal() {
   else {
     return false;
   }
+}
 
-  // If one of the fields is empty, don't submit.
-  // Uses formElement.length - 1 to exclude the button element.
-  
-//   for (let i = 0; i < formElements.length - 1; i++) {
-//     if (formElements[i].value.length == 0) {
-//       return false;
-//     }
-//   }
-//   return true;
+function resetMarks(formElements) {
+  for (let i = 0; i < formElements.length - 1; i++) {
+    const elt = formElements[i];
+    elt.style.background = '#1b18181a';
+  }
+}
+
+function markInvalidInputs(invalidIds, formElements) {
+  resetMarks(formElements);
+  invalidIds.forEach(id => {
+    const elt = formElements.namedItem(id);
+    if (elt) {
+      elt.style.background = '#ff999966';
+    }
+  });
 }
 
 function validateModalDate(invalidIds, formElements) {
@@ -651,7 +659,7 @@ function validateModalDate(invalidIds, formElements) {
   if (month > 12 || month < 1) {
     invalidIds.push('modal-month');
   }
-  else if (day < 1 || day > monthDayLengths[month - 1]) {
+  if (day < 1 || day > monthDayLengths[month - 1] || isBlank(day)) {
     invalidIds.push('modal-day');
   }
 }
@@ -710,10 +718,6 @@ function validateModalText(invalidIds, formElements) {
     }
   }
 }
-
-// function validateModalText(formElements) {
-//   const organizationName  
-// }
 
 async function checkLocationAndSubmit() {
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
