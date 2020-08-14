@@ -68,7 +68,7 @@ public final class Email {
     emailContent = emailContent.replace("[organizationName]", post.getOrganizationName());
     emailContent = emailContent.replace("[location]", post.getLocation());
     emailContent = emailContent.replace("[month]",  Integer.toString(post.getMonth()));
-    emailContent = emailContent.replace("[day]", Integer.toString(post.getMonth()));
+    emailContent = emailContent.replace("[day]", Integer.toString(post.getDay()));
     emailContent = emailContent.replace("[startHour]", Integer.toString(post.getStartHour()));
     emailContent = emailContent.replace("[startMinute]", Integer.toString(post.getStartMinute()));
     emailContent = emailContent.replace("[endHour]", Integer.toString(post.getEndHour()));

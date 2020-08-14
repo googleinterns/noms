@@ -34,8 +34,7 @@ import org.mockito.MockitoAnnotations;
 @RunWith(JUnit4.class)
 public final class UserDataServletTest {
   
-  public static final String WELCOME_PATH = "./assets/html_templates/WelcomeEmail.html";
-  public static final String NEW_POST_PATH = "./assets/html_templates/NewPost.html";
+  public static final String WELCOME_PATH = "welcome_path_test";
 
   @Mock private static File mfile;
   @Mock private static FileUtils mFileUtils;
@@ -52,25 +51,44 @@ public final class UserDataServletTest {
 
   @Test
   public void getStringFromAvailableHTML() {
+    // Tests if welcomeContentPath exists.
 
-    File file = new File(WELCOME_PATH);
-    assertTrue(file.exists());
-    
-
+    email.getWelcomeString();
   }
 
   @Test(expected = IOException.class)
   public void getStringFromMisingHTML() {
+    // Tests exception handling for bad path.
 
+    email.getStringFromHTML(welcome_path_test);
   }
 
   @Test
   public void addNewPostWithInformation() {
+    // Tests for email content to include accurate Post information.
 
+    when(mPost.getOrganizationName()).thenReturn("WICS");
+    when(mPost.getLocation()).thenReturn("DBH 6011");
+    when(mPost.getMonth()).thenReturn(10);
+    when(mPost.getDay()).thenReturn(20);
+    when(mPost.getStartHour()).thenReturn(9);
+    when(mPost.getStartMinute()).thenReturn(30);
+    when(mPost.getEndHour()).thenReturn(10);
+    when(mPost.getEndMinute()).thenReturn(30);
+    when(mPost.getDescription()).thenReturn("beep boop bop");
+
+    String newPostEmail = email.addNewPost(mPost);
+
+    Assert.assertTrue(newPostEmail.contains("WICS @ DBH 6011"));
+    Assert.assertTrue(newPostEmail.contains("10/20"));
+    Assert.assertTrue(newPostEmail.contains("9:30 - 10:30"));
+    Assert.assertTrue(newPostEmail.contains("beep boop bop"));
   }
 
   @Test(expected = IOException.class)
-  public void addNewPostWithNoInformation() {
-    
+  public void addNewPostWithMisinformation() {
+    // Tests exception handling for bad post.
+
+    email.addNewPost(mPOst);
   }
 }
