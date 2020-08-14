@@ -52,6 +52,7 @@ import javax.mail.internet.MimeMultipart;
 public class GmailConfiguration {
 
   private static final String FROM = "me";
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserDataServlet.class);
   
   /**
     * Create a MimeMessage using the parameters provided.
@@ -135,7 +136,7 @@ public class GmailConfiguration {
 
     } catch (Exception e) {
 
-      System.out.println("ERROR: Unable to send message : " + e.toString());
+      LOGGER.error("Unable to send messsage due to: " + e.toString());
     }
   }	
 
