@@ -72,6 +72,9 @@ let modalCard;
 let modalSubmitted;
 
 /** @type {HTMLElement} */
+let modalSubmittedText;
+
+/** @type {HTMLElement} */
 let createPostButton;
 
 /** @type {HTMLElement} */
@@ -127,6 +130,7 @@ async function onLoad() {
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
   modalSubmitted = document.getElementById('modal-submitted');
+  modalSubmittedText = document.getElementById('modal-submitted-title');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -677,12 +681,12 @@ function validateModalDate(invalidIds, formElements) {
 }
 
 function validateModalTime(invalidIds, formElements) {
-  const startHour = formElements.namedItem('modal-start-hour').value;
-  const startMinute = formElements.namedItem('modal-start-minute').value;
-  const startAMorPM = formElements.namedItem('start-am-or-pm').value;
-  const endHour = formElements.namedItem('modal-end-hour').value;
-  const endMinute = formElements.namedItem('modal-end-minute').value;
-  const endAMorPM = formElements.namedItem('end-am-or-pm').value;
+  const startHour = parseInt(formElements.namedItem('modal-start-hour').value, 10);
+  const startMinute = parseInt(formElements.namedItem('modal-start-minute').value, 0);
+  const startAMorPM = parseInt(formElements.namedItem('start-am-or-pm').value, 0);
+  const endHour = parseInt(formElements.namedItem('modal-end-hour').value, 0);
+  const endMinute = parseInt(formElements.namedItem('modal-end-minute').value, 0);
+  const endAMorPM = parseInt(formElements.namedItem('end-am-or-pm').value, 0);
 
   // Check if the hours fall between 1-12.
   if (startHour < 1 || startHour > 12) {
@@ -692,10 +696,10 @@ function validateModalTime(invalidIds, formElements) {
     invalidIds.push('modal-end-hour');
   }
   // Check if the minutes fall between 0 - 60.
-  if (startMinute < 0 || startMinute >= 60 || isBlank(startMinute)) {
+  if (startMinute < 0 || startMinute >= 60 || isBlank(startMinute.toString())) {
     invalidIds.push('modal-start-minute');
   }
-  if (endMinute < 0 || endMinute >= 60 || isBlank(startMinute)) {
+  if (endMinute < 0 || endMinute >= 60 || isBlank(startMinute.toString())) {
     invalidIds.push('modal-end-minute');
   }
   // Check if the end time is after the start time.
@@ -811,8 +815,7 @@ document.addEventListener('keydown', function(e) {
       e.preventDefault();
     }
     if (document.activeElement == modalSubmitted) {
-      
-      modalTitle.focus();
+      modalSubmittedText.focus();
       e.preventDefault();
     }
   } else { // If user is trying to go to the next element, make sure it wraps to the top.
@@ -820,8 +823,8 @@ document.addEventListener('keydown', function(e) {
       modalCard.focus();
       e.preventDefault();
     }
-    if (document.activeElement == modalSubmitted) {
-      modalTitle.focus();
+    if (document.activeElement == modalSubmittedText) {
+      modalSubmitted.focus();
       e.preventDefault();
     }
   }
