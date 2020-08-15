@@ -219,6 +219,26 @@ select {
   outline: none;
 }
 
+#modal-submitted {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
+  display: none;
+  left: 25%;
+  overflow: auto;
+  padding: 30px;
+  position: fixed;
+  top: 50%;
+  transform: translate(0, -50%);
+  width: 50%;
+  z-index: 1;
+}
+
+#modal-submitted-title {
+  margin-left: 12px;
+}
+
+
 @media screen and (max-width: 678px) {
   #page-container {
     margin-left: 5%;

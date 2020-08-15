@@ -69,6 +69,9 @@ let cachedModalAddress = '';
 let modalCard;
 
 /** @type {HTMLElement} */
+let modalSubmitted;
+
+/** @type {HTMLElement} */
 let createPostButton;
 
 /** @type {HTMLElement} */
@@ -123,6 +126,7 @@ async function onLoad() {
   modalForm = document.getElementById('modal-form');
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
+  modalSubmitted = document.getElementById('modal-submitted');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -763,10 +767,22 @@ async function checkLocationAndSubmit() {
       const lng = latLngResult ? latLngResult.long : 0;
       url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
       modalForm.action = url;
-      modalForm.submit();
-      createPostButton.focus();
+
+      // Show submitted box.
+      modalCard.style.display = 'none';
+      modalSubmitted.style.display = 'block';
+      modalSubmitted.focus();
+      setTimeout(function(){
+        closeSubmit();
+        modalForm.submit();
+      }, 2000); 
     }
   }
+}
+
+function closeSubmit() {
+  modalSubmitted.style.display = 'none';
+  createPostButton.focus();
 }
 
 /**
@@ -794,9 +810,18 @@ document.addEventListener('keydown', function(e) {
       submitModalButton.focus();
       e.preventDefault();
     }
+    if (document.activeElement == modalSubmitted) {
+      
+      modalTitle.focus();
+      e.preventDefault();
+    }
   } else { // If user is trying to go to the next element, make sure it wraps to the top.
     if (document.activeElement === submitModalButton) {
       modalCard.focus();
+      e.preventDefault();
+    }
+    if (document.activeElement == modalSubmitted) {
+      modalTitle.focus();
       e.preventDefault();
     }
   }
