@@ -14,8 +14,12 @@
 }
 
 #map-container {
-  flex: 1 1 400px;
-  padding: 0 15px 0 15px;
+  background-color: white;
+  border: #9d5a5a solid 1px;
+  border-radius: 5px;
+  flex: 1 1 15rem;
+  margin: 0 2rem;
+  padding: 2rem;
 }
 
 .row {
@@ -35,7 +39,7 @@
 
 #map {
   background: var(--grey);
-  height: 100%;
+  height: 87%;
   min-width: 100px;
   width: 100%;
 }
@@ -50,6 +54,14 @@
   height: 100%;
   justify-content: center;
   width: 100%;
+}
+
+#map-text {
+  color: #525252;
+  font-family: 'Indie Flower', cursive;
+  font-size: 1.3rem;
+  margin: 2rem 0;
+  text-align: center;
 }
 
 /*
@@ -99,7 +111,18 @@ p {
   margin-block-end: 0;
 }
 
+@media screen and (min-width: 1800px) {
+  #col-container {
+    margin: 0 20% 50px 20%;
+    width: 60%;
+  }
+}
+
 @media screen and (max-width: 1077px) {
+  #map-container {
+    display: none;
+  }
+
   #podmates {
     height: auto;
     margin: 0 16px 0 16px;
