@@ -34,8 +34,8 @@ public class Post {
     private int endHour = 0;
     private int endMinute = 0;
     private String location = "";
-    private Double lat = 0.0;
-    private Double lng = 0.0;
+    private double lat = 0.0;
+    private double lng = 0.0;
     private String numberOfPeopleItFeeds = "";
     private String typeOfFood = "";
     private String description = "";
@@ -194,11 +194,11 @@ public class Post {
       return location;
     }
 
-    public Double getLat() {
+    public double getLat() {
       return lat;
     }
 
-    public Double getLng() {
+    public double getLng() {
       return lng;
     }
 
