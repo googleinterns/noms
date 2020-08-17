@@ -15,7 +15,7 @@ public final class PostTest {
   // Given inputs for an HTTP Request, tests if the conversion to a Post object is valid.
   // Tester must check if start/end hour and month are valid manually.
   public Post testRequestToPost(String collegeId, String organizationName, int month, int day, int startHour, int startMinute, String startAMorPM, int endHour, 
-  int endMinute, String endAMorPM, String location, Double lat, Double lng, String numberOfPeopleItFeeds, String typeOfFood, String description) {
+  int endMinute, String endAMorPM, String location, double lat, double lng, String numberOfPeopleItFeeds, String typeOfFood, String description) {
 
     // Construct Mock HTTP Request.
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -45,8 +45,8 @@ public final class PostTest {
     Assert.assertEquals(testPost.getStartMinute(), startMinute);
     Assert.assertEquals(testPost.getEndMinute(), endMinute);
     Assert.assertEquals(testPost.getLocation(), location);
-    Assert.assertEquals(testPost.getLat(), lat);
-    Assert.assertEquals(testPost.getLng(), lng);
+    Assert.assertEquals(testPost.getLat(), lat, 0);
+    Assert.assertEquals(testPost.getLng(), lng, 0);
     Assert.assertEquals(testPost.getNumberOfPeopleItFeeds(), numberOfPeopleItFeeds);
     Assert.assertEquals(testPost.getTypeOfFood(), typeOfFood);
     Assert.assertEquals(testPost.getDescription(), description);
@@ -69,8 +69,8 @@ public final class PostTest {
     int endMinute = 00;
     String endAMorPM = "am";
     String location = "Benson Memorial Center";
-    Double lat = 37.3476132;
-    Double lng = -121.9394005;
+    double lat = 37.3476132;
+    double lng = -121.9394005;
     String numberOfPeopleItFeeds = "20";
     String typeOfFood = "Chocolate cake";
     String description = "Birthday Party!!!";
@@ -97,8 +97,8 @@ public final class PostTest {
     int endMinute = 00;
     String endAMorPM = "pm";
     String location = "Aldrich Park";
-    Double lat = 33.6460519;
-    Double lng = -117.8427446;
+    double lat = 33.6460519;
+    double lng = -117.8427446;
     String numberOfPeopleItFeeds = "5";
     String typeOfFood = "Pizza";
     String description = "We ordered too much pizza! Drop by during our workshop to pick it up";
@@ -125,8 +125,8 @@ public final class PostTest {
     int endMinute = 15;
     String endAMorPM = "pm";
     String location = "Goss Stadium";
-    Double lat = 44.562842;
-    Double lng = -123.2771362;
+    double lat = 44.562842;
+    double lng = -123.2771362;
     String numberOfPeopleItFeeds = "5";
     String typeOfFood = "Popcorn";
     String description = "We have some popcorn left after our weekly Duck watching meeting, come pick some up!";
@@ -153,8 +153,8 @@ public final class PostTest {
     int endMinute = 00;
     String endAMorPM = "am";
     String location = "Benson Memorial Center";
-    Double lat = 37.3476132;
-    Double lng = -121.9394005;
+    double lat = 37.3476132;
+    double lng = -121.9394005;
     String numberOfPeopleItFeeds = "20";
     String typeOfFood = "Chocolate cake";
     String description = "Birthday Party!!!";
@@ -180,8 +180,8 @@ public final class PostTest {
     int endMinute = 00;
     String endAMorPM = "am";
     String location = "Benson Memorial Center";
-    Double lat = 37.3476132;
-    Double lng = -121.9394005;
+    double lat = 37.3476132;
+    double lng = -121.9394005;
     String numberOfPeopleItFeeds = "20";
     String typeOfFood = "Chocolate cake";
     String description = "Birthday Party!!!";
