@@ -49,7 +49,7 @@ public final class Email {
     * @return string version of welcome HTML file
     * @throws IOException
     */
-  public static String getWeclomeString() throws IOException {
+  public static String getWelcomeString() throws IOException {
 
     return getStringFromHTML(welcomeContentPath);
   }

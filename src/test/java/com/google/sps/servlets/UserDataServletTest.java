@@ -14,6 +14,13 @@
 
 package com.google.sps.servlets;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -25,6 +32,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.sps.data.Email;
 import com.google.sps.api.GmailConfiguration;
+import com.google.sps.MemoryAppender;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -32,8 +40,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -43,12 +49,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Mockito.when;
 import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 
 /** Tests user subscription and unsubscription. */
 @RunWith(JUnit4.class)
@@ -78,12 +79,8 @@ public final class UserDataServletTest {
   private static UserDataServlet userDataServlet;
   private static DatastoreService datastore;
   private static MemoryAppender memoryAppender;
-  private LocalServiceTestHelper helper =
-    new LocalServiceTestHelper(
-      new LocalDatastoreServiceTestConfig()
-        .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
-          new LocalUserServiceTestConfig(),
-            new LocalURLFetchServiceTestConfig());
+  private static LocalServiceTestHelper helper =
+    new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   @Before
   public void setUp() {
@@ -115,17 +112,19 @@ public final class UserDataServletTest {
   public void newUserSubscribe() {
     // Test if a new user, attempting to subscribe, can be added to Datastore.
     
-    helper.setEnvEmail(EMAIL_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
-
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
     when(mRequest.getParameter("email-notif")).thenReturn(SUB);
     when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
 
-    userDataServlet.doPost(mRequest, mResponse);
+    try {
+      userDataServlet.doPost(mRequest, mResponse);
+    } catch (IOException e) {
+     Assert.fail("Exception: " + e);
+   }
 
-    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
+    Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO));
     memoryAppender.reset();
   }
@@ -134,17 +133,19 @@ public final class UserDataServletTest {
   public void newUserUnsubscribe() {
     // Tests if a new user, attempting to unsubscribe, can not be added to Datastore.
     
-    helper.setEnvEmail(EMAIL_B).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
-
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_B);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
     when(mRequest.getParameter("email-notif")).thenReturn(UNSUB);
     when(mKeyFactory.createKey("User", EMAIL_B)).thenReturn(mKey);
 
-    userDataServlet.doPost(mRequest, mResponse);
+    try {
+      userDataServlet.doPost(mRequest, mResponse);
+    } catch (IOException e) {
+      Assert.fail("Exception: " + e);
+    }
 
-    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
+    Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(UNSUB_FAIL_MSG, Level.WARN));
     memoryAppender.reset();
   }
@@ -153,17 +154,19 @@ public final class UserDataServletTest {
   public void oldUserSubscribe() {
     // Tests if an old user, attempting to subscribe, can be added to Datastore with updated information.
     
-    helper.setEnvEmail(USER_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
-
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_B);
     when(mRequest.getParameter("email-notif")).thenReturn(SUB);
     when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
 
-    userDataServlet.doPost(mRequest, mResponse);
+    try {
+      userDataServlet.doPost(mRequest, mResponse);
+    } catch (IOException e) {
+      Assert.fail("Exception: " + e);
+    }
 
-    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
+    Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO));
   }
 
@@ -171,17 +174,19 @@ public final class UserDataServletTest {
   public void oldUserUnsubscribe() {
     // Test if an old user, attempting to unsubscribe, can be deleted from Datastore.
     
-    helper.setEnvEmail(USER_A).setEnvAuthDomain("google.com").setEnvIsLoggedIn(false);
-
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
     when(mRequest.getParameter("email-notif")).thenReturn(SUB);
     when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
 
-    userDataServlet.doPost(mRequest, mResponse);
-
-    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);
+    try {
+      userDataServlet.doPost(mRequest, mResponse);
+    } catch (IOException e) {
+      Assert.fail("Exception: " + e);
+    }
+    
+    Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(UNSUB_SUCCESS_MSG, Level.INFO));
   }
 }

@@ -16,7 +16,9 @@ package com.google.sps.data;
 
 import static org.mockito.Mockito.when;
 
+import com.google.sps.data.Email;
 import com.google.sps.data.Post;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -32,7 +34,7 @@ import org.mockito.MockitoAnnotations;
 
 /** Tests creating and converting HTML for email sending. */
 @RunWith(JUnit4.class)
-public final class UserDataServletTest {
+public final class EmailTest {
   
   public static final String WELCOME_PATH = "welcome_path_test";
 
@@ -50,21 +52,21 @@ public final class UserDataServletTest {
   }
 
   @Test
-  public void getStringFromAvailableHTML() {
+  public void getStringFromAvailableHTML() throws IOException {
     // Tests if welcomeContentPath exists.
 
     email.getWelcomeString();
   }
 
   @Test(expected = IOException.class)
-  public void getStringFromMisingHTML() {
+  public void getStringFromMisingHTML() throws IOException {
     // Tests exception handling for bad path.
 
-    email.getStringFromHTML(welcome_path_test);
+    email.getStringFromHTML(WELCOME_PATH);
   }
 
   @Test
-  public void addNewPostWithInformation() {
+  public void addNewPostWithInformation() throws IOException {
     // Tests for email content to include accurate Post information.
 
     when(mPost.getOrganizationName()).thenReturn("WICS");
@@ -86,9 +88,9 @@ public final class UserDataServletTest {
   }
 
   @Test(expected = IOException.class)
-  public void addNewPostWithMisinformation() {
+  public void addNewPostWithMisinformation() throws IOException {
     // Tests exception handling for bad post.
 
-    email.addNewPost(mPOst);
+    email.addNewPost(mPost);
   }
 }

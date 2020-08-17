@@ -14,6 +14,8 @@
 
 package com.google.sps.api;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -56,6 +58,7 @@ public class GmailConfiguration {
 
   private static final String FROM = "me";
   private static final Logger LOGGER = LoggerFactory.getLogger(GmailConfiguration.class);
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   
   /**
     * Create a MimeMessage using the parameters provided.
@@ -154,7 +157,7 @@ public class GmailConfiguration {
     // Find all users that attend the college.
     Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
     Query q = new Query("User").setFilter(universityFilter);
-    PreparedQuery pq = PostDataServlet.datastore.prepare(q);
+    PreparedQuery pq = datastore.prepare(q);
 
     // Email the users to notify them that a new post has been added.
     for (Entity user : pq.asIterable()) {

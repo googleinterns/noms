@@ -14,8 +14,12 @@
 
 package com.google.sps.api;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -38,6 +42,7 @@ import com.google.sps.data.Post;
 import com.google.sps.servlets.PostDataServlet;
 import com.google.sps.api.GmailConfiguration;
 import com.google.sps.api.GmailAPI;
+import com.google.sps.MemoryAppender;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,6 +59,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.LoggerFactory;
 
 /** Tests querying users and sending emails from an authorized account.*/
 @RunWith(JUnit4.class)
@@ -75,11 +81,13 @@ public final class GmailConfigurationTest {
   @Mock private static Gmail mGmail;
   @Mock private static MimeMessage mMimeMessage;
   @Mock private static Message mMessage;
+  @Mock private static GmailAPI mGmailAPI;
 
   private static LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private static DatastoreService datastore;
   private static GmailConfiguration gmailConfiguration;
+  private static MemoryAppender memoryAppender;
 
   @Before
   public void setUp() throws Exception {
@@ -107,46 +115,44 @@ public final class GmailConfigurationTest {
   }
 
   @Test
-  public void userAttendingCollege() {
+  public void userAttendingCollege() throws IOException {
     // Tests notifying users when the query for a college has users.
     
     Entity userEntity = new Entity("User", EMAIL);
     userEntity.setProperty("name", NAME);
     userEntity.setProperty("college", COLLEGE_A);
+    datastore.put(userEntity);
 
-    when(PostDataServlet.(any(DatastoreService.class))).thenReturn(datastore);
     GmailConfiguration.notifyUsers(COLLEGE_A, mPost);
 
-    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(1);  
+    Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(SUCCESS_MSG+EMAIL, Level.INFO));    
     memoryAppender.reset();
   }
 
   @Test
-  public void noUserAttendingCollege() {
+  public void noUserAttendingCollege() throws IOException {
     // Tests notifying users when the query for a college has no users.
 
-    when(PostDataServlet.(any(DatastoreService.class))).thenReturn(datastore);
     GmailConfiguration.notifyUsers(COLLEGE_B, mPost);
-    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(0);
+    Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 
   @Test
   public void sendEmailWithAuthorizedService() {
     // Tests if able to send an email with authorized Gmail service credentials.
 
-    userDataServlet.sendEmail(TO, SUBJECT, CONTENT);
-    Assert.assertTrue(memoryAppender.countEventsForLogger(LOGGER_NAME)).isEqualTo(0);
+    GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
+    Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 
-  @Test(expected = IOException.class)
-  public void sendEmailWithUnauthorizedService() {
+  @Test(expected = Exception.class)
+  public void sendEmailWithUnauthorizedService() throws Exception {
     // Tests if able to send an email with unauthorized Gmail service credentials.
     
-    when(GmailAPI.getGmailService()).thenReturn(mGmail);
-    when(GmailConfiguration.createEmail(TO, SUBJECT, CONTENT)).thenReturn(mGmail);
-    when(GmailAPI.getGmailService()).thenReturn(mGmail);
-
-    userDataServlet.sendEmail(TO, SUBJECT, CONTENT);
+    when(mGmailAPI.getGmailService()).thenReturn(mGmail);
+    when(GmailConfiguration.createEmail(TO, SUBJECT, CONTENT)).thenReturn(mMimeMessage);
+    
+    GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
   }
 }
