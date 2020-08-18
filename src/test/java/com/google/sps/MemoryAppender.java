@@ -25,7 +25,7 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
 
   /** Clears the list. */
   public void reset() {
-    this.list.clear();
+    list.clear();
   }
 
   /**

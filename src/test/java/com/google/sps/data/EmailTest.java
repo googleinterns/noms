@@ -45,30 +45,22 @@ public final class EmailTest {
  
   @Before
   public void setUp() {
-    
     email = new Email();
     MockitoAnnotations.initMocks(this);
   }
 
   @Test
   public void getStringFromAvailableHTML() throws IOException {
-    // Tests if welcomeContentPath exists.
-
     email.getWelcomeString();
   }
 
   @Test(expected = Exception.class)
   public void getStringFromMisingHTML() throws Exception {
-    // Tests exception handling for bad path.
-
     email.getStringFromHTML(PATH);
   }
 
   @Test
   public void addNewPostWithAMInformation() throws IOException {
-    // Tests for email content to include accurate Post information 
-    // with time period as AM.
-
     when(mPost.getOrganizationName()).thenReturn("WICS");
     when(mPost.getLocation()).thenReturn("DBH 6011");
     when(mPost.getMonth()).thenReturn(10);
@@ -89,9 +81,6 @@ public final class EmailTest {
 
   @Test
   public void addNewPostWithPMInformation() throws IOException {
-    // Tests for email content to include accurate Post information 
-    // with time period as PM.
-
     when(mPost.getOrganizationName()).thenReturn("WICS");
     when(mPost.getLocation()).thenReturn("DBH 6011");
     when(mPost.getMonth()).thenReturn(10);
@@ -112,8 +101,6 @@ public final class EmailTest {
 
   @Test(expected = Exception.class)
   public void addNewPostWithNoInformation() throws Exception {
-    // Tests exception handling for bad post.
-
     email.addNewPost(mPost);
   }
 }

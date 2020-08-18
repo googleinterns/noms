@@ -90,11 +90,7 @@ public final class Email {
       formattedTime = Integer.toString(hour) + ":";
       amOrPm = "AM";
     } else {
-      if (hour == 24) {
-        amOrPm = "AM";
-      } else {
-        amOrPm = "PM";
-      }
+      amOrPm = (hour == 24) ? "AM" : "PM";
       formattedTime = Integer.toString(hour - 12) + ":";
     }
 

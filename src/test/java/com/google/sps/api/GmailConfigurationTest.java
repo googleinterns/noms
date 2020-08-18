@@ -92,7 +92,6 @@ public final class GmailConfigurationTest {
 
   @Before
   public void setUp() throws Exception {
-
     helper.setUp();
 
     Logger logger = (Logger) LoggerFactory.getLogger(LOGGER_NAME);
@@ -110,7 +109,6 @@ public final class GmailConfigurationTest {
 
   @After
   public void tearDown() {
-
     memoryAppender.reset();
     memoryAppender.stop();
     helper.tearDown();
@@ -118,8 +116,6 @@ public final class GmailConfigurationTest {
 
   @Test
   public void userAttendingCollege() throws IOException {
-    // Tests notifying users when the query for a college has users.
-    
     Entity userEntity = new Entity("User", EMAIL);
     userEntity.setProperty("name", NAME);
     userEntity.setProperty("college", COLLEGE_A);
@@ -133,30 +129,24 @@ public final class GmailConfigurationTest {
     GmailConfiguration.notifyUsers(COLLEGE_A, post);
 
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
-    Assert.assertTrue(memoryAppender.contains(SUCCESS_MSG+EMAIL, Level.INFO));    
+    Assert.assertTrue(memoryAppender.contains(SUCCESS_MSG + EMAIL, Level.INFO));    
     memoryAppender.reset();
   }
 
   @Test
   public void noUserAttendingCollege() throws IOException {
-    // Tests notifying users when the query for a college has no users.
-
     GmailConfiguration.notifyUsers(COLLEGE_B, post);
     Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 
   @Test
   public void sendEmailWithAuthorizedService() {
-    // Tests if able to send an email with authorized Gmail service credentials.
-
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
     Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 
   @Test(expected = Exception.class)
   public void sendEmailWithUnauthorizedService() throws Exception {
-    // Tests if able to send an email with unauthorized Gmail service credentials.
-    
     when(mGmailAPI.getGmailService()).thenReturn(mGmail);    
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
   }

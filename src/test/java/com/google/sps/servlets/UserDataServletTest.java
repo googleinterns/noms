@@ -76,7 +76,6 @@ public final class UserDataServletTest {
 
   @Before
   public void setUp() {
-    
     helper.setUp();
 
     Logger logger = (Logger) LoggerFactory.getLogger(LOGGER_NAME);
@@ -92,7 +91,6 @@ public final class UserDataServletTest {
 
   @After
   public void tearDown() {
-
     memoryAppender.reset();
     memoryAppender.stop();
     helper.tearDown();
@@ -100,8 +98,6 @@ public final class UserDataServletTest {
 
   @Test
   public void newUserSubscribe() throws Exception {
-    // Test if a new user, attempting to subscribe, can be added to Datastore.
-    
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
@@ -116,8 +112,6 @@ public final class UserDataServletTest {
 
   @Test
   public void newUserUnsubscribe() throws Exception {
-    // Tests if a new user, attempting to unsubscribe, can not be added to Datastore.
-    
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_B);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
@@ -132,8 +126,6 @@ public final class UserDataServletTest {
 
   @Test
   public void oldUserSubscribe() throws Exception {
-    // Tests if an old user, attempting to subscribe, can be added to Datastore with updated information.
-    
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_B);
@@ -148,8 +140,6 @@ public final class UserDataServletTest {
 
   @Test
   public void oldUserUnsubscribe() throws Exception {
-    // Test if an old user, attempting to unsubscribe, can be deleted from Datastore.
-
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
