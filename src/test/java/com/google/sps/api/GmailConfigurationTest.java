@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -77,17 +78,17 @@ public final class GmailConfigurationTest {
   private static final String SUCCESS_MSG = "Successfully sent a new post email to: ";
   private static final String LOGGER_NAME = "com.google.sps.api";
 
-  @Mock private static Post mPost;
   @Mock private static Gmail mGmail;
   @Mock private static MimeMessage mMimeMessage;
-  @Mock private static Message mMessage;
   @Mock private static GmailAPI mGmailAPI;
+  @Mock private static PreparedQuery mpq;
 
   private static LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private static DatastoreService datastore;
   private static GmailConfiguration gmailConfiguration;
   private static MemoryAppender memoryAppender;
+  private static Post post;
 
   @Before
   public void setUp() throws Exception {
@@ -101,6 +102,7 @@ public final class GmailConfigurationTest {
     logger.addAppender(memoryAppender);
     memoryAppender.start();
 
+    post = new Post();
     datastore = DatastoreServiceFactory.getDatastoreService();
     gmailConfiguration = new GmailConfiguration();
     MockitoAnnotations.initMocks(this);
@@ -123,7 +125,12 @@ public final class GmailConfigurationTest {
     userEntity.setProperty("college", COLLEGE_A);
     datastore.put(userEntity);
 
-    GmailConfiguration.notifyUsers(COLLEGE_A, mPost);
+    Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, COLLEGE_A);
+    Query q = new Query("User").setFilter(universityFilter);
+    PreparedQuery pq = datastore.prepare(q);
+
+    when(mpq.asIterable()).thenReturn(pq.asIterable());
+    GmailConfiguration.notifyUsers(COLLEGE_A, post);
 
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(SUCCESS_MSG+EMAIL, Level.INFO));    
@@ -134,7 +141,7 @@ public final class GmailConfigurationTest {
   public void noUserAttendingCollege() throws IOException {
     // Tests notifying users when the query for a college has no users.
 
-    GmailConfiguration.notifyUsers(COLLEGE_B, mPost);
+    GmailConfiguration.notifyUsers(COLLEGE_B, post);
     Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 
