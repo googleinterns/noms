@@ -86,6 +86,9 @@ let modalForm;
 /** @type {HTMLButtonElement} */
 let toggleLegendButton;
 
+/** @type {HTMLButtonElement} */
+let toggleFiltersButton;
+
 //
 // Constants
 //
@@ -123,12 +126,14 @@ async function onLoad() {
   modalForm = document.getElementById('modal-form');
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
+  toggleFiltersButton = document.getElementById('toggle-filters-button');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
   closeModalButton.addEventListener('click', closeModal);
   submitModalButton.addEventListener('click', submitModal);
   toggleLegendButton.addEventListener('click', toggleLegend);
+  toggleFiltersButton.addEventListener('click', toggleFilters);
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -698,5 +703,25 @@ function toggleLegend() {
   } else {
     legend.style.zIndex = 0;
     legend.style.display = 'none';
+  }
+}
+
+/**
+ * Shows/Hides the filters to the user.
+ */
+function toggleFilters() {
+  const filterCard = document.getElementById('filter-card');
+
+  if (getComputedStyle(filterCard, null).display === 'none') {
+    filterCard.style.display = 'block';
+    toggleFiltersButton.style.backgroundColor = 'white';
+    toggleFiltersButton.style.color = 'var(--dark-maroon)';
+    toggleFiltersButton.style.border = '1px solid var(--dark-maroon)';
+  } else {
+    filterCard.style.display = 'none';
+    // Using '' makes the colors fall back to CSS defaults
+    toggleFiltersButton.style.backgroundColor = '';
+    toggleFiltersButton.style.color = '';
+    toggleFiltersButton.style.border = '';
   }
 }

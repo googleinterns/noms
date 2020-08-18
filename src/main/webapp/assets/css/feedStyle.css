@@ -42,7 +42,7 @@
   width: 100%;
 }
 
-#create-post-button:focus {
+.keyboard-active #create-post-button:focus {
   background-color: var(--light-teal);
 }
 
@@ -360,7 +360,7 @@ select {
 
 #toggle-filters-button {
   background-color: var(--dark-maroon);
-  border: 1px solid var(--dark-maroon);
+  border: 1px solid transparent;
   border-radius: 50px;
   box-shadow: 0 0 10px lightgrey;
   color: white;
@@ -372,17 +372,21 @@ select {
   padding: 0 30px;
 }
 
-#toggle-filters-button:hover,
-#toggle-filters-button:active {
+#toggle-filters-button:hover {
   background-color: white;
   border: 1px solid var(--dark-maroon);
   color: var(--dark-maroon);
   cursor: pointer;
 }
 
+.keyboard-active #toggle-filters-button:focus {
+  background-color: #ff9595;
+}
+
 #filter-card {
   border: 1.5px #adadad solid;
   border-radius: 15px;
+  display: none;
   margin-bottom: 5px;
   margin-top: 20px;
   min-height: 100px;
