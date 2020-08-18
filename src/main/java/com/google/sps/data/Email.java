@@ -26,8 +26,8 @@ public final class Email {
   public static final String newPostSubject = "⭐ noms: new free food near you!";
 
   // Set paths from /noms/target folder to accommodate maven run/deploy.
-  private static final String welcomeContentPath = "./assets/html_templates/WelcomeEmail.html";
-  private static final String newPostPath = "./assets/html_templates/NewPost.html";
+  private static String welcomeContentPath = "./src/main/webapp/assets/html_templates/WelcomeEmail.html";
+  private static String newPostPath = "./src/main/webapp/assets/html_templates/NewPost.html";
 
   /**
     * Convert HTML to String for MimeMessage to configure it into emails.

@@ -21,12 +21,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -47,11 +41,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 
-/** Tests user subscription and unsubscription. */
 @RunWith(JUnit4.class)
 public final class UserDataServletTest {
 
@@ -73,11 +68,8 @@ public final class UserDataServletTest {
 
   @Mock private static HttpServletRequest mRequest;
   @Mock private static HttpServletResponse mResponse;
-  @Mock private static Key mKey;
-  @Mock private static KeyFactory mKeyFactory;
 
   private static UserDataServlet userDataServlet;
-  private static DatastoreService datastore;
   private static MemoryAppender memoryAppender;
   private static LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -93,9 +85,7 @@ public final class UserDataServletTest {
     logger.setLevel(Level.DEBUG);
     logger.addAppender(memoryAppender);
     memoryAppender.start();
-
     userDataServlet = new UserDataServlet();
-    datastore = DatastoreServiceFactory.getDatastoreService();
 
     MockitoAnnotations.initMocks(this);
   }
@@ -109,20 +99,15 @@ public final class UserDataServletTest {
   }
 
   @Test
-  public void newUserSubscribe() {
+  public void newUserSubscribe() throws Exception {
     // Test if a new user, attempting to subscribe, can be added to Datastore.
     
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
     when(mRequest.getParameter("email-notif")).thenReturn(SUB);
-    when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
 
-    try {
-      userDataServlet.doPost(mRequest, mResponse);
-    } catch (IOException e) {
-     Assert.fail("Exception: " + e);
-   }
+    userDataServlet.doPost(mRequest, mResponse);
 
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO));
@@ -130,20 +115,15 @@ public final class UserDataServletTest {
   }
 
   @Test
-  public void newUserUnsubscribe() {
+  public void newUserUnsubscribe() throws Exception {
     // Tests if a new user, attempting to unsubscribe, can not be added to Datastore.
     
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_B);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
     when(mRequest.getParameter("email-notif")).thenReturn(UNSUB);
-    when(mKeyFactory.createKey("User", EMAIL_B)).thenReturn(mKey);
 
-    try {
-      userDataServlet.doPost(mRequest, mResponse);
-    } catch (IOException e) {
-      Assert.fail("Exception: " + e);
-    }
+    userDataServlet.doPost(mRequest, mResponse);
 
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(UNSUB_FAIL_MSG, Level.WARN));
@@ -151,42 +131,42 @@ public final class UserDataServletTest {
   }
 
   @Test
-  public void oldUserSubscribe() {
+  public void oldUserSubscribe() throws Exception {
     // Tests if an old user, attempting to subscribe, can be added to Datastore with updated information.
     
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_B);
     when(mRequest.getParameter("email-notif")).thenReturn(SUB);
-    when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
 
-    try {
-      userDataServlet.doPost(mRequest, mResponse);
-    } catch (IOException e) {
-      Assert.fail("Exception: " + e);
-    }
+    userDataServlet.doPost(mRequest, mResponse);
 
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
     Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO));
+    memoryAppender.reset();
   }
 
   @Test
-  public void oldUserUnsubscribe() {
+  public void oldUserUnsubscribe() throws Exception {
     // Test if an old user, attempting to unsubscribe, can be deleted from Datastore.
-    
+
     when(mRequest.getParameter("name")).thenReturn(NAME);
     when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
     when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
-    when(mRequest.getParameter("email-notif")).thenReturn(SUB);
-    when(mKeyFactory.createKey("User", EMAIL_A)).thenReturn(mKey);
+    when(mRequest.getParameter("email-notif")).thenReturn(SUB);  
 
-    try {
-      userDataServlet.doPost(mRequest, mResponse);
-    } catch (IOException e) {
-      Assert.fail("Exception: " + e);
-    }
+    userDataServlet.doPost(mRequest, mResponse);
+
+    when(mRequest.getParameter("name")).thenReturn(NAME);
+    when(mRequest.getParameter("email")).thenReturn(EMAIL_A);
+    when(mRequest.getParameter("cID")).thenReturn(COLLEGE_A);
+    when(mRequest.getParameter("email-notif")).thenReturn(UNSUB);  
+
+    userDataServlet.doPost(mRequest, mResponse);
     
-    Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
+    Assert.assertEquals(2, memoryAppender.countEventsForLogger(LOGGER_NAME));
+    Assert.assertTrue(memoryAppender.contains(SUB_SUCCESS_MSG, Level.INFO));
     Assert.assertTrue(memoryAppender.contains(UNSUB_SUCCESS_MSG, Level.INFO));
+    memoryAppender.reset();
   }
 }

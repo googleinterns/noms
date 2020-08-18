@@ -37,7 +37,6 @@ import org.mockito.MockitoAnnotations;
 public final class EmailTest {
   
   public static final String WELCOME_PATH = "welcome_path_test";
-
   @Mock private static File mfile;
   @Mock private static FileUtils mFileUtils;
   @Mock private static Post mPost;
@@ -68,7 +67,6 @@ public final class EmailTest {
   @Test
   public void addNewPostWithInformation() throws IOException {
     // Tests for email content to include accurate Post information.
-
     when(mPost.getOrganizationName()).thenReturn("WICS");
     when(mPost.getLocation()).thenReturn("DBH 6011");
     when(mPost.getMonth()).thenReturn(10);
@@ -87,8 +85,8 @@ public final class EmailTest {
     Assert.assertTrue(newPostEmail.contains("beep boop bop"));
   }
 
-  @Test(expected = IOException.class)
-  public void addNewPostWithMisinformation() throws IOException {
+  @Test(expected = NullPointerException.class)
+  public void addNewPostWithNoInformation() throws IOException {
     // Tests exception handling for bad post.
 
     email.addNewPost(mPost);

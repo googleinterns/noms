@@ -56,7 +56,7 @@ public class UserDataServlet extends HttpServlet {
       // Remove user if in database.
       Key userKey = KeyFactory.createKey("User", email);
       try {
-        datastore.get(userKey);
+        Entity task = datastore.get(userKey);
         datastore.delete(userKey);
         LOGGER.info("User was unsubscribed and removed from Datastore.");
       } catch (EntityNotFoundException e) {
