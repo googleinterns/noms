@@ -36,7 +36,7 @@ import org.mockito.MockitoAnnotations;
 @RunWith(JUnit4.class)
 public final class EmailTest {
   
-  public static final String WELCOME_PATH = "welcome_path_test";
+  public static final String PATH = "path_test";
   @Mock private static File mfile;
   @Mock private static FileUtils mFileUtils;
   @Mock private static Post mPost;
@@ -61,7 +61,7 @@ public final class EmailTest {
   public void getStringFromMisingHTML() throws Exception {
     // Tests exception handling for bad path.
 
-    email.getStringFromHTML(WELCOME_PATH);
+    email.getStringFromHTML(PATH);
   }
 
   @Test
