@@ -727,20 +727,20 @@ function validateModalTime(invalidIds, errorMessages, formElements) {
   const endAMorPM = parseInt(formElements.namedItem('end-am-or-pm').value, 10);
 
   // Check if the hours fall between 1-12.
-  if (startHour < 1 || startHour > 12) {
+  if (startHour < 1 || startHour > 12 || isNaN(startHour)) {
     invalidIds.push('modal-start-hour');
     errorMessages.push('start hour must be between 1 - 12');
   }
-  if (endHour < 1 || endHour > 12) {
+  if (endHour < 1 || endHour > 12 || isNaN(endHour)) {
     invalidIds.push('modal-end-hour');
     errorMessages.push('end hour must be between 1 - 12');
   }
   // Check if the minutes fall between 0 - 60.
-  if (startMinute < 0 || startMinute >= 60 || isBlank(startMinute.toString())) {
+  if (startMinute < 0 || startMinute >= 60 || isNaN(startMinute)) {
     invalidIds.push('modal-start-minute');
     errorMessages.push('start minute must be between 00 - 59');
   }
-  if (endMinute < 0 || endMinute >= 60 || isBlank(startMinute.toString())) {
+  if (endMinute < 0 || endMinute >= 60 || isNaN(startMinute)) {
     invalidIds.push('modal-end-minute');
     errorMessages.push('end minute must be between 00 - 59');
   }
@@ -773,7 +773,7 @@ function isBlank(input) {
 }
 
 /**
- * Checks if the text elements have text.
+ * Checks that the text elements are not blank.
  * @param {array} invalidIds
  * @param {array} errorMessages
  * @param {array} formElements
@@ -794,6 +794,7 @@ function validateModalText(invalidIds, errorMessages, formElements) {
 
 /**
  * Checks if the inputted address is valid.
+ * Submits if address is verified.
  * @return {void}
  */
 async function checkLocationAndSubmit() {
