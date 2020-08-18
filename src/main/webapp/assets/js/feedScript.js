@@ -638,7 +638,7 @@ function validateModal() {
   validateModalText(invalidIds, errorMessages, formElements);
   validateModalDate(invalidIds, errorMessages, formElements);
   validateModalTime(invalidIds, errorMessages, formElements);
-  markInvalidInputs(invalidIds, formElements);
+  markInvalidInputs(invalidIds, errorMessages, formElements);
 
   console.log(invalidIds);
   console.log(errorMessages);
@@ -663,7 +663,7 @@ function disableInjection(formElements) {
 }
 
 /**
- * Resets all the input backgrounds to modal grey.
+ * Resets all the input backgrounds to modal grey and gets rid of previous error text.
  * @param {array} formElements
  * @return {void}
  */
@@ -672,15 +672,20 @@ function resetMarks(formElements) {
     const elt = formElements[i];
     elt.style.background = '#1b18181a';
   }
+  const modalError = document.getElementById('modal-input-error');
+  if (modalError) {
+    modalForm.removeChild(modalError);
+  }
 }
 
 /**
  * Goes through the invalid inputs and colors them red.
+ * Adds error messages.
  * @param {array} invalidIds
  * @param {array} formElements
  * @return {void}
  */
-function markInvalidInputs(invalidIds, formElements) {
+function markInvalidInputs(invalidIds, errorMessages, formElements) {
   resetMarks(formElements);
   invalidIds.forEach((id) => {
     const elt = formElements.namedItem(id);
@@ -688,6 +693,17 @@ function markInvalidInputs(invalidIds, formElements) {
       elt.style.background = '#ff999966';
     }
   });
+  if (errorMessages.length > 0) {
+    const modalError = document.createElement('div');
+    modalError.setAttribute('id', 'modal-input-error');
+    modalError.setAttribute('tabindex', '0');
+    modalError.innerHTML += '<ul>';
+    errorMessages.forEach((message) => {
+      modalError.innerHTML += '<li>' + message + '</li>';
+    });
+    modalError.innerHTML += '</ul>';
+    modalForm.insertBefore(modalError, submitModalButton);
+  }
 }
 
 /**
@@ -812,20 +828,19 @@ async function checkLocationAndSubmit() {
     if (!latLngResult && modalLocation !== cachedModalAddress) {
       cachedModalAddress = modalLocation;
       const modalError = document.createElement('div');
-      modalError.setAttribute('id', 'modal-error');
+      modalError.setAttribute('id', 'modal-map-error');
       modalError.innerText =
         `We couldn't find address '${modalLocation}'. ` +
         'Please check your address for errors. ' +
         'If you wish to submit anyway, no pin will be added to the map.';
-      document.getElementById('modal-form')
-          .insertBefore(modalError, document.getElementById('modal-submit'));
+      modalForm.insertBefore(modalError, document.getElementById('modal-submit'));
       submitModalButton.disabled = false;
     // Else, if the invalid address is the same as we last checked
     // or the address is just plain valid, then add the post to the Datastore.
     } else {
-      const modalError = document.getElementById('modal-error');
+      const modalError = document.getElementById('modal-map-error');
       if (modalError) {
-        document.getElementById('modal-form').removeChild(modalError);
+        modalForm.removeChild(modalError);
       }
 
       // (0,0) denotes a nonexistent lat/long, since it's a location in the ocean + is falsy.
