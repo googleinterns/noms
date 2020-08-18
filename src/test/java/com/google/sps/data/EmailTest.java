@@ -85,8 +85,8 @@ public final class EmailTest {
     Assert.assertTrue(newPostEmail.contains("beep boop bop"));
   }
 
-  @Test(expected = NullPointerException.class)
-  public void addNewPostWithNoInformation() throws IOException {
+  @Test(expected = Exception.class)
+  public void addNewPostWithNoInformation() throws Exception {
     // Tests exception handling for bad post.
 
     email.addNewPost(mPost);

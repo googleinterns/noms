@@ -160,7 +160,7 @@ public class GmailAPI {
     * @param secretId id of secret key
     * @throws IOException
     */
-  public static String getSecret(String secretId) throws IOException {
+  private static String getSecret(String secretId) throws IOException {
 
     // Retrieve the secret key for given ID.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {

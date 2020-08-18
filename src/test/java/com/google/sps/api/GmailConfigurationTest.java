@@ -157,9 +157,7 @@ public final class GmailConfigurationTest {
   public void sendEmailWithUnauthorizedService() throws Exception {
     // Tests if able to send an email with unauthorized Gmail service credentials.
     
-    when(mGmailAPI.getGmailService()).thenReturn(mGmail);
-    when(GmailConfiguration.createEmail(TO, SUBJECT, CONTENT)).thenReturn(mMimeMessage);
-    
+    when(mGmailAPI.getGmailService()).thenReturn(mGmail);    
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
   }
 }

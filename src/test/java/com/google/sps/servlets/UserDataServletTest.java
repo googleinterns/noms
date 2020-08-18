@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -68,6 +69,7 @@ public final class UserDataServletTest {
 
   @Mock private static HttpServletRequest mRequest;
   @Mock private static HttpServletResponse mResponse;
+  @Mock private static GmailConfiguration mGmailConfiguration;
 
   private static UserDataServlet userDataServlet;
   private static MemoryAppender memoryAppender;

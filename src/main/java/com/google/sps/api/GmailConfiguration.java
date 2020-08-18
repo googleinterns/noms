@@ -69,7 +69,7 @@ public class GmailConfiguration {
     * @return the MimeMessage to be used to send email
     * @throws MessagingException
     */
-  public static MimeMessage createEmail(String to, String subject, String bodyText) 
+  private static MimeMessage createEmail(String to, String subject, String bodyText) 
       throws MessagingException {
 
     Properties props = new Properties();
@@ -92,7 +92,7 @@ public class GmailConfiguration {
     * @throws IOException
     * @throws MessagingException
     */
-  public static Message createMessageWithEmail(MimeMessage emailContent)
+  private static Message createMessageWithEmail(MimeMessage emailContent)
       throws MessagingException, IOException {
 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -115,7 +115,7 @@ public class GmailConfiguration {
     * @throws MessagingException
     * @throws IOException
     */
-  public static Message sendMessage(Gmail service, MimeMessage emailContent)
+  private static Message sendMessage(Gmail service, MimeMessage emailContent)
       throws MessagingException, IOException {
     
     Message message = createMessageWithEmail(emailContent);
