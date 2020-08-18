@@ -72,7 +72,7 @@ let modalCard;
 let modalSubmitted;
 
 /** @type {HTMLElement} */
-let modalSubmittedText;
+let modalSubmittedTitle;
 
 /** @type {HTMLElement} */
 let createPostButton;
@@ -130,7 +130,7 @@ async function onLoad() {
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
   modalSubmitted = document.getElementById('modal-submitted');
-  modalSubmittedText = document.getElementById('modal-submitted-title');
+  modalSubmittedTitle = document.getElementById('modal-submitted-title');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -892,8 +892,8 @@ document.addEventListener('keydown', function(e) {
       submitModalButton.focus();
       e.preventDefault();
     }
-    if (document.activeElement == modalSubmitted) {
-      modalSubmittedText.focus();
+    if (document.activeElement === modalSubmitted) {
+      modalSubmittedTitle.focus();
       e.preventDefault();
     }
   } else { // If user is trying to go to the next element, make sure it wraps to the top.
@@ -901,7 +901,7 @@ document.addEventListener('keydown', function(e) {
       modalCard.focus();
       e.preventDefault();
     }
-    if (document.activeElement == modalSubmittedText) {
+    if (document.activeElement === modalSubmittedText) {
       modalSubmitted.focus();
       e.preventDefault();
     }

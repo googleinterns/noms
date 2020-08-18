@@ -64,7 +64,7 @@
           </div>
         </div>
         <div id="all-posts">
-          <button aria-label="create a post" id="create-post-button" tabindex="0" type="button">create a post</button>
+          <button id="create-post-button" tabindex="0" type="button">create a post</button>
         </div>
       </div>
     </div>
@@ -75,7 +75,7 @@
         <button aria-label="close modal" id="modal-close" tabindex="0" type="button">&#10005;</button>
         <h1 id="modal-title" tabindex="0">Create a Post</h1>
         <form id="modal-form" method="post">
-          <input aria-label="organization name" id="modal-org-name" maxlength="100" name="organizationName" placeholder="organization name" tabindex="0" type="text" required><br>
+          <input aria-label="organization name" id="modal-org-name" maxlength="75" name="organizationName" placeholder="organization name" tabindex="0" type="text" required><br>
 
           <span class="modal-span">
             <p id="modal-time-text" tabindex="0">date:</p>
@@ -105,8 +105,8 @@
           </span>
 
           <input aria-label="location" id="modal-location" maxlength="100" name="location" placeholder="location" tabindex="0" type="text" required><br>
-          <input aria-label="type of food" id="modal-type-food" maxlength="100" name="typeOfFood"  placeholder="type of food" tabindex="0" type="text" required><br>
-          <input aria-label="how many people can it feed"  id="modal-num-people" maxlength="100" name="numberOfPeopleItFeeds" placeholder="how many people can it feed?" tabindex="0" type="text" required><br>
+          <input aria-label="type of food" id="modal-type-food" maxlength="75" name="typeOfFood"  placeholder="type of food" tabindex="0" type="text" required><br>
+          <input aria-label="how many people can it feed"  id="modal-num-people" maxlength="50" name="numberOfPeopleItFeeds" placeholder="how many people can it feed?" tabindex="0" type="text" required><br>
           <textarea aria-label="description" id="modal-description" maxlength="500" name="description" placeholder="description" rows="3" tabindex="0" ></textarea><br>
           
           <button id="modal-submit" tabindex="0" type="button">submit</button>
