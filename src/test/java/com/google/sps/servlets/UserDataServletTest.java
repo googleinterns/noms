@@ -16,7 +16,6 @@ package com.google.sps.servlets;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;

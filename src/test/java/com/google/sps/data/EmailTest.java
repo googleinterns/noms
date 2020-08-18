@@ -57,8 +57,8 @@ public final class EmailTest {
     email.getWelcomeString();
   }
 
-  @Test(expected = IOException.class)
-  public void getStringFromMisingHTML() throws IOException {
+  @Test(expected = Exception.class)
+  public void getStringFromMisingHTML() throws Exception {
     // Tests exception handling for bad path.
 
     email.getStringFromHTML(WELCOME_PATH);

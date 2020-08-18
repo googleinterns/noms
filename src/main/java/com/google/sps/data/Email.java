@@ -24,10 +24,8 @@ public final class Email {
 
   public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
   public static final String newPostSubject = "⭐ noms: new free food near you!";
-
-  // Set paths from /noms/target folder to accommodate maven run/deploy.
-  private static String welcomeContentPath = "./portfolio-1/webapp/assets/html_templates/WelcomeEmail.html";
-  private static String newPostPath = "./portfolio-1/webapp/assets/html_templates/NewPost.html";
+  private static final String welcomeContentPath = "WelcomeEmail.html";
+  private static final String newPostPath = "NewPost.html";
 
   /**
     * Convert HTML to String for MimeMessage to configure it into emails.
@@ -38,7 +36,8 @@ public final class Email {
     */
   public static String getStringFromHTML(String path) throws IOException {
 
-    File HTMLfile = new File(path);
+    ClassLoader classLoader = Email.class.getClassLoader();
+    File HTMLfile = new File(classLoader.getResource(path).getFile());
     String str = FileUtils.readFileToString(HTMLfile, "utf-8");
     return str;
   }
