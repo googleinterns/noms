@@ -50,6 +50,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+// More information can be found here: http://www.slf4j.org/manual.html.
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

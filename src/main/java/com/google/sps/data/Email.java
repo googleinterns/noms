@@ -83,17 +83,17 @@ public final class Email {
   private static String getFormattedTime(int hour, int minute) {
 
     String formattedTime = "";
-    String AMorPM = "";
+    String amOrPm = "";
 
     // Account for 24-hour period.
     if (hour <= 12) {
       formattedTime = Integer.toString(hour) + ":";
-      AMorPM = "AM";
+      amOrPm = "AM";
     } else {
       if (hour == 24) {
-        AMorPM = "AM";
+        amOrPm = "AM";
       } else {
-        AMorPM = "PM";
+        amOrPm = "PM";
       }
       formattedTime = Integer.toString(hour - 12) + ":";
     }
@@ -105,7 +105,7 @@ public final class Email {
     } else {
       formattedTime += "0" + Integer.toString(minute);
     }
-    System.out.println(formattedTime+AMorPM);
-    return formattedTime + AMorPM;
+
+    return formattedTime + amOrPm;
   }
 }

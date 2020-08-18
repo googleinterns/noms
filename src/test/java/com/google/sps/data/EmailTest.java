@@ -90,7 +90,7 @@ public final class EmailTest {
   @Test
   public void addNewPostWithPMInformation() throws IOException {
     // Tests for email content to include accurate Post information 
-    // with time period as PM
+    // with time period as PM.
 
     when(mPost.getOrganizationName()).thenReturn("WICS");
     when(mPost.getLocation()).thenReturn("DBH 6011");
