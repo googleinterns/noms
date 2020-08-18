@@ -62,17 +62,50 @@ public final class Email {
     */
   public static String addNewPost(Post post) throws IOException {
 
-    // TODO: Include AM/PM, date formatted, and time zone to be more user friendly.
     String emailContent = getStringFromHTML(newPostPath);
     emailContent = emailContent.replace("[organizationName]", post.getOrganizationName());
     emailContent = emailContent.replace("[location]", post.getLocation());
     emailContent = emailContent.replace("[month]",  Integer.toString(post.getMonth()));
     emailContent = emailContent.replace("[day]", Integer.toString(post.getDay()));
-    emailContent = emailContent.replace("[startHour]", Integer.toString(post.getStartHour()));
-    emailContent = emailContent.replace("[startMinute]", Integer.toString(post.getStartMinute()));
-    emailContent = emailContent.replace("[endHour]", Integer.toString(post.getEndHour()));
-    emailContent = emailContent.replace("[endMinute]", Integer.toString(post.getEndMinute()));
+    emailContent = emailContent.replace("[startTime]", getFormattedTime(post.getStartHour(), post.getStartMinute()));
+    emailContent = emailContent.replace("[endTime]", getFormattedTime(post.getEndHour(), post.getEndMinute()));
     emailContent = emailContent.replace("[description]", post.getDescription());
     return emailContent;
+  }
+
+  /**
+    * Convert hour and minute to easier to see timestamps.
+    *
+    * @param hour of event
+    * @param minute of event
+    * @return string of time in XX:XX PM/AM or X:XX PM/AM format.
+    */
+  private static String getFormattedTime(int hour, int minute) {
+
+    String formattedTime = "";
+    String AMorPM = "";
+
+    // Account for 24-hour period.
+    if (hour <= 12) {
+      formattedTime = Integer.toString(hour) + ":";
+      AMorPM = "AM";
+    } else {
+      if (hour == 24) {
+        AMorPM = "AM";
+      } else {
+        AMorPM = "PM";
+      }
+      formattedTime = Integer.toString(hour - 12) + ":";
+    }
+
+    // Account for 1 digit times which makes format different.
+    // Ex. 1:00 looks like 1:0 instead.
+    if (minute >= 10){
+      formattedTime += Integer.toString(minute);
+    } else {
+      formattedTime += "0" + Integer.toString(minute);
+    }
+    System.out.println(formattedTime+AMorPM);
+    return formattedTime + AMorPM;
   }
 }

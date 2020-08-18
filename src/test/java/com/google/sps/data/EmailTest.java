@@ -65,8 +65,10 @@ public final class EmailTest {
   }
 
   @Test
-  public void addNewPostWithInformation() throws IOException {
-    // Tests for email content to include accurate Post information.
+  public void addNewPostWithAMInformation() throws IOException {
+    // Tests for email content to include accurate Post information 
+    // with time period as AM.
+
     when(mPost.getOrganizationName()).thenReturn("WICS");
     when(mPost.getLocation()).thenReturn("DBH 6011");
     when(mPost.getMonth()).thenReturn(10);
@@ -81,7 +83,30 @@ public final class EmailTest {
 
     Assert.assertTrue(newPostEmail.contains("WICS @ DBH 6011"));
     Assert.assertTrue(newPostEmail.contains("10/20"));
-    Assert.assertTrue(newPostEmail.contains("9:30 - 10:30"));
+    Assert.assertTrue(newPostEmail.contains("9:30AM - 10:30AM"));
+    Assert.assertTrue(newPostEmail.contains("beep boop bop"));
+  }
+
+  @Test
+  public void addNewPostWithPMInformation() throws IOException {
+    // Tests for email content to include accurate Post information 
+    // with time period as PM
+
+    when(mPost.getOrganizationName()).thenReturn("WICS");
+    when(mPost.getLocation()).thenReturn("DBH 6011");
+    when(mPost.getMonth()).thenReturn(10);
+    when(mPost.getDay()).thenReturn(20);
+    when(mPost.getStartHour()).thenReturn(17);
+    when(mPost.getStartMinute()).thenReturn(30);
+    when(mPost.getEndHour()).thenReturn(24);
+    when(mPost.getEndMinute()).thenReturn(00);
+    when(mPost.getDescription()).thenReturn("beep boop bop");
+
+    String newPostEmail = email.addNewPost(mPost);
+
+    Assert.assertTrue(newPostEmail.contains("WICS @ DBH 6011"));
+    Assert.assertTrue(newPostEmail.contains("10/20"));
+    Assert.assertTrue(newPostEmail.contains("5:30PM - 12:00AM"));
     Assert.assertTrue(newPostEmail.contains("beep boop bop"));
   }
 
