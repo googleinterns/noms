@@ -640,9 +640,6 @@ function validateModal() {
   validateModalTime(invalidIds, errorMessages, formElements);
   markInvalidInputs(invalidIds, errorMessages, formElements);
 
-  console.log(invalidIds);
-  console.log(errorMessages);
-
   if (invalidIds.length === 0) {
     return true;
   } else {
@@ -776,7 +773,7 @@ function validateModalTime(invalidIds, errorMessages, formElements) {
 }
 
 /**
- * Goes through the elements and replaces the tags with their HTML equivalent.
+ * Checks if the given input is blank.
  * @param {String} input
  * @return {void}
  */
@@ -790,7 +787,7 @@ function isBlank(input) {
 }
 
 /**
- * Checks that the text elements are not blank.
+ * Goes through the form elements. If it is a text input, adds an error if it is blank.
  * @param {array} invalidIds
  * @param {array} errorMessages
  * @param {array} formElements
@@ -799,7 +796,6 @@ function isBlank(input) {
 function validateModalText(invalidIds, errorMessages, formElements) {
   for (let i = 0; i < formElements.length; i++) {
     if (formElements[i].type === 'text' || formElements[i].type === 'textarea') {
-      console.log(formElements[i].value);
       if (isBlank(formElements[i].value)) {
         invalidIds.push(formElements[i].id);
         const errorMessage = formElements[i].placeholder + ' is blank';
