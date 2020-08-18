@@ -682,6 +682,7 @@ function resetMarks(formElements) {
  * Goes through the invalid inputs and colors them red.
  * Adds error messages.
  * @param {array} invalidIds
+ * @param {array} errorMessages
  * @param {array} formElements
  * @return {void}
  */
@@ -801,7 +802,7 @@ function validateModalText(invalidIds, errorMessages, formElements) {
       console.log(formElements[i].value);
       if (isBlank(formElements[i].value)) {
         invalidIds.push(formElements[i].id);
-        const errorMessage = formElements[i].name + ' is blank';
+        const errorMessage = formElements[i].placeholder + ' is blank';
         errorMessages.push(errorMessage);
       }
     }
