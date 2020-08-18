@@ -89,6 +89,9 @@ let toggleLegendButton;
 /** @type {HTMLButtonElement} */
 let toggleFiltersButton;
 
+/** @type {Array<HTMLElement>} */
+const filterInputs = [];
+
 //
 // Constants
 //
@@ -127,6 +130,10 @@ async function onLoad() {
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
   toggleFiltersButton = document.getElementById('toggle-filters-button');
+  filterInputs.push(document.getElementById('num-people'));
+  filterInputs.push(document.getElementById('happening-now'));
+  filterInputs.push(document.getElementById('distance'));
+  filterInputs.push(document.getElementById('keywords'));
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -134,6 +141,9 @@ async function onLoad() {
   submitModalButton.addEventListener('click', submitModal);
   toggleLegendButton.addEventListener('click', toggleLegend);
   toggleFiltersButton.addEventListener('click', toggleFilters);
+  for (const element of filterInputs) {
+    element.addEventListener('change', filterAndUpdatePagePosts);
+  }
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -724,4 +734,25 @@ function toggleFilters() {
     toggleFiltersButton.style.color = '';
     toggleFiltersButton.style.border = '';
   }
+}
+
+/**
+ * Filters the posts the user sees on the page based
+ * on the current state of the filter inputs.
+ */
+function filterAndUpdatePagePosts() {
+  // Grab the filter inputs
+  return;
+}
+
+/**
+ * Applies the filtering algorithm to an array of posts.
+ * @param {Array<PostInfo>} posts - The posts to filter.
+ * @param {Date} now - The current datetime.
+ * @param {Object} userLocation - The user's location (lat/long).
+ * @param {Object} filters - The parameters by which to filter.
+ * @return {Array <PostInfo>} - The filtered list of posts.
+ */
+function filterPosts(posts, now, userLocation, filters) {
+  return posts;
 }
