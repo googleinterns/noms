@@ -69,6 +69,7 @@ async function onLoad() {
 
   // When users select an option from the dropdown, send them to that page.
   document.getElementById('colleges-input').addEventListener('change', navigateUserToCollegePage);
+  document.getElementById('colleges-input').addEventListener('keypress', navigateUserOnEnter);
 }
 
 /**
@@ -185,12 +186,29 @@ function getRepresentativeCollegeSample(collegeLocations) {
  */
 function navigateUserToCollegePage() {
   const collegeName = document.getElementById('colleges-input').value;
-  const option = document.querySelector(`#colleges option[value='${collegeName}']`);
+  const titleCaseCollegeName = collegeName
+      .split(' ')
+      .map((w) => w[0].toUpperCase() + w.substr(1).toLowerCase())
+      .join(' ');
+  // Try the title case version if what the user passed in doesn't match anything
+  const option = document.querySelector(`#colleges option[value='${collegeName}']`) ?
+      document.querySelector(`#colleges option[value='${collegeName}']`) :
+      document.querySelector(`#colleges option[value='${titleCaseCollegeName}']`);
 
   // Only navigate to the page if that college exists in our list of colleges.
   // TODO: display 'We haven't heard of that college!"/similar to the user if not recognized.
   if (option) {
     const collegeId = option.dataset.value;
     window.location.href = `/find-events.html?collegeid=${collegeId}`;
+  }
+}
+
+/**
+ * Checks if the user pressed 'enter' in the dropdown, and if they did,
+ * navigate them to the appropriate college's page.
+ */
+function navigateUserOnEnter() {
+  if (event.keyCode === 13) {
+    navigateUserToCollegePage();
   }
 }

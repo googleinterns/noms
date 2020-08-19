@@ -952,7 +952,7 @@ document.addEventListener('keydown', function(e) {
       modalCard.focus();
       e.preventDefault();
     }
-    if (document.activeElement === modalSubmittedText) {
+    if (document.activeElement === modalSubmittedTitle) {
       modalSubmitted.focus();
       e.preventDefault();
     }
