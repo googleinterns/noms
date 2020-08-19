@@ -640,22 +640,23 @@ function validateModal() {
   validateModalTime(invalidIds, errorMessages, formElements);
   markInvalidInputs(invalidIds, errorMessages, formElements);
 
-  if (invalidIds.length === 0) {
-    return true;
-  } else {
-    return false;
-  }
+  return (invalidIds.length === 0);
 }
 
 /**
- * Goes through the elements and replaces the tags with their HTML equivalent.
+ * Goes through the elements and encodes common HTML enities.
+ * By using these codes, ensures that the user's inputs are seen as data, not code.
+ * This is a measure against a malicious users trying to changing site data.
  * @param {array} formElements
  * @return {void}
  */
 function disableInjection(formElements) {
   for (let i = 0; i < formElements.length - 1; i++) {
-    let eltValue = formElements[i].value;
-    eltValue = eltValue.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    let elementValue = formElements[i].value;
+    elementValue = elementValue.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    elementValue = elementValue.replace(/&/g, '&amp;');
+    elementValue = elementValue.replace(/"/g, '&quot;');
+    elementValue = elementValue.replace(/'/g, '&#x27;');
   }
 }
 
@@ -666,8 +667,8 @@ function disableInjection(formElements) {
  */
 function resetMarks(formElements) {
   for (let i = 0; i < formElements.length - 1; i++) {
-    const elt = formElements[i];
-    elt.style.background = '#1b18181a';
+    const element = formElements[i];
+    element.style.background = '#1b18181a';
   }
   const modalError = document.getElementById('modal-input-error');
   if (modalError) {
@@ -735,33 +736,35 @@ function validateModalDate(invalidIds, errorMessages, formElements) {
 function validateModalTime(invalidIds, errorMessages, formElements) {
   const startHour = parseInt(formElements.namedItem('modal-start-hour').value, 10);
   const startMinute = parseInt(formElements.namedItem('modal-start-minute').value, 10);
-  const startAMorPM = parseInt(formElements.namedItem('start-am-or-pm').value, 10);
+  const startAMorPM = formElements.namedItem('start-am-or-pm').value;
   const endHour = parseInt(formElements.namedItem('modal-end-hour').value, 10);
   const endMinute = parseInt(formElements.namedItem('modal-end-minute').value, 10);
-  const endAMorPM = parseInt(formElements.namedItem('end-am-or-pm').value, 10);
+  const endAMorPM = formElements.namedItem('end-am-or-pm').value;
 
   // Check if the hours fall between 1-12.
-  if (startHour < 1 || startHour > 12 || isNaN(startHour)) {
+  if (isNaN(startHour) || startHour < 1 || startHour > 12) {
     invalidIds.push('modal-start-hour');
     errorMessages.push('start hour must be between 1 - 12');
   }
-  if (endHour < 1 || endHour > 12 || isNaN(endHour)) {
+  if (isNaN(endHour) || endHour < 1 || endHour > 12) {
     invalidIds.push('modal-end-hour');
     errorMessages.push('end hour must be between 1 - 12');
   }
   // Check if the minutes fall between 0 - 60.
-  if (startMinute < 0 || startMinute >= 60 || isNaN(startMinute)) {
+  if (isNaN(startMinute) || startMinute < 0 || startMinute >= 60) {
     invalidIds.push('modal-start-minute');
     errorMessages.push('start minute must be between 00 - 59');
   }
-  if (endMinute < 0 || endMinute >= 60 || isNaN(startMinute)) {
+  if (isNaN(startMinute) || endMinute < 0 || endMinute >= 60) {
     invalidIds.push('modal-end-minute');
     errorMessages.push('end minute must be between 00 - 59');
   }
   // Check if the end time is after the start time.
-  if ((startAMorPM === 'pm' && endAMorPM === 'am') ||
-  (startAMorPM == endAMorPM &&
-  (endHour < startHour || (endHour === startHour && endMinute < startMinute)))) {
+  const startMeridiemAfterEnd = (startAMorPM === 'pm' && endAMorPM === 'am');
+  const startMeridiemSameAsEnd = (startAMorPM === endAMorPM);
+  const endMinuteBeforeStart = (endHour === startHour && endMinute < startMinute);
+  const endTimeBeforeStart = (endHour < startHour || endMinuteBeforeStart);
+  if (startMeridiemAfterEnd || (startMeridiemSameAsEnd && endTimeBeforeStart)) {
     invalidIds.push('modal-start-hour');
     invalidIds.push('modal-start-minute');
     invalidIds.push('start-am-or-pm');
@@ -779,11 +782,7 @@ function validateModalTime(invalidIds, errorMessages, formElements) {
  */
 function isBlank(input) {
   const trimmed = input.trim();
-  if (trimmed) {
-    return false;
-  } else {
-    return true;
-  }
+  return !trimmed;
 }
 
 /**
@@ -846,10 +845,11 @@ async function checkLocationAndSubmit() {
       url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
       modalForm.action = url;
 
-      // Show submitted box.
+      // Hides form modal, shows submit message and focuses on it.
       modalCard.style.display = 'none';
       modalSubmitted.style.display = 'block';
       modalSubmitted.focus();
+      // Closes the submit modal after 2000 ms, and submits the form.
       setTimeout(function() {
         closeSubmit();
         modalForm.submit();
