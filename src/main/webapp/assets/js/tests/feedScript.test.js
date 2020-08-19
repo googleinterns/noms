@@ -19,7 +19,6 @@ const TIME_2200 = new Date(1150000);
 const TIME_2300 = new Date(1190000);
 
 // Post defaults
-const ID_DEFAULT = '1';
 const ORG_NAME_DEFAULT = 'ACM-W';
 const POST_DATETIME_DEFAULT = TIME_0900;
 const EVENT_START_TIME_DEFAULT = TIME_1200;
@@ -276,138 +275,188 @@ describe('Geolocation Functionality', function() {
 /**
  * Test suite for post filtering functionality.
  */
-describe('Geolocation Functionality', function() {
+describe('Post Filtering', function() {
   /**
    * Tests for filterPosts().
    */
   describe('#filterPosts()', function() {
     it('should return all generic posts when given default filters', function() {
       const posts = [];
-      for (let i = 0; i < 4; i ++) {
-        posts.push(newPost());
+      for (let i = 1; i < 5; i ++) {
+        posts.push(newPost(i));
       }
       const now = TIME_1500; // Middle of default event
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter();
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(4);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(4);
+      expect(extractIDs(result)).to.deep.equal([1, 2, 3, 4]);
     });
 
     it('should return all posts when given default filters, even outliers', function() {
       const posts = [];
-      posts.push(newPost(0, 0, 0, 0, 0, FAR_AWAY, 0, 0, 0)); // Location diff. > 3 miles
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 100, 0, 0)); // Num. people > 40
-      const now = TIME_9000;
+      posts.push(newPost(1, 0, 0, 0, 0, FAR_AWAY, 0, 0, 0)); // Location diff. > 3 miles
+      posts.push(newPost(2, 0, 0, 0, 0, 0, 100, 0, 0)); // Num. people > 40
+      const now = TIME_0900;
       const userLocation = AT_MEMORIAL_UNION;
-      const filters = newFilter();
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(2);
+      const filters = newFilter(3);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(2);
+      expect(extractIDs(result)).to.deep.equal([1, 2]);
     });
 
     it('should only return posts with a given keyword in the foodtype or description', function() {
       const posts = [];
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Bear', 'This is a description.'));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Different', 'This mentions bear.'));
-      posts.push(newPost());
-      const now = TIME_9000;
+      posts.push(newPost(1, 0, 0, 0, 0, 0, 0, 'Bear', 'This is a description.'));
+      posts.push(newPost(2, 0, 0, 0, 0, 0, 0, 'Different', 'This mentions bear.'));
+      posts.push(newPost(3));
+      const now = TIME_0900;
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter(0, 0, 0, ['bear']);
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(2);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(2);
+      expect(extractIDs(result)).to.deep.equal([1, 2]);
     });
 
     it('should return posts with any of multiple given keywords', function() {
       const posts = [];
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Bear', 'This is a description.'));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Different', 'This mentions bear.'));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Globes', 'Global society'));
-      posts.push(newPost());
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Plant', 'Eat our plants, plase.'));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Different', 'plant@gmail.com'));
-      const now = TIME_9000;
+      posts.push(newPost(1, 0, 0, 0, 0, 0, 0, 'Bear', 'This is a description.'));
+      posts.push(newPost(2, 0, 0, 0, 0, 0, 0, 'Different', 'This mentions bear.'));
+      posts.push(newPost(3, 0, 0, 0, 0, 0, 0, 'Globes', 'Global society'));
+      posts.push(newPost(4));
+      posts.push(newPost(5, 0, 0, 0, 0, 0, 0, 'Plant', 'Eat our plants, plase.'));
+      posts.push(newPost(6, 0, 0, 0, 0, 0, 0, 'Different', 'plant@gmail.com'));
+      const now = TIME_0900;
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter(0, 0, 0, ['bear', 'plant']);
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(4);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(4);
+      expect(extractIDs(result)).to.deep.equal([1, 2, 5, 6]);
     });
 
     it('shouldn\'t return any posts if the keyword(s) don\'t match anything', function() {
       const posts = [];
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Bear', 'This is a description.'));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 0, 'Different', 'This mentions bear.'));
-      posts.push(newPost());
-      const now = TIME_9000;
+      posts.push(newPost(1, 0, 0, 0, 0, 0, 0, 'Bear', 'This is a description.'));
+      posts.push(newPost(2, 0, 0, 0, 0, 0, 0, 'Different', 'This mentions bear.'));
+      posts.push(newPost(3));
+      const now = TIME_0900;
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter(0, 0, 0, ['garbage']);
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(0);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(0);
+      expect(extractIDs(result)).to.deep.equal([]);
     });
 
     it('should only return posts happening right now if happeningNow = true', function() {
       const posts = [];
-      posts.push(newPost(0, 0, 0, TIME_0900, TIME_1200, 0, 0, 0, 0)); // Happened earlier
-      posts.push(newPost()); // Default event (happening 'now')
-      posts.push(newPost(0, 0, 0, TIME_2200, TIME_2300, 0, 0, 0, 0)); // Happened later
+      posts.push(newPost(1, 0, 0, TIME_0900, TIME_1200, 0, 0, 0, 0)); // Happened earlier
+      posts.push(newPost(2)); // Default event (happening 'now')
+      posts.push(newPost(3, 0, 0, TIME_2200, TIME_2300, 0, 0, 0, 0)); // Happened later
       const now = TIME_1500; // Middle of the default event
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter(0, true, 0, 0);
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(1);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(1);
+      expect(extractIDs(result)).to.deep.equal([2]);
     });
 
-    it('should only return all posts happening if happeningNow = false', function() {
+    it('should return all posts happening if happeningNow = false', function() {
       const posts = [];
-      posts.push(newPost(0, 0, 0, TIME_0900, TIME_1200, 0, 0, 0, 0)); // Happened earlier
-      posts.push(newPost()); // Default event (happening 'now')
-      posts.push(newPost(0, 0, 0, TIME_2200, TIME_2300, 0, 0, 0, 0)); // Happened later
+      posts.push(newPost(1, 0, 0, TIME_0900, TIME_1200, 0, 0, 0, 0)); // Happened earlier
+      posts.push(newPost(2)); // Default event (happening 'now')
+      posts.push(newPost(3, 0, 0, TIME_2200, TIME_2300, 0, 0, 0, 0)); // Happened later
       const now = TIME_1500; // Middle of the default event
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter(0, false, 0, 0);
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(3);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(3);
+      expect(extractIDs(result)).to.deep.equal([1, 2, 3]);
     });
 
     it('should only return posts within the distance radius filter = 1.5', function() {
       const posts = [];
-      posts.push(newPost(0, 0, 0, 0, 0, FAR_AWAY, 0, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, AT_MCNARY_FIELD, 0, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, AT_MEMORIAL_UNION, 0, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, AT_STUDENT_EXPERIENCE_CENTER, 0, 0, 0));
+      posts.push(newPost(1, 0, 0, 0, 0, FAR_AWAY, 0, 0, 0));
+      posts.push(newPost(2, 0, 0, 0, 0, AT_MCNARY_FIELD, 0, 0, 0));
+      posts.push(newPost(3, 0, 0, 0, 0, AT_MEMORIAL_UNION, 0, 0, 0));
+      posts.push(newPost(4, 0, 0, 0, 0, AT_STUDENT_EXPERIENCE_CENTER, 0, 0, 0));
       const now = TIME_1500;
       const userLocation = AT_LINUS_PAULING_INSTITUTE;
       const filters = newFilter(0, 0, 1.5, 0);
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(3);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(3);
+      expect(extractIDs(result)).to.deep.equal([2, 3, 4]);
     });
 
     it('should only return posts within the distance radius filter = 0.4', function() {
       const posts = [];
-      posts.push(newPost(0, 0, 0, 0, 0, FAR_AWAY, 0, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, AT_MCNARY_FIELD, 0, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, AT_MEMORIAL_UNION, 0, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, AT_STUDENT_EXPERIENCE_CENTER, 0, 0, 0));
+      posts.push(newPost(1, 0, 0, 0, 0, FAR_AWAY, 0, 0, 0));
+      posts.push(newPost(2, 0, 0, 0, 0, AT_MCNARY_FIELD, 0, 0, 0));
+      posts.push(newPost(3, 0, 0, 0, 0, AT_MEMORIAL_UNION, 0, 0, 0));
+      posts.push(newPost(4, 0, 0, 0, 0, AT_STUDENT_EXPERIENCE_CENTER, 0, 0, 0));
       const now = TIME_1500;
       const userLocation = AT_LINUS_PAULING_INSTITUTE;
       const filters = newFilter(0, 0, 0.4, 0);
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(2);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(2);
+      expect(extractIDs(result)).to.deep.equal([3, 4]);
     });
 
     it('should return all events above the numPeople threshold = 0', function() {
       const posts = [];
-      posts.push(newPost());
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 5, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 50, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 100, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 1000, 0, 0));
+      posts.push(newPost(1));
+      posts.push(newPost(2, 0, 0, 0, 0, 0, 5, 0, 0));
+      posts.push(newPost(3, 0, 0, 0, 0, 0, 50, 0, 0));
+      posts.push(newPost(4, 0, 0, 0, 0, 0, 100, 0, 0));
+      posts.push(newPost(5, 0, 0, 0, 0, 0, 1000, 0, 0));
       const now = TIME_1500;
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter();
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(5);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(5);
+      expect(extractIDs(result)).to.deep.equal([1, 2, 3, 4, 5]);
     });
 
     it('should return only events above the numPeople threshold = 15', function() {
       const posts = [];
-      posts.push(newPost());
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 5, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 50, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 100, 0, 0));
-      posts.push(newPost(0, 0, 0, 0, 0, 0, 1000, 0, 0));
+      posts.push(newPost(1));
+      posts.push(newPost(2, 0, 0, 0, 0, 0, 5, 0, 0));
+      posts.push(newPost(3, 0, 0, 0, 0, 0, 50, 0, 0));
+      posts.push(newPost(4, 0, 0, 0, 0, 0, 100, 0, 0));
+      posts.push(newPost(5, 0, 0, 0, 0, 0, 1000, 0, 0));
       const now = TIME_1500;
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter();
-      expect(filterPosts(posts, now, userLocation, filters).length).to.be.equal(3);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(3);
+      expect(extractIDs(result)).to.deep.equal([3, 4, 5]);
+    });
+
+    it('should return the intersection of multiple filters, not the union', function() {
+      const posts = [];
+      posts.push(newPost(1)); // Fits all filters
+      posts.push(newPost(2, 0, 0, TIME_2200, TIME_2300, 0, 0, 0, 0)); // Too late
+      posts.push(newPost(3, 0, 0, 0, 0, AT_MCNARY_FIELD, 0, 0, 0)); // Too far away
+      posts.push(newPost(4, 0, 0, TIME_2200, TIME_2300, AT_MCNARY_FIELD, 0, 0, 0)); // Both
+      posts.push(newPost(5, 0, 0, 0, 0, 0, 2, 0, 0)); // Not enough people
+      posts.push(newPost(6, 0, 0, TIME_0900, TIME_1200, 0, 50, 0, 0)); // Enough people, too early
+      const now = TIME_1500;
+      const userLocation = AT_LINUS_PAULING_INSTITUTE;
+      const filters = newFilter(10, true, 0.5, ['']);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(1);
+      expect(extractIDs(result)).to.deep.equal([1]);
     });
   });
 });
@@ -431,7 +480,8 @@ function newFilter(numPeople = 0, happeningNow = 0, distance = 0, keywords = 0) 
 }
 
 /**
- * Creates a new post. If falsy values are passed to any parameter, defaults are used.
+ * Creates a new post. If falsy values are passed to any parameter
+ * (except ID, which is required), defaults are used.
  * @param {number} id - The unique id of the post.
  * @param {string} organizationName - The name of the organization making the post.
  * @param {Date} postDateTime - The date that the post was made.
@@ -444,7 +494,7 @@ function newFilter(numPeople = 0, happeningNow = 0, distance = 0, keywords = 0) 
  * @return {Object} - The new post object.
  */
 function newPost(
-    id = 0,
+    id,
     organizationName = 0,
     postDateTime = 0,
     eventStartTime = 0,
@@ -454,7 +504,7 @@ function newPost(
     foodType = 0,
     description = 0) {
   return {
-    id: id ? id : ID_DEFAULT,
+    id: id,
     organizationName: organizationName ? organizationName : ORG_NAME_DEFAULT,
     postDateTime: postDateTime ? postDateTime : POST_DATETIME_DEFAULT,
     eventStartTime: eventStartTime ? eventStartTime : EVENT_START_TIME_DEFAULT,
@@ -464,4 +514,17 @@ function newPost(
     foodType: foodType ? foodType : FOODTYPE_DEFAULT,
     description: description ? description : DESCRIPTION_DEFAULT,
   };
+}
+
+/**
+ * Returns an array of all IDs in an array of posts, sorted ascending.
+ * @param {Array<PostInfo>} posts - The posts to extract an ID from.
+ * @return {Array<Number>} - An array of the IDs in the posts.
+ */
+function extractIDs(posts) {
+  const returnArray = [];
+  for (const post of posts) {
+    returnArray.push(post.id);
+  }
+  return returnArray.sort();
 }
