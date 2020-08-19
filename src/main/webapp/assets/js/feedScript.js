@@ -755,7 +755,7 @@ function validateModalTime(invalidIds, errorMessages, formElements) {
     invalidIds.push('modal-start-minute');
     errorMessages.push('start minute must be between 00 - 59');
   }
-  if (isNaN(startMinute) || endMinute < 0 || endMinute >= 60) {
+  if (isNaN(endMinute) || endMinute < 0 || endMinute >= 60) {
     invalidIds.push('modal-end-minute');
     errorMessages.push('end minute must be between 00 - 59');
   }
