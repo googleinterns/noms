@@ -740,39 +740,65 @@ function validateModalTime(invalidIds, errorMessages, formElements) {
   const endHour = parseInt(formElements.namedItem('modal-end-hour').value, 10);
   const endMinute = parseInt(formElements.namedItem('modal-end-minute').value, 10);
   const endAMorPM = formElements.namedItem('end-am-or-pm').value;
+  let timesValid = true;
 
   // Check if the hours fall between 1-12.
   if (isNaN(startHour) || startHour < 1 || startHour > 12) {
     invalidIds.push('modal-start-hour');
     errorMessages.push('start hour must be between 1 - 12');
+    timesValid = false;
   }
   if (isNaN(endHour) || endHour < 1 || endHour > 12) {
     invalidIds.push('modal-end-hour');
     errorMessages.push('end hour must be between 1 - 12');
+    timesValid = false;
   }
   // Check if the minutes fall between 0 - 60.
   if (isNaN(startMinute) || startMinute < 0 || startMinute >= 60) {
     invalidIds.push('modal-start-minute');
     errorMessages.push('start minute must be between 00 - 59');
+    timesValid = false;
   }
   if (isNaN(endMinute) || endMinute < 0 || endMinute >= 60) {
     invalidIds.push('modal-end-minute');
     errorMessages.push('end minute must be between 00 - 59');
+    timesValid = false;
   }
-  // Check if the end time is after the start time.
-  const startMeridiemAfterEnd = (startAMorPM === 'pm' && endAMorPM === 'am');
-  const startMeridiemSameAsEnd = (startAMorPM === endAMorPM);
-  const endMinuteBeforeStart = (endHour === startHour && endMinute < startMinute);
-  const endTimeBeforeStart = (endHour < startHour || endMinuteBeforeStart);
-  if (startMeridiemAfterEnd || (startMeridiemSameAsEnd && endTimeBeforeStart)) {
-    invalidIds.push('modal-start-hour');
-    invalidIds.push('modal-start-minute');
-    invalidIds.push('start-am-or-pm');
-    invalidIds.push('modal-end-hour');
-    invalidIds.push('modal-end-minute');
-    invalidIds.push('end-am-or-pm');
-    errorMessages.push('end time must be after start time');
+  // Calculate start and end time in minutes.
+  if (timesValid) {
+    let startTime = (startHour * 60) + startMinute;
+    if (startAMorPM === 'pm') {
+      startTime += 12 * 60;
+    }
+    let endTime = (endHour * 60) + endMinute;
+    if (endAMorPM === 'pm') {
+      endTime += 12 * 60;
+    }
+    // Ensure that start time is before end time.
+    if (startTime > endTime) {
+      invalidIds.push('modal-start-hour');
+      invalidIds.push('modal-start-minute');
+      invalidIds.push('start-am-or-pm');
+      invalidIds.push('modal-end-hour');
+      invalidIds.push('modal-end-minute');
+      invalidIds.push('end-am-or-pm');
+      errorMessages.push('end time must be after start time');
+    }
   }
+//   let endTime =  end
+//   const startMeridiemAfterEnd = (startAMorPM === 'pm' && endAMorPM === 'am');
+//   const startMeridiemSameAsEnd = (startAMorPM === endAMorPM);
+//   const endMinuteBeforeStart = (endHour === startHour && endMinute < startMinute);
+//   const endTimeBeforeStart = (endHour < startHour || endMinuteBeforeStart);
+//   if (startMeridiemAfterEnd || (startMeridiemSameAsEnd && endTimeBeforeStart)) {
+//     invalidIds.push('modal-start-hour');
+//     invalidIds.push('modal-start-minute');
+//     invalidIds.push('start-am-or-pm');
+//     invalidIds.push('modal-end-hour');
+//     invalidIds.push('modal-end-minute');
+//     invalidIds.push('end-am-or-pm');
+//     errorMessages.push('end time must be after start time');
+//   }
 }
 
 /**
@@ -901,7 +927,7 @@ document.addEventListener('keydown', function(e) {
       modalCard.focus();
       e.preventDefault();
     }
-    if (document.activeElement === modalSubmittedText) {
+    if (document.activeElement === modalSubmittedTitle) {
       modalSubmitted.focus();
       e.preventDefault();
     }
