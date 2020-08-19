@@ -70,6 +70,10 @@ let map;
 /** @type {string} */
 let cachedModalAddress = '';
 
+/** @type {GeolocationPosition} */
+let userLocation = null;
+
+
 //
 // Elements
 //
@@ -474,6 +478,9 @@ function initMap() {
  * @param {any} position - The position returned by the browser's geolocator.
  */
 function addUserToMap(position) {
+  // Cache this value
+  userLocation = position;
+
   const icon = {
     url: './assets/svg/bluemarker.svg',
     scaledSize: new google.maps.Size(30, 30),
@@ -608,6 +615,18 @@ async function addPosts(posts) {
 
     // Add card to the page.
     allPosts.append(postCard);
+  }
+}
+
+/**
+ * Removes all posts from the page.
+ */
+function removePosts() {
+  const postParent = document.getElementById('all-posts');
+  const postElements = document.getElementsByClassName('post-card');
+
+  while (postElements.length > 0) {
+    postParent.removeChild(postElements[0]);
   }
 }
 
@@ -761,7 +780,24 @@ function toggleFilters() {
  */
 function filterAndUpdatePagePosts() {
   // Grab the filter inputs
-  return;
+  const filters = {
+    numPeople: parseInt(document.getElementById('num-people').value),
+    happeningNow: document.getElementById('happening-now').checked,
+    distance: parseFloat(document.getElementById('distance').value),
+    keywords: document.getElementById('keywords').value === '' ?
+      [] : document.getElementById('keywords').value.split(',').map((e) => e.trim()),
+  };
+
+  const location = userLocation ?
+    {lat: userLocation.coords.latitude, long: userLocation.coords.longitude} :
+    null;
+
+  // Perform the filtering on the source of the page's posts
+  const filteredPosts = filterPosts(posts, new Date(), location, filters);
+
+  // Update the posts shown on the page
+  removePosts();
+  addPosts(filteredPosts);
 }
 
 /**
@@ -782,7 +818,7 @@ function filterPosts(posts, now, userLocation, filters) {
       return now >= p.eventStartTime && now <= p.eventEndTime;
     });
   }
-  if (filters.distance !== DISTANCE_FILTER_DEFAULT) {
+  if (filters.distance !== DISTANCE_FILTER_DEFAULT && userLocation) {
     filteredPosts = filteredPosts.filter((p) => {
       const avgLat = userLocation.lat + p.location.lat;
       const milesPerDegreeLong = Math.cos(avgLat / 2 * Math.PI / 180) * MILES_PER_DEGREE_LAT;
@@ -792,7 +828,7 @@ function filterPosts(posts, now, userLocation, filters) {
       return Math.sqrt(latDiff * latDiff + longDiff * longDiff) <= filters.distance;
     });
   }
-  if (filters.keywords !== KEYWORDS_FILTER_DEFAULT) {
+  if (filters.keywords !== KEYWORDS_FILTER_DEFAULT && filters.keywords.length > 0) {
     filteredPosts = filteredPosts.filter((p) => {
       for (const keyword of filters.keywords) {
         if (p.foodType.toLowerCase().includes(keyword.toLowerCase()) ||

@@ -410,6 +410,21 @@ describe('Post Filtering', function() {
       expect(extractIDs(result)).to.deep.equal([3, 4]);
     });
 
+    it('should return all posts if the user\'s location isn\'t defined', function() {
+      const posts = [];
+      posts.push(newPost(1, 0, 0, 0, 0, FAR_AWAY, 0, 0, 0));
+      posts.push(newPost(2, 0, 0, 0, 0, AT_MCNARY_FIELD, 0, 0, 0));
+      posts.push(newPost(3, 0, 0, 0, 0, AT_MEMORIAL_UNION, 0, 0, 0));
+      posts.push(newPost(4, 0, 0, 0, 0, AT_STUDENT_EXPERIENCE_CENTER, 0, 0, 0));
+      const now = TIME_1500;
+      const userLocation = null;
+      const filters = newFilter(0, 0, 0.4, 0);
+
+      const result = filterPosts(posts, now, userLocation, filters);
+      expect(result.length).to.be.equal(4);
+      expect(extractIDs(result)).to.deep.equal([1, 2, 3, 4]);
+    });
+
     it('should return all events above the numPeople threshold = 0', function() {
       const posts = [];
       posts.push(newPost(1));
