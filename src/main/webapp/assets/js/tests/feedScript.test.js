@@ -522,9 +522,5 @@ function newPost(
  * @return {Array<Number>} - An array of the IDs in the posts.
  */
 function extractIDs(posts) {
-  const returnArray = [];
-  for (const post of posts) {
-    returnArray.push(post.id);
-  }
-  return returnArray.sort();
+  return posts.map((p) => p.id).sort();
 }
