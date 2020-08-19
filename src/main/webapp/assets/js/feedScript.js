@@ -766,11 +766,11 @@ function validateModalTime(invalidIds, errorMessages, formElements) {
   }
   // Calculate start and end time in minutes.
   if (timesValid) {
-    let startTime = (startHour * 60) + startMinute;
+    let startTime = ((startHour % 12) * 60) + startMinute;
     if (startAMorPM === 'pm') {
       startTime += 12 * 60;
     }
-    let endTime = (endHour * 60) + endMinute;
+    let endTime = ((endHour % 12) * 60) + endMinute;
     if (endAMorPM === 'pm') {
       endTime += 12 * 60;
     }
