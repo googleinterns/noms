@@ -61,11 +61,11 @@ public class Post {
 
         // Adjust the start and end hour based on whether the hour is AM or PM.
         String startAMorPM = request.getParameter("startAMorPM");
-        if (startAMorPM.equals("pm")) {
+        if (startAMorPM.equals("pm") && (startHour != 12)) {
             startHour += 12;
         }
         String endAMorPM = request.getParameter("endAMorPM");
-        if (endAMorPM.equals("pm")) {
+        if (endAMorPM.equals("pm") && (endHour != 12)) {
             endHour += 12;
         }
 

@@ -785,20 +785,6 @@ function validateModalTime(invalidIds, errorMessages, formElements) {
       errorMessages.push('end time must be after start time');
     }
   }
-//   let endTime =  end
-//   const startMeridiemAfterEnd = (startAMorPM === 'pm' && endAMorPM === 'am');
-//   const startMeridiemSameAsEnd = (startAMorPM === endAMorPM);
-//   const endMinuteBeforeStart = (endHour === startHour && endMinute < startMinute);
-//   const endTimeBeforeStart = (endHour < startHour || endMinuteBeforeStart);
-//   if (startMeridiemAfterEnd || (startMeridiemSameAsEnd && endTimeBeforeStart)) {
-//     invalidIds.push('modal-start-hour');
-//     invalidIds.push('modal-start-minute');
-//     invalidIds.push('start-am-or-pm');
-//     invalidIds.push('modal-end-hour');
-//     invalidIds.push('modal-end-minute');
-//     invalidIds.push('end-am-or-pm');
-//     errorMessages.push('end time must be after start time');
-//   }
 }
 
 /**
