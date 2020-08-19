@@ -45,6 +45,15 @@
  * @property {string} description - A longer description of the entire event.
  */
 
+/**
+ * An object containing filters by which to narrow posts down.
+ * @typedef {Object} Filter
+ * @param {number} numPeople - The minimum number of people the event can feed.
+ * @param {boolean} happeningNow - Whether the event is happening right now.
+ * @param {number} distance - The maximum distance from the user to the event.
+ * @param {Array<string>} keywords - Keywords to include.
+ */
+
 //
 // Global objects
 //
@@ -96,8 +105,18 @@ const filterInputs = [];
 // Constants
 //
 
+// Map marker size limits
 const MARKER_WIDTH_MINMAX = {min: 28, max: 70};
 const MARKER_HEIGHT_MINMAX = {min: 45, max: 113};
+
+// Filter defaults
+const NUM_PEOPLE_FILTER_DEFAULT = 0;
+const HAPPENING_NOW_FILTER_DEFAULT = false;
+const DISTANCE_FILTER_DEFAULT = 3;
+const KEYWORDS_FILTER_DEFAULT = [];
+
+// Conversion constant for degrees lat to miles
+const MILES_PER_DEGREE_LAT = 69.172;
 
 //
 // Event listener registration
@@ -750,9 +769,40 @@ function filterAndUpdatePagePosts() {
  * @param {Array<PostInfo>} posts - The posts to filter.
  * @param {Date} now - The current datetime.
  * @param {Object} userLocation - The user's location (lat/long).
- * @param {Object} filters - The parameters by which to filter.
+ * @param {Filter} filters - The parameters by which to filter.
  * @return {Array <PostInfo>} - The filtered list of posts.
  */
 function filterPosts(posts, now, userLocation, filters) {
-  return posts;
+  let filteredPosts = posts;
+  if (filters.numPeople !== NUM_PEOPLE_FILTER_DEFAULT) {
+    filteredPosts = filteredPosts.filter((p) => p.numOfPeopleFoodWillFeed >= filters.numPeople);
+  }
+  if (filters.happeningNow !== HAPPENING_NOW_FILTER_DEFAULT) {
+    filteredPosts = filteredPosts.filter((p) => {
+      return now >= p.eventStartTime && now <= p.eventEndTime;
+    });
+  }
+  if (filters.distance !== DISTANCE_FILTER_DEFAULT) {
+    filteredPosts = filteredPosts.filter((p) => {
+      const avgLat = userLocation.lat + p.location.lat;
+      const milesPerDegreeLong = Math.cos(avgLat / 2 * Math.PI / 180) * MILES_PER_DEGREE_LAT;
+      const latDiff = Math.abs(p.location.lat - userLocation.lat) * MILES_PER_DEGREE_LAT;
+      const longDiff = Math.abs(p.location.long - userLocation.long) * milesPerDegreeLong;
+
+      return Math.sqrt(latDiff * latDiff + longDiff * longDiff) <= filters.distance;
+    });
+  }
+  if (filters.keywords !== KEYWORDS_FILTER_DEFAULT) {
+    filteredPosts = filteredPosts.filter((p) => {
+      for (const keyword of filters.keywords) {
+        if (p.foodType.toLowerCase().includes(keyword.toLowerCase()) ||
+            p.description.toLowerCase().includes(keyword.toLowerCase())) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
+  return filteredPosts;
 }

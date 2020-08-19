@@ -23,22 +23,22 @@ const ORG_NAME_DEFAULT = 'ACM-W';
 const POST_DATETIME_DEFAULT = TIME_0900;
 const EVENT_START_TIME_DEFAULT = TIME_1200;
 const EVENT_END_TIME_DEFAULT = TIME_2000;
-const LOCATION_DEFAULT = {name: 'Memorial Union', lat: 123.4264, long: -47.0283, city: 'Corvallis'};
+const LOCATION_DEFAULT =
+  {
+    name: 'Memorial Union',
+    lat: 44.5646872,
+    long: -123.2789571,
+    city: 'Corvallis',
+  };
 const NUM_PEOPLE_DEFAULT = 10;
 const FOODTYPE_DEFAULT = 'Sandwiches';
 const DESCRIPTION_DEFAULT = 'Come pick up all of these extra sandwiches we have!';
 
-// Filter defaults
-const NUM_PEOPLE_FILTER_DEFAULT = 0;
-const HAPPENING_NOW_FILTER_DEFAULT = false;
-const DISTANCE_FILTER_DEFAULT = 3;
-const KEYWORDS_FILTER_DEFAULT = [];
-
 // Locations
 const AT_MEMORIAL_UNION = {lat: 44.5646872, long: -123.2789571};
 const AT_STUDENT_EXPERIENCE_CENTER = {lat: 44.5649397, long: -123.2781688};
-const AT_LINUS_PAULING_INSTITUTE = {lat: 44.5668288, long: -123.2814225};
-const AT_MCNARY_FIELD = {lat: 44.5659046, long: -123.2784385};
+const AT_LINUS_PAULING_INSTITUTE = {lat: 44.5663558, long: -123.282799};
+const AT_MCNARY_FIELD = {lat: 44.5657475, long: -123.2712236};
 const FAR_AWAY = {lat: 126.4264, long: -48.0283};
 
 /**
@@ -435,7 +435,7 @@ describe('Post Filtering', function() {
       posts.push(newPost(5, 0, 0, 0, 0, 0, 1000, 0, 0));
       const now = TIME_1500;
       const userLocation = AT_MEMORIAL_UNION;
-      const filters = newFilter();
+      const filters = newFilter(15, 0, 0, 0);
 
       const result = filterPosts(posts, now, userLocation, filters);
       expect(result.length).to.be.equal(3);
@@ -510,7 +510,7 @@ function newPost(
     eventStartTime: eventStartTime ? eventStartTime : EVENT_START_TIME_DEFAULT,
     eventEndTime: eventEndTime ? eventEndTime : EVENT_END_TIME_DEFAULT,
     location: location ? location : LOCATION_DEFAULT,
-    numOfPeople: numOfPeople ? numOfPeople : NUM_PEOPLE_DEFAULT,
+    numOfPeopleFoodWillFeed: numOfPeople ? numOfPeople : NUM_PEOPLE_DEFAULT,
     foodType: foodType ? foodType : FOODTYPE_DEFAULT,
     description: description ? description : DESCRIPTION_DEFAULT,
   };
