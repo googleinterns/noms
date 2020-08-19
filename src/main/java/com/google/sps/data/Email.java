@@ -18,6 +18,7 @@ import com.google.sps.data.Post;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
+import java.util.Formatter;
 
 /** Creates and converts HTML templates for email sending. */
 public final class Email {
@@ -90,18 +91,14 @@ public final class Email {
       formattedTime = Integer.toString(hour) + ":";
       amOrPm = "AM";
     } else {
-      amOrPm = (hour == 24) ? "AM" : "PM";
       formattedTime = Integer.toString(hour - 12) + ":";
+      amOrPm = "PM";
     }
 
     // Account for 1 digit times which makes format different.
     // Ex. 1:00 looks like 1:0 instead.
-    if (minute >= 10){
-      formattedTime += Integer.toString(minute);
-    } else {
-      formattedTime += "0" + Integer.toString(minute);
-    }
-
+    formattedTime += String.format("%02d", minute);
+    
     return formattedTime + amOrPm;
   }
 }

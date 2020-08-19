@@ -87,15 +87,15 @@ public final class EmailTest {
     when(mPost.getDay()).thenReturn(20);
     when(mPost.getStartHour()).thenReturn(17);
     when(mPost.getStartMinute()).thenReturn(30);
-    when(mPost.getEndHour()).thenReturn(24);
-    when(mPost.getEndMinute()).thenReturn(00);
+    when(mPost.getEndHour()).thenReturn(23);
+    when(mPost.getEndMinute()).thenReturn(59);
     when(mPost.getDescription()).thenReturn("beep boop bop");
 
     String newPostEmail = email.addNewPost(mPost);
 
     Assert.assertTrue(newPostEmail.contains("WICS @ DBH 6011"));
     Assert.assertTrue(newPostEmail.contains("10/20"));
-    Assert.assertTrue(newPostEmail.contains("5:30PM - 12:00AM"));
+    Assert.assertTrue(newPostEmail.contains("5:30PM - 11:59PM"));
     Assert.assertTrue(newPostEmail.contains("beep boop bop"));
   }
 
