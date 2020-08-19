@@ -21,7 +21,7 @@ import org.apache.commons.io.FileUtils;
 import java.util.Formatter;
 
 /** Creates and converts HTML templates for email sending. */
-public final class Email {
+public class Email {
 
   public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
   public static final String newPostSubject = "⭐ noms: new free food near you!";

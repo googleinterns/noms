@@ -14,7 +14,11 @@
 
 package com.google.sps.api;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
@@ -40,15 +44,15 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.google.sps.data.Email;
 import com.google.sps.data.Post;
-import com.google.sps.servlets.PostDataServlet;
-import com.google.sps.api.GmailConfiguration;
 import com.google.sps.api.GmailAPI;
+import com.google.sps.api.GmailConfiguration;
 import com.google.sps.MemoryAppender;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.lang.Iterable;
 import java.util.Properties;
 import javax.mail.internet.MimeMessage;
 
@@ -79,9 +83,11 @@ public final class GmailConfigurationTest {
   private static final String LOGGER_NAME = "com.google.sps.api";
 
   @Mock private static Gmail mGmail;
-  @Mock private static MimeMessage mMimeMessage;
   @Mock private static GmailAPI mGmailAPI;
-  @Mock private static PreparedQuery mpq;
+  @Mock private static MimeMessage mMimeMessage;
+  @Mock private static Message mMessage;
+  @Mock private static PreparedQuery mPreparedQuery;
+  @Mock private static Iterable<Entity> mEntityIterable;
 
   private static LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -115,17 +121,12 @@ public final class GmailConfigurationTest {
   }
 
   @Test
-  public void userAttendingCollege() throws IOException {
+  public void userAttendingCollege() throws Exception {
     Entity userEntity = new Entity("User", EMAIL);
     userEntity.setProperty("name", NAME);
     userEntity.setProperty("college", COLLEGE_A);
     datastore.put(userEntity);
 
-    Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, COLLEGE_A);
-    Query q = new Query("User").setFilter(universityFilter);
-    PreparedQuery pq = datastore.prepare(q);
-
-    when(mpq.asIterable()).thenReturn(pq.asIterable());
     GmailConfiguration.notifyUsers(COLLEGE_A, post);
 
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
@@ -134,20 +135,28 @@ public final class GmailConfigurationTest {
   }
 
   @Test
-  public void noUserAttendingCollege() throws IOException {
+  public void noUserAttendingCollege() throws Exception {
+    when(mPreparedQuery.asIterable()).thenReturn(mEntityIterable);
     GmailConfiguration.notifyUsers(COLLEGE_B, post);
+
+    verify(mPreparedQuery, never()).asIterable();
     Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 
   @Test
   public void sendEmailWithAuthorizedService() {
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
+
     Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 
   @Test(expected = Exception.class)
   public void sendEmailWithUnauthorizedService() throws Exception {
-    when(mGmailAPI.getGmailService()).thenReturn(mGmail);    
+    when(mGmailAPI.getGmailService()).thenReturn(mGmail);
+
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
+
+    verify(mGmailAPI, times(1)).getGmailService();
+    Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 }

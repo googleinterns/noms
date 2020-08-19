@@ -114,7 +114,7 @@ header {
     background: #a98585;
     display: none;
     flex-direction: column;
-    height: calc(100% - 70px);
+    height: calc(30%);
     justify-content: space-around;
     margin: 0;
     position: absolute;

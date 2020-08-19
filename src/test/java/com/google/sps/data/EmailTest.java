@@ -14,6 +14,11 @@
 
 package com.google.sps.data;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.sps.data.Email;
@@ -37,9 +42,9 @@ import org.mockito.MockitoAnnotations;
 public final class EmailTest {
   
   public static final String PATH = "path_test";
-  @Mock private static File mfile;
-  @Mock private static FileUtils mFileUtils;
+
   @Mock private static Post mPost;
+  @Mock private static FileUtils mFileUtils;
 
   private static Email email;
  
@@ -51,7 +56,11 @@ public final class EmailTest {
 
   @Test
   public void getStringFromAvailableHTML() throws IOException {
-    email.getWelcomeString();
+    String welcomeEmail = email.getWelcomeString();
+
+    Assert.assertTrue(welcomeEmail.contains("thank you so much for joining our mailing list!"));
+    Assert.assertTrue(welcomeEmail.contains("github"));
+    Assert.assertTrue(welcomeEmail.contains("https://step186-2020.uc.r.appspot.com/"));
   }
 
   @Test(expected = Exception.class)
