@@ -102,9 +102,6 @@ let toggleLegendButton;
 /** @type {HTMLButtonElement} */
 let toggleFiltersButton;
 
-/** @type {Array<HTMLElement>} */
-const filterInputs = [];
-
 //
 // Constants
 //
@@ -153,10 +150,10 @@ async function onLoad() {
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
   toggleFiltersButton = document.getElementById('toggle-filters-button');
-  filterInputs.push(document.getElementById('num-people'));
-  filterInputs.push(document.getElementById('happening-now'));
-  filterInputs.push(document.getElementById('distance'));
-  filterInputs.push(document.getElementById('keywords'));
+  const numPeopleSlider = document.getElementById('num-people');
+  const happeningNowCheckbox = document.getElementById('happening-now');
+  const distanceSlider = document.getElementById('distance');
+  const keywordsInput = document.getElementById('keywords');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -164,9 +161,10 @@ async function onLoad() {
   submitModalButton.addEventListener('click', submitModal);
   toggleLegendButton.addEventListener('click', toggleLegend);
   toggleFiltersButton.addEventListener('click', toggleFilters);
-  for (const element of filterInputs) {
-    element.addEventListener('change', filterAndUpdatePagePosts);
-  }
+  numPeopleSlider.addEventListener('change', filterAndUpdatePagePosts);
+  happeningNowCheckbox.addEventListener('change', filterAndUpdatePagePosts);
+  distanceSlider.addEventListener('change', filterAndUpdatePagePosts);
+  keywordsInput.addEventListener('input', filterAndUpdatePagePosts);
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
