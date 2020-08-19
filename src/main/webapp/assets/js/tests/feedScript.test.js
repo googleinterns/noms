@@ -312,13 +312,14 @@ describe('Post Filtering', function() {
       posts.push(newPost(1, 0, 0, 0, 0, 0, 0, 'Bear', 'This is a description.'));
       posts.push(newPost(2, 0, 0, 0, 0, 0, 0, 'Different', 'This mentions bear.'));
       posts.push(newPost(3));
+      posts.push(newPost(4, 'Bear Club', 0, 0, 0, 0, 0, 0, 0));
       const now = TIME_0900;
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter(0, 0, 0, ['bear']);
 
       const result = filterPosts(posts, now, userLocation, filters);
-      expect(result.length).to.be.equal(2);
-      expect(extractIDs(result)).to.deep.equal([1, 2]);
+      expect(result.length).to.be.equal(3);
+      expect(extractIDs(result)).to.deep.equal([1, 2, 4]);
     });
 
     it('should return posts with any of multiple given keywords', function() {
@@ -329,13 +330,14 @@ describe('Post Filtering', function() {
       posts.push(newPost(4));
       posts.push(newPost(5, 0, 0, 0, 0, 0, 0, 'Plant', 'Eat our plants, plase.'));
       posts.push(newPost(6, 0, 0, 0, 0, 0, 0, 'Different', 'plant@gmail.com'));
+      posts.push(newPost(7, 'Bear Club', 0, 0, 0, 0, 0, 0, 0));
       const now = TIME_0900;
       const userLocation = AT_MEMORIAL_UNION;
       const filters = newFilter(0, 0, 0, ['bear', 'plant']);
 
       const result = filterPosts(posts, now, userLocation, filters);
-      expect(result.length).to.be.equal(4);
-      expect(extractIDs(result)).to.deep.equal([1, 2, 5, 6]);
+      expect(result.length).to.be.equal(5);
+      expect(extractIDs(result)).to.deep.equal([1, 2, 5, 6, 7]);
     });
 
     it('shouldn\'t return any posts if the keyword(s) don\'t match anything', function() {

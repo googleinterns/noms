@@ -830,9 +830,9 @@ function filterPosts(posts, now, userLocation, filters) {
   }
   if (filters.keywords !== KEYWORDS_FILTER_DEFAULT && filters.keywords.length > 0) {
     filteredPosts = filteredPosts.filter((p) => {
+      const combinedText = `${p.organizationName} ${p.foodType} ${p.description}`;
       for (const keyword of filters.keywords) {
-        if (p.foodType.toLowerCase().includes(keyword.toLowerCase()) ||
-            p.description.toLowerCase().includes(keyword.toLowerCase())) {
+        if (combinedText.toLowerCase().includes(keyword.toLowerCase())) {
           return true;
         }
       }
