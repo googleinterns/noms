@@ -34,6 +34,7 @@ let collegeLocations = null;
 
 const US_GEOGRAPHICAL_CENTER = {lat: 39.50, lng: -98.35};
 const MINIMUM_DEGREES_SEPARATION = 2.5;
+const ENTER_KEYCODE = 13;
 
 //
 // Functions
@@ -208,7 +209,7 @@ function navigateUserToCollegePage() {
  * navigate them to the appropriate college's page.
  */
 function navigateUserOnEnter() {
-  if (event.keyCode === 13) {
+  if (event.keyCode === ENTER_KEYCODE) {
     navigateUserToCollegePage();
   }
 }

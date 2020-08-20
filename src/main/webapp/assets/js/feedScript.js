@@ -1034,7 +1034,7 @@ function toggleFilters() {
 function filterAndUpdatePagePosts() {
   // Grab the filter inputs
   const filters = {
-    numPeople: parseInt(document.getElementById('num-people').value),
+    numPeople: parseInt(document.getElementById('num-people').value, 10),
     happeningNow: document.getElementById('happening-now').checked,
     distance: parseFloat(document.getElementById('distance').value),
     keywords: document.getElementById('keywords').value === '' ?
@@ -1057,6 +1057,10 @@ function filterAndUpdatePagePosts() {
 
 /**
  * Applies the filtering algorithm to an array of posts.
+ * The flow is taken from functional programming principles, in which each new filter is applied
+ * to the result of the last one. For each filter, we only apply it if the filter's state is
+ * non-default, i.e. the user has interacted with it to change it from the default and is interested
+ * in filtering on that dimension.
  * @param {Array<PostInfo>} posts - The posts to filter.
  * @param {Date} now - The current datetime.
  * @param {Object} userLocation - The user's location (lat/long).
@@ -1075,12 +1079,7 @@ function filterPosts(posts, now, userLocation, filters) {
   }
   if (filters.distance !== DISTANCE_FILTER_DEFAULT && userLocation) {
     filteredPosts = filteredPosts.filter((p) => {
-      const avgLat = userLocation.lat + p.location.lat;
-      const milesPerDegreeLong = Math.cos(avgLat / 2 * Math.PI / 180) * MILES_PER_DEGREE_LAT;
-      const latDiff = Math.abs(p.location.lat - userLocation.lat) * MILES_PER_DEGREE_LAT;
-      const longDiff = Math.abs(p.location.long - userLocation.long) * milesPerDegreeLong;
-
-      return Math.sqrt(latDiff * latDiff + longDiff * longDiff) <= filters.distance;
+      return calulateMilesBetweenTwoCoords(p.location, userLocation) <= filters.distance;
     });
   }
   if (filters.keywords !== KEYWORDS_FILTER_DEFAULT && filters.keywords.length > 0) {
@@ -1096,4 +1095,26 @@ function filterPosts(posts, now, userLocation, filters) {
   }
 
   return filteredPosts;
+}
+
+/**
+ * Calculates the distance (in miles) between two geographic coordinates.
+ * @param {Object} locationA - The first location.
+ * @param {Object} locationB - The second location.
+ * @return {number} - The distance between locationA and locationB in miles.
+ */
+function calulateMilesBetweenTwoCoords(locationA, locationB) {
+  // Find the average latitude so we can determine miles/longitude°, since that distance varies
+  // from pole to equator. Miles/latitude°, on the other hand, is relatively constant.
+  // (See https://gis.stackexchange.com/questions/142326/calculating-longitude-length-in-miles).
+  const avgLat = (locationA.lat + locationB.lat)/2;
+  const milesPerDegreeLong = Math.cos(avgLat * Math.PI / 180) * MILES_PER_DEGREE_LAT;
+
+  // Multiple each absolute difference (in degrees) by miles/° for each dimension.
+  const latDiff = Math.abs(locationA.lat - locationB.lat) * MILES_PER_DEGREE_LAT;
+  const longDiff = Math.abs(locationA.long - locationB.long) * milesPerDegreeLong;
+
+  // Use the Pythagorean theorem to find the hypotenuse length given latDiff and longDiff
+  // We don't need to take Earth's curvature into consideration as differences are small (<3 miles).
+  return Math.sqrt(latDiff * latDiff + longDiff * longDiff);
 }
