@@ -69,6 +69,12 @@ let cachedModalAddress = '';
 let modalCard;
 
 /** @type {HTMLElement} */
+let modalSubmitted;
+
+/** @type {HTMLElement} */
+let modalSubmittedTitle;
+
+/** @type {HTMLElement} */
 let createPostButton;
 
 /** @type {HTMLElement} */
@@ -123,6 +129,8 @@ async function onLoad() {
   modalForm = document.getElementById('modal-form');
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
+  modalSubmitted = document.getElementById('modal-submitted');
+  modalSubmittedTitle = document.getElementById('modal-submitted-title');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -585,6 +593,7 @@ function showModal() {
   if (modal) {
     modal.style.display = 'block';
     modalCard.focus();
+    submitModalButton.disabled = false;
   }
 }
 
@@ -605,16 +614,203 @@ function closeModal() {
  * @return {void}
  */
 async function submitModal() {
-  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
+  // Disable multiple submissions.
+  submitModalButton.disabled = true;
 
-  // If one of the fields is empty, don't submit.
-  // Uses formElement.length - 1 to exclude the button element.
+  if (validateModal()) {
+    checkLocationAndSubmit();
+  } else {
+    submitModalButton.disabled = false;
+  }
+}
+
+/**
+ * Goes through the form elements and marks the invalid inputs.
+ * Returns whether all the inputs are valid.
+ * @return {boolean}
+ */
+function validateModal() {
+  const invalidIds = [];
+  const errorMessages = [];
   const formElements = modalForm.elements;
+
+  disableInjection(formElements);
+  validateModalText(invalidIds, errorMessages, formElements);
+  validateModalDate(invalidIds, errorMessages, formElements);
+  validateModalTime(invalidIds, errorMessages, formElements);
+  markInvalidInputs(invalidIds, errorMessages, formElements);
+
+  return (invalidIds.length === 0);
+}
+
+/**
+ * Goes through the elements and encodes common HTML enities.
+ * By using these codes, ensures that the user's inputs are seen as data, not code.
+ * This is a measure against a malicious users trying to changing site data.
+ * @param {array} formElements
+ * @return {void}
+ */
+function disableInjection(formElements) {
   for (let i = 0; i < formElements.length - 1; i++) {
-    if (formElements[i].value.length == 0) {
-      return;
+    let elementValue = formElements[i].value;
+    elementValue = elementValue.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    elementValue = elementValue.replace(/&/g, '&amp;');
+    elementValue = elementValue.replace(/"/g, '&quot;');
+    elementValue = elementValue.replace(/'/g, '&#x27;');
+  }
+}
+
+/**
+ * Resets all the input backgrounds to modal grey and gets rid of previous error text.
+ * @param {array} formElements
+ * @return {void}
+ */
+function resetMarks(formElements) {
+  for (let i = 0; i < formElements.length - 1; i++) {
+    const element = formElements[i];
+    element.style.background = '#1b18181a';
+  }
+  const modalError = document.getElementById('modal-input-error');
+  if (modalError) {
+    modalForm.removeChild(modalError);
+  }
+}
+
+/**
+ * Goes through the invalid inputs and colors them red.
+ * Adds error messages.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ * @return {void}
+ */
+function markInvalidInputs(invalidIds, errorMessages, formElements) {
+  resetMarks(formElements);
+  invalidIds.forEach((id) => {
+    const elt = formElements.namedItem(id);
+    if (elt) {
+      elt.style.background = '#ff999966';
+    }
+  });
+  if (errorMessages.length > 0) {
+    const modalError = document.createElement('div');
+    modalError.setAttribute('id', 'modal-input-error');
+    modalError.setAttribute('tabindex', '0');
+    modalError.innerHTML += '<ul>';
+    errorMessages.forEach((message) => {
+      modalError.innerHTML += '<li>' + message + '</li>';
+    });
+    modalError.innerHTML += '</ul>';
+    modalForm.insertBefore(modalError, submitModalButton);
+  }
+}
+
+/**
+ * Checks if the month and day are a valid date.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ * @return {void}
+ */
+function validateModalDate(invalidIds, errorMessages, formElements) {
+  const month = formElements.namedItem('modal-month').value;
+  const day = formElements.namedItem('modal-day').value;
+  const monthDayLengths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (month > 12 || month < 1) {
+    invalidIds.push('modal-month');
+    errorMessages.push('month must be between 1 and 12');
+  }
+  if (day < 1 || day > monthDayLengths[month - 1] || isBlank(day)) {
+    invalidIds.push('modal-day');
+    errorMessages.push('invalid date');
+  }
+}
+
+/**
+ * Checks if the start and end time are valid.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ * @return {void}
+ */
+function validateModalTime(invalidIds, errorMessages, formElements) {
+  const startHour = parseInt(formElements.namedItem('modal-start-hour').value, 10);
+  const startMinute = parseInt(formElements.namedItem('modal-start-minute').value, 10);
+  const startAMorPM = formElements.namedItem('start-am-or-pm').value;
+  const endHour = parseInt(formElements.namedItem('modal-end-hour').value, 10);
+  const endMinute = parseInt(formElements.namedItem('modal-end-minute').value, 10);
+  const endAMorPM = formElements.namedItem('end-am-or-pm').value;
+
+  // Check if the hours fall between 1-12.
+  if (isNaN(startHour) || startHour < 1 || startHour > 12) {
+    invalidIds.push('modal-start-hour');
+    errorMessages.push('start hour must be between 1 - 12');
+  }
+  if (isNaN(endHour) || endHour < 1 || endHour > 12) {
+    invalidIds.push('modal-end-hour');
+    errorMessages.push('end hour must be between 1 - 12');
+  }
+  // Check if the minutes fall between 0 - 60.
+  if (isNaN(startMinute) || startMinute < 0 || startMinute >= 60) {
+    invalidIds.push('modal-start-minute');
+    errorMessages.push('start minute must be between 00 - 59');
+  }
+  if (isNaN(startMinute) || endMinute < 0 || endMinute >= 60) {
+    invalidIds.push('modal-end-minute');
+    errorMessages.push('end minute must be between 00 - 59');
+  }
+  // Check if the end time is after the start time.
+  const startMeridiemAfterEnd = (startAMorPM === 'pm' && endAMorPM === 'am');
+  const startMeridiemSameAsEnd = (startAMorPM === endAMorPM);
+  const endMinuteBeforeStart = (endHour === startHour && endMinute < startMinute);
+  const endTimeBeforeStart = (endHour < startHour || endMinuteBeforeStart);
+  if (startMeridiemAfterEnd || (startMeridiemSameAsEnd && endTimeBeforeStart)) {
+    invalidIds.push('modal-start-hour');
+    invalidIds.push('modal-start-minute');
+    invalidIds.push('start-am-or-pm');
+    invalidIds.push('modal-end-hour');
+    invalidIds.push('modal-end-minute');
+    invalidIds.push('end-am-or-pm');
+    errorMessages.push('end time must be after start time');
+  }
+}
+
+/**
+ * Checks if the given input is blank.
+ * @param {String} input
+ * @return {void}
+ */
+function isBlank(input) {
+  const trimmed = input.trim();
+  return !trimmed;
+}
+
+/**
+ * Goes through the form elements. If it is a text input, adds an error if it is blank.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ * @return {void}
+ */
+function validateModalText(invalidIds, errorMessages, formElements) {
+  for (let i = 0; i < formElements.length; i++) {
+    if (formElements[i].type === 'text' || formElements[i].type === 'textarea') {
+      if (isBlank(formElements[i].value)) {
+        invalidIds.push(formElements[i].id);
+        const errorMessage = formElements[i].placeholder + ' is blank';
+        errorMessages.push(errorMessage);
+      }
     }
   }
+}
+
+/**
+ * Checks if the inputted address is valid.
+ * Submits if address is verified.
+ * @return {void}
+ */
+async function checkLocationAndSubmit() {
+  const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
   if (modalForm && collegeId) {
     const modalLocation = document.getElementById('modal-location').value;
@@ -628,19 +824,19 @@ async function submitModal() {
     if (!latLngResult && modalLocation !== cachedModalAddress) {
       cachedModalAddress = modalLocation;
       const modalError = document.createElement('div');
-      modalError.setAttribute('id', 'modal-error');
+      modalError.setAttribute('id', 'modal-map-error');
       modalError.innerText =
         `We couldn't find address '${modalLocation}'. ` +
         'Please check your address for errors. ' +
         'If you wish to submit anyway, no pin will be added to the map.';
-      document.getElementById('modal-form')
-          .insertBefore(modalError, document.getElementById('modal-submit'));
+      modalForm.insertBefore(modalError, document.getElementById('modal-submit'));
+      submitModalButton.disabled = false;
     // Else, if the invalid address is the same as we last checked
     // or the address is just plain valid, then add the post to the Datastore.
     } else {
-      const modalError = document.getElementById('modal-error');
+      const modalError = document.getElementById('modal-map-error');
       if (modalError) {
-        document.getElementById('modal-form').removeChild(modalError);
+        modalForm.removeChild(modalError);
       }
 
       // (0,0) denotes a nonexistent lat/long, since it's a location in the ocean + is falsy.
@@ -648,10 +844,27 @@ async function submitModal() {
       const lng = latLngResult ? latLngResult.long : 0;
       url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
       modalForm.action = url;
-      modalForm.submit();
-      createPostButton.focus();
+
+      // Hides form modal, shows submit message and focuses on it.
+      modalCard.style.display = 'none';
+      modalSubmitted.style.display = 'block';
+      modalSubmitted.focus();
+      // Closes the submit modal after 2000 ms, and submits the form.
+      setTimeout(function() {
+        closeSubmit();
+        modalForm.submit();
+      }, 2000);
     }
   }
+}
+
+/**
+ * Closes the submit modal.
+ * @return {void}
+ */
+function closeSubmit() {
+  modalSubmitted.style.display = 'none';
+  createPostButton.focus();
 }
 
 /**
@@ -679,9 +892,17 @@ document.addEventListener('keydown', function(e) {
       submitModalButton.focus();
       e.preventDefault();
     }
+    if (document.activeElement === modalSubmitted) {
+      modalSubmittedTitle.focus();
+      e.preventDefault();
+    }
   } else { // If user is trying to go to the next element, make sure it wraps to the top.
     if (document.activeElement === submitModalButton) {
       modalCard.focus();
+      e.preventDefault();
+    }
+    if (document.activeElement === modalSubmittedText) {
+      modalSubmitted.focus();
       e.preventDefault();
     }
   }
