@@ -413,9 +413,7 @@ select {
   margin-top: 20px;
   min-height: 100px;
   min-width: 100px;
-  padding: 10px;
-  padding-right: 30px;
-  padding-left: 30px;
+  padding: 10px 30px;
 }
 
 .filter {
