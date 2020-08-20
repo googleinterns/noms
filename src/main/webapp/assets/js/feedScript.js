@@ -48,10 +48,10 @@
 /**
  * An object containing filters by which to narrow posts down.
  * @typedef {Object} Filter
- * @param {number} numPeople - The minimum number of people the event can feed.
- * @param {boolean} happeningNow - Whether the event is happening right now.
- * @param {number} distance - The maximum distance from the user to the event.
- * @param {Array<string>} keywords - Keywords to include.
+ * @property {number} numPeople - The minimum number of people the event can feed.
+ * @property {boolean} happeningNow - Whether the event is happening right now.
+ * @property {number} distance - The maximum distance from the user to the event.
+ * @property {Array<string>} keywords - Keywords to include.
  */
 
 //
@@ -114,17 +114,17 @@ let toggleFiltersButton;
 // Constants
 //
 
-// Map marker size limits
+// Map marker size limits.
 const MARKER_WIDTH_MINMAX = {min: 28, max: 70};
 const MARKER_HEIGHT_MINMAX = {min: 45, max: 113};
 
-// Filter defaults
+// Filter defaults.
 const NUM_PEOPLE_FILTER_DEFAULT = 0;
 const HAPPENING_NOW_FILTER_DEFAULT = false;
 const DISTANCE_FILTER_DEFAULT = 3;
 const KEYWORDS_FILTER_DEFAULT = [];
 
-// Conversion constant for degrees lat to miles
+// Conversion constant for degrees lat to miles.
 const MILES_PER_DEGREE_LAT = 69.172;
 
 //
