@@ -487,8 +487,6 @@ function addMarkers(posts) {
       });
 
       markers.push(marker);
-      console.log('pushed marker');
-      console.log(markers);
     }
   });
 }
