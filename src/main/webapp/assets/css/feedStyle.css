@@ -42,15 +42,15 @@
   width: 100%;
 }
 
-.keyboard-active #create-post-button:focus {
-  background-color: var(--light-teal);
-}
-
 #create-post-button:hover {
   background-color: white;
   border: 1px solid var(--dark-grey);
   color: var(--dark-grey);
   cursor: pointer;
+}
+
+.keyboard-active #create-post-button:focus {
+  background-color: var(--light-teal);
 }
 
 #modal-background {
@@ -436,11 +436,11 @@ select {
 }
 
 #happening-now:checked {
-  filter: invert(11%) hue-rotate(-71deg) brightness(1.1)
+  filter: invert(11%) hue-rotate(-71deg) brightness(1.1);
 }
 
 #keywords {
-  background-color: #cccccc;
+  background-color: #ccc;
   color: #151515;
   height: 0.5rem;
   font-size: 0.9rem;
@@ -576,7 +576,7 @@ select {
   .short-text {
     display: block;
   }
-  
+
   .long-text {
     display: none;
   }
