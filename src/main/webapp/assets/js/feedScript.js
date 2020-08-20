@@ -73,6 +73,8 @@ let cachedModalAddress = '';
 /** @type {GeolocationPosition} */
 let userLocation = null;
 
+/** @type {Array<google.maps.Marker>} */
+let markers = [];
 
 //
 // Elements
@@ -438,6 +440,20 @@ function initMap() {
   );
 
   // Get all posts on the page and show them as markers.
+  addMarkers(posts);
+
+  // Get the user's position and show it as a marker, if they consent and their browser supports
+  // geolocation. If anything goes wrong, just default to not showing them their location.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(addUserToMap, () => {});
+  }
+}
+
+/**
+ * Adds all markers corresponding to a list of posts to the map.
+ * @param {Array<PostInfo>} posts - The posts for which to add markers.
+ */
+function addMarkers(posts) {
   posts.forEach((post) => {
     const now = new Date();
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
@@ -469,14 +485,22 @@ function initMap() {
           postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
         });
       });
+
+      markers.push(marker);
+      console.log('pushed marker');
+      console.log(markers);
     }
   });
+}
 
-  // Get the user's position and show it as a marker, if they consent and their browser supports
-  // geolocation. If anything goes wrong, just default to not showing them their location.
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(addUserToMap, () => {});
+/**
+ * Remove all markers from the map.
+ */
+function removeMarkers() {
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
   }
+  markers = [];
 }
 
 /**
@@ -1016,7 +1040,9 @@ function filterAndUpdatePagePosts() {
 
   // Update the posts shown on the page
   removePosts();
+  removeMarkers();
   addPosts(filteredPosts);
+  addMarkers(filteredPosts);
 }
 
 /**
