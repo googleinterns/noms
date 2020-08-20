@@ -137,6 +137,34 @@ public final class PostTest {
     Assert.assertEquals(testPost.getStartHour(), (startHour + 12));
     Assert.assertEquals(testPost.getEndHour(), (endHour + 12));
   }
+  
+  // Test functionality of requestToPost(): testing the edge cases (12AM and 12PM).
+  @Test
+  public void testRequestToPost12AMPM() {
+
+    String collegeId = "209542";
+    String organizationName = "Duck Club";
+    int month = 10;
+    int day = 30;
+    int startHour = 12;
+    int startMinute = 10;
+    String startAMorPM = "am";
+    int endHour = 12;
+    int endMinute = 30;
+    String endAMorPM = "pm";
+    String location = "Goss Stadium";
+    double lat = 44.562842;
+    double lng = -123.2771362;
+    String numberOfPeopleItFeeds = "5";
+    String typeOfFood = "Popcorn";
+    String description = "We have some popcorn left after our weekly Duck watching meeting, come pick some up!";
+
+    Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    Assert.assertEquals(testPost.getStartHour(), 0);
+    Assert.assertEquals(testPost.getEndHour(), 12);
+  }
 
   // Test functionality of requestToPost(): an event in the first month.
   @Test
@@ -191,5 +219,5 @@ public final class PostTest {
 
     Assert.assertEquals(testPost.getMonth(), (month - 1));
   }
-  
+
 }
