@@ -1079,7 +1079,7 @@ function filterPosts(posts, now, userLocation, filters) {
   }
   if (filters.distance !== DISTANCE_FILTER_DEFAULT && userLocation) {
     filteredPosts = filteredPosts.filter((p) => {
-      return calulateMilesBetweenTwoCoords(p.location, userLocation) <= filters.distance;
+      return calculateMilesBetweenTwoCoords(p.location, userLocation) <= filters.distance;
     });
   }
   if (filters.keywords !== KEYWORDS_FILTER_DEFAULT && filters.keywords.length > 0) {
@@ -1103,7 +1103,7 @@ function filterPosts(posts, now, userLocation, filters) {
  * @param {Object} locationB - The second location.
  * @return {number} - The distance between locationA and locationB in miles.
  */
-function calulateMilesBetweenTwoCoords(locationA, locationB) {
+function calculateMilesBetweenTwoCoords(locationA, locationB) {
   // Find the average latitude so we can determine miles/longitude°, since that distance varies
   // from pole to equator. Miles/latitude°, on the other hand, is relatively constant.
   // (See https://gis.stackexchange.com/questions/142326/calculating-longitude-length-in-miles).
