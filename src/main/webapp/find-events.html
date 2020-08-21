@@ -64,7 +64,35 @@
           </div>
         </div>
         <div id="all-posts">
-          <button id="create-post-button" tabindex="0" type="button">create a post</button>
+          <div id="all-posts-buttons">
+            <button id="create-post-button" type="button" tabindex="0">create a post</button>
+            <button id="toggle-filters-button" type="button" tabindex="0">filters</button>
+          </div>
+          <div id="filter-card">
+            <div class="filter">
+              <label for="num-people" class="filter-label long-text">number of people the event can feed:</label>
+              <label for="num-people" class="filter-label short-text">number of people:</label>
+              <span class="no-wrap filter-slider">
+                0 <input type="range" min="0" max="50" value="0" id="num-people" name="num-people" /> 50+
+              </span>
+            </div>
+            <div class="filter">
+              <label for="distance" class="filter-label long-text">distance from your location (miles):</label>
+              <label for="distance" class="filter-label short-text">distance (miles):</label>
+              <span class="no-wrap filter-slider">
+                0.1 <input type="range" min="0.1" max="3" step="0.1" value="3" id="distance" name="distance"/> 3+
+              </span>
+            </div>
+            <div class="filter">
+              <label for="happening-now" class="filter-label">happening right now:</label>
+              <input type="checkbox" id="happening-now" name="happening-now" value="false">
+            </div>
+            <div class="filter">
+              <label for="keywords" class="filter-label long-text">keywords (comma-separated):</label>
+              <label for="keywords" class="filter-label short-text">keywords:</label>
+              <input type="text" id="keywords" name="keywords" value="" placeholder="">
+            </div>
+          </div>
         </div>
       </div>
     </div>

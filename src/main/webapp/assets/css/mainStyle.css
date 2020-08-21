@@ -35,6 +35,10 @@ body {
   -ms-user-select: none;
 }
 
+.no-wrap {
+  white-space: nowrap;
+}
+
 /*
  * Loading spinner
  */

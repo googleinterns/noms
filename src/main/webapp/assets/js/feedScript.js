@@ -45,6 +45,15 @@
  * @property {string} description - A longer description of the entire event.
  */
 
+/**
+ * An object containing filters by which to narrow posts down.
+ * @typedef {Object} Filter
+ * @property {number} numPeople - The minimum number of people the event can feed.
+ * @property {boolean} happeningNow - Whether the event is happening right now.
+ * @property {number} distance - The maximum distance from the user to the event.
+ * @property {Array<string>} keywords - Keywords to include.
+ */
+
 //
 // Global objects
 //
@@ -60,6 +69,12 @@ let map;
 
 /** @type {string} */
 let cachedModalAddress = '';
+
+/** @type {GeolocationPosition} */
+let userLocation = null;
+
+/** @type {Array<google.maps.Marker>} */
+let markers = [];
 
 //
 // Elements
@@ -92,12 +107,25 @@ let modalForm;
 /** @type {HTMLButtonElement} */
 let toggleLegendButton;
 
+/** @type {HTMLButtonElement} */
+let toggleFiltersButton;
+
 //
 // Constants
 //
 
+// Map marker size limits.
 const MARKER_WIDTH_MINMAX = {min: 28, max: 70};
 const MARKER_HEIGHT_MINMAX = {min: 45, max: 113};
+
+// Filter defaults.
+const NUM_PEOPLE_FILTER_DEFAULT = 0;
+const HAPPENING_NOW_FILTER_DEFAULT = false;
+const DISTANCE_FILTER_DEFAULT = 3;
+const KEYWORDS_FILTER_DEFAULT = [];
+
+// Conversion constant for degrees lat to miles.
+const MILES_PER_DEGREE_LAT = 69.172;
 
 //
 // Event listener registration
@@ -131,12 +159,22 @@ async function onLoad() {
   modalCard = document.getElementById('modal-create-post');
   modalSubmitted = document.getElementById('modal-submitted');
   modalSubmittedTitle = document.getElementById('modal-submitted-title');
+  toggleFiltersButton = document.getElementById('toggle-filters-button');
+  const numPeopleSlider = document.getElementById('num-people');
+  const happeningNowCheckbox = document.getElementById('happening-now');
+  const distanceSlider = document.getElementById('distance');
+  const keywordsInput = document.getElementById('keywords');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
   closeModalButton.addEventListener('click', closeModal);
   submitModalButton.addEventListener('click', submitModal);
   toggleLegendButton.addEventListener('click', toggleLegend);
+  toggleFiltersButton.addEventListener('click', toggleFilters);
+  numPeopleSlider.addEventListener('change', filterAndUpdatePagePosts);
+  happeningNowCheckbox.addEventListener('change', filterAndUpdatePagePosts);
+  distanceSlider.addEventListener('change', filterAndUpdatePagePosts);
+  keywordsInput.addEventListener('input', filterAndUpdatePagePosts);
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -402,6 +440,20 @@ function initMap() {
   );
 
   // Get all posts on the page and show them as markers.
+  addMarkers(posts);
+
+  // Get the user's position and show it as a marker, if they consent and their browser supports
+  // geolocation. If anything goes wrong, just default to not showing them their location.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(addUserToMap, () => {});
+  }
+}
+
+/**
+ * Adds all markers corresponding to a list of posts to the map.
+ * @param {Array<PostInfo>} posts - The posts for which to add markers.
+ */
+function addMarkers(posts) {
   posts.forEach((post) => {
     const now = new Date();
     const width = getMapMarkerIconSize(post.numOfPeopleFoodWillFeed, 'width');
@@ -433,14 +485,20 @@ function initMap() {
           postElement.style.boxShadow = '0 1px 10px lightgrey, 0 -1px 10px lightgrey';
         });
       });
+
+      markers.push(marker);
     }
   });
+}
 
-  // Get the user's position and show it as a marker, if they consent and their browser supports
-  // geolocation. If anything goes wrong, just default to not showing them their location.
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(addUserToMap, () => {});
+/**
+ * Remove all markers from the map.
+ */
+function removeMarkers() {
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
   }
+  markers = [];
 }
 
 /**
@@ -448,6 +506,9 @@ function initMap() {
  * @param {any} position - The position returned by the browser's geolocator.
  */
 function addUserToMap(position) {
+  // Cache this value
+  userLocation = position;
+
   const icon = {
     url: './assets/svg/bluemarker.svg',
     scaledSize: new google.maps.Size(30, 30),
@@ -582,6 +643,18 @@ async function addPosts(posts) {
 
     // Add card to the page.
     allPosts.append(postCard);
+  }
+}
+
+/**
+ * Removes all posts from the page.
+ */
+function removePosts() {
+  const postParent = document.getElementById('all-posts');
+  const postElements = document.getElementsByClassName('post-card');
+
+  while (postElements.length > 0) {
+    postParent.removeChild(postElements[0]);
   }
 }
 
@@ -740,38 +813,50 @@ function validateModalTime(invalidIds, errorMessages, formElements) {
   const endHour = parseInt(formElements.namedItem('modal-end-hour').value, 10);
   const endMinute = parseInt(formElements.namedItem('modal-end-minute').value, 10);
   const endAMorPM = formElements.namedItem('end-am-or-pm').value;
+  let timesValid = true;
 
   // Check if the hours fall between 1-12.
   if (isNaN(startHour) || startHour < 1 || startHour > 12) {
     invalidIds.push('modal-start-hour');
     errorMessages.push('start hour must be between 1 - 12');
+    timesValid = false;
   }
   if (isNaN(endHour) || endHour < 1 || endHour > 12) {
     invalidIds.push('modal-end-hour');
     errorMessages.push('end hour must be between 1 - 12');
+    timesValid = false;
   }
   // Check if the minutes fall between 0 - 60.
   if (isNaN(startMinute) || startMinute < 0 || startMinute >= 60) {
     invalidIds.push('modal-start-minute');
     errorMessages.push('start minute must be between 00 - 59');
+    timesValid = false;
   }
-  if (isNaN(startMinute) || endMinute < 0 || endMinute >= 60) {
+  if (isNaN(endMinute) || endMinute < 0 || endMinute >= 60) {
     invalidIds.push('modal-end-minute');
     errorMessages.push('end minute must be between 00 - 59');
+    timesValid = false;
   }
-  // Check if the end time is after the start time.
-  const startMeridiemAfterEnd = (startAMorPM === 'pm' && endAMorPM === 'am');
-  const startMeridiemSameAsEnd = (startAMorPM === endAMorPM);
-  const endMinuteBeforeStart = (endHour === startHour && endMinute < startMinute);
-  const endTimeBeforeStart = (endHour < startHour || endMinuteBeforeStart);
-  if (startMeridiemAfterEnd || (startMeridiemSameAsEnd && endTimeBeforeStart)) {
-    invalidIds.push('modal-start-hour');
-    invalidIds.push('modal-start-minute');
-    invalidIds.push('start-am-or-pm');
-    invalidIds.push('modal-end-hour');
-    invalidIds.push('modal-end-minute');
-    invalidIds.push('end-am-or-pm');
-    errorMessages.push('end time must be after start time');
+  // Calculate start and end time in minutes.
+  if (timesValid) {
+    let startTime = ((startHour % 12) * 60) + startMinute;
+    if (startAMorPM === 'pm') {
+      startTime += 12 * 60;
+    }
+    let endTime = ((endHour % 12) * 60) + endMinute;
+    if (endAMorPM === 'pm') {
+      endTime += 12 * 60;
+    }
+    // Ensure that start time is before end time.
+    if (startTime > endTime) {
+      invalidIds.push('modal-start-hour');
+      invalidIds.push('modal-start-minute');
+      invalidIds.push('start-am-or-pm');
+      invalidIds.push('modal-end-hour');
+      invalidIds.push('modal-end-minute');
+      invalidIds.push('end-am-or-pm');
+      errorMessages.push('end time must be after start time');
+    }
   }
 }
 
@@ -901,7 +986,7 @@ document.addEventListener('keydown', function(e) {
       modalCard.focus();
       e.preventDefault();
     }
-    if (document.activeElement === modalSubmittedText) {
+    if (document.activeElement === modalSubmittedTitle) {
       modalSubmitted.focus();
       e.preventDefault();
     }
@@ -920,4 +1005,116 @@ function toggleLegend() {
     legend.style.zIndex = 0;
     legend.style.display = 'none';
   }
+}
+
+/**
+ * Shows/Hides the filters to the user.
+ */
+function toggleFilters() {
+  const filterCard = document.getElementById('filter-card');
+
+  if (getComputedStyle(filterCard, null).display === 'none') {
+    filterCard.style.display = 'block';
+    toggleFiltersButton.style.backgroundColor = 'white';
+    toggleFiltersButton.style.color = 'var(--dark-maroon)';
+    toggleFiltersButton.style.border = '1px solid var(--dark-maroon)';
+  } else {
+    filterCard.style.display = 'none';
+    // Using '' makes the colors fall back to CSS defaults
+    toggleFiltersButton.style.backgroundColor = '';
+    toggleFiltersButton.style.color = '';
+    toggleFiltersButton.style.border = '';
+  }
+}
+
+/**
+ * Filters the posts the user sees on the page based
+ * on the current state of the filter inputs.
+ */
+function filterAndUpdatePagePosts() {
+  // Grab the filter inputs
+  const filters = {
+    numPeople: parseInt(document.getElementById('num-people').value, 10),
+    happeningNow: document.getElementById('happening-now').checked,
+    distance: parseFloat(document.getElementById('distance').value),
+    keywords: document.getElementById('keywords').value === '' ?
+      [] : document.getElementById('keywords').value.split(',').map((e) => e.trim()),
+  };
+
+  const location = userLocation ?
+    {lat: userLocation.coords.latitude, long: userLocation.coords.longitude} :
+    null;
+
+  // Perform the filtering on the source of the page's posts
+  const filteredPosts = filterPosts(posts, new Date(), location, filters);
+
+  // Update the posts shown on the page
+  removePosts();
+  removeMarkers();
+  addPosts(filteredPosts);
+  addMarkers(filteredPosts);
+}
+
+/**
+ * Applies the filtering algorithm to an array of posts.
+ * The flow is taken from functional programming principles, in which each new filter is applied
+ * to the result of the last one. For each filter, we only apply it if the filter's state is
+ * non-default, i.e. the user has interacted with it to change it from the default and is interested
+ * in filtering on that dimension.
+ * @param {Array<PostInfo>} posts - The posts to filter.
+ * @param {Date} now - The current datetime.
+ * @param {Object} userLocation - The user's location (lat/long).
+ * @param {Filter} filters - The parameters by which to filter.
+ * @return {Array <PostInfo>} - The filtered list of posts.
+ */
+function filterPosts(posts, now, userLocation, filters) {
+  let filteredPosts = posts;
+  if (filters.numPeople !== NUM_PEOPLE_FILTER_DEFAULT) {
+    filteredPosts = filteredPosts.filter((p) => p.numOfPeopleFoodWillFeed >= filters.numPeople);
+  }
+  if (filters.happeningNow !== HAPPENING_NOW_FILTER_DEFAULT) {
+    filteredPosts = filteredPosts.filter((p) => {
+      return now >= p.eventStartTime && now <= p.eventEndTime;
+    });
+  }
+  if (filters.distance !== DISTANCE_FILTER_DEFAULT && userLocation) {
+    filteredPosts = filteredPosts.filter((p) => {
+      return calculateMilesBetweenTwoCoords(p.location, userLocation) <= filters.distance;
+    });
+  }
+  if (filters.keywords !== KEYWORDS_FILTER_DEFAULT && filters.keywords.length > 0) {
+    filteredPosts = filteredPosts.filter((p) => {
+      const combinedText = `${p.organizationName} ${p.foodType} ${p.description}`;
+      for (const keyword of filters.keywords) {
+        if (combinedText.toLowerCase().includes(keyword.toLowerCase())) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
+  return filteredPosts;
+}
+
+/**
+ * Calculates the distance (in miles) between two geographic coordinates.
+ * @param {Object} locationA - The first location.
+ * @param {Object} locationB - The second location.
+ * @return {number} - The distance between locationA and locationB in miles.
+ */
+function calculateMilesBetweenTwoCoords(locationA, locationB) {
+  // Find the average latitude so we can determine miles/longitude°, since that distance varies
+  // from pole to equator. Miles/latitude°, on the other hand, is relatively constant.
+  // (See https://gis.stackexchange.com/questions/142326/calculating-longitude-length-in-miles).
+  const avgLat = (locationA.lat + locationB.lat)/2;
+  const milesPerDegreeLong = Math.cos(avgLat * Math.PI / 180) * MILES_PER_DEGREE_LAT;
+
+  // Multiple each absolute difference (in degrees) by miles/° for each dimension.
+  const latDiff = Math.abs(locationA.lat - locationB.lat) * MILES_PER_DEGREE_LAT;
+  const longDiff = Math.abs(locationA.long - locationB.long) * milesPerDegreeLong;
+
+  // Use the Pythagorean theorem to find the hypotenuse length given latDiff and longDiff
+  // We don't need to take Earth's curvature into consideration as differences are small (<3 miles).
+  return Math.sqrt(latDiff * latDiff + longDiff * longDiff);
 }
