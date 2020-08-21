@@ -93,51 +93,17 @@ public class GmailAPI {
   }
 
   /**
-    * Retrieve secrets throgh Secrets Manager.
-    *
-    * @param secretId id of secret key
-    * @throws IOException
-    */
-  public static String getSecret(String secretId) throws IOException {
-
-    // Retrieve the secret key for given ID.
-    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      SecretVersionName secretVersionName = SecretVersionName.of(PROJECTID, secretId, VERSIONID);
-      AccessSecretVersionResponse secretResponse = client.accessSecretVersion(secretVersionName);
-      return secretResponse.getPayload().getData().toStringUtf8();
-    }
-  }
-
-  /**
     * Retrieve new access token due to the fact that it has a lifetime of 1 hour
     * through refresh token.
     *
     * @throws IOException 
     * @throws MalformedURLException
-    * @throws UnsupportedEncodingException
+    * @throws ProtocolException
     */
   private static String getAccessToken()
-      throws IOException, MalformedURLException, ProtocolException, UnsupportedEncodingException {
+      throws IOException, MalformedURLException, ProtocolException {
 
-    // Gather POST parameters.
-    Map<String, Object> params = new LinkedHashMap<>();
-    params.put("grant_type", "refresh_token");
-    params.put("client_id", CLIENT_ID);
-    params.put("client_secret", CLIENT_SECRET); 
-    params.put("refresh_token", REFRESH_TOKEN);
-
-    // Build POST request.
-    StringBuilder postData = new StringBuilder();
-    for (Map.Entry<String, Object> param : params.entrySet()) {
-      if (postData.length() != 0) {
-        postData.append('&');
-      }
-      postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-      postData.append('=');
-      postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
-    }
-
-    byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+    byte[] postDataBytes = buildPOSTRequest();
 
     // Send POST request for new access token.
     URL url = new URL("https://accounts.google.com/o/oauth2/token");
@@ -158,5 +124,49 @@ public class GmailAPI {
     JSONObject json = new JSONObject(buffer.toString());
     String accessToken = json.getString("access_token");
     return accessToken;
+  }
+
+  /**
+    * Build POST request from credential information.
+    *
+    * @throws UnsupportedEncodingException
+    */
+  private static byte[] buildPOSTRequest() throws UnsupportedEncodingException {
+
+    // Gather POST parameters.
+    Map<String, Object> params = new LinkedHashMap<>();
+    params.put("grant_type", "refresh_token");
+    params.put("client_id", CLIENT_ID);
+    params.put("client_secret", CLIENT_SECRET); 
+    params.put("refresh_token", REFRESH_TOKEN);
+
+    // Build POST request.
+    StringBuilder postData = new StringBuilder();
+    for (Map.Entry<String, Object> param : params.entrySet()) {
+      if (postData.length() != 0) {
+        postData.append('&');
+      }
+      postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+      postData.append('=');
+      postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+    }
+
+    return postData.toString().getBytes("UTF-8");
+  }
+
+  /**
+    * Retrieve secrets throgh Secrets Manager.
+    *
+    * @param secretId id of secret key
+    * @throws IOException
+    */
+  private static String getSecret(String secretId) throws IOException {
+
+    // Retrieve the secret key for given ID.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      SecretVersionName secretVersionName = SecretVersionName.of(PROJECTID, secretId, VERSIONID);
+      AccessSecretVersionResponse secretResponse = client.accessSecretVersion(secretVersionName);
+      return secretResponse.getPayload().getData().toStringUtf8();
+    }
   }
 }
