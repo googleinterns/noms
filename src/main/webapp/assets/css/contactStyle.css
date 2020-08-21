@@ -18,8 +18,7 @@
   border: #9d5a5a solid 1px;
   border-radius: 5px;
   flex: 1 1 15rem;
-  margin: 0 2rem;
-  padding: 2rem;
+  margin: 0 2rem 0 1rem;
 }
 
 .row {
