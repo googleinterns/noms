@@ -140,6 +140,7 @@ public class GmailConfiguration {
       MimeMessage Mimemessage = createEmail(to, subject, content);	
       Message message = createMessageWithEmail(Mimemessage);	
       message = service.users().messages().send(FROM, message).execute();	
+      LOGGER.info("Successfully sent a new post email to: " + to);
 
     } catch (Exception e) {
 
@@ -164,7 +165,6 @@ public class GmailConfiguration {
     for (Entity user : pq.asIterable()) {
       String email = user.getKey().getName().toString();
       sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
-      LOGGER.info("Successfully sent a new post email to: " + email);
     }
   }
 }

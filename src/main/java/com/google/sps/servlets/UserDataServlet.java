@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// More information can be found here: http://www.slf4j.org/manual.html.
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

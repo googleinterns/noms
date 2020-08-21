@@ -43,8 +43,7 @@ public final class EmailTest {
   
   public static final String PATH = "path_test";
 
-  @Mock private static Post mPost;
-  @Mock private static FileUtils mFileUtils;
+  @Mock private static Post mockPost;
 
   private static Email email;
  
@@ -70,17 +69,17 @@ public final class EmailTest {
 
   @Test
   public void addNewPostWithAMInformation() throws IOException {
-    when(mPost.getOrganizationName()).thenReturn("WICS");
-    when(mPost.getLocation()).thenReturn("DBH 6011");
-    when(mPost.getMonth()).thenReturn(10);
-    when(mPost.getDay()).thenReturn(20);
-    when(mPost.getStartHour()).thenReturn(9);
-    when(mPost.getStartMinute()).thenReturn(30);
-    when(mPost.getEndHour()).thenReturn(10);
-    when(mPost.getEndMinute()).thenReturn(30);
-    when(mPost.getDescription()).thenReturn("beep boop bop");
+    when(mockPost.getOrganizationName()).thenReturn("WICS");
+    when(mockPost.getLocation()).thenReturn("DBH 6011");
+    when(mockPost.getMonth()).thenReturn(10);
+    when(mockPost.getDay()).thenReturn(20);
+    when(mockPost.getStartHour()).thenReturn(9);
+    when(mockPost.getStartMinute()).thenReturn(30);
+    when(mockPost.getEndHour()).thenReturn(10);
+    when(mockPost.getEndMinute()).thenReturn(30);
+    when(mockPost.getDescription()).thenReturn("beep boop bop");
 
-    String newPostEmail = email.addNewPost(mPost);
+    String newPostEmail = email.addNewPost(mockPost);
 
     Assert.assertTrue(newPostEmail.contains("WICS @ DBH 6011"));
     Assert.assertTrue(newPostEmail.contains("10/20"));
@@ -90,17 +89,17 @@ public final class EmailTest {
 
   @Test
   public void addNewPostWithPMInformation() throws IOException {
-    when(mPost.getOrganizationName()).thenReturn("WICS");
-    when(mPost.getLocation()).thenReturn("DBH 6011");
-    when(mPost.getMonth()).thenReturn(10);
-    when(mPost.getDay()).thenReturn(20);
-    when(mPost.getStartHour()).thenReturn(17);
-    when(mPost.getStartMinute()).thenReturn(30);
-    when(mPost.getEndHour()).thenReturn(23);
-    when(mPost.getEndMinute()).thenReturn(59);
-    when(mPost.getDescription()).thenReturn("beep boop bop");
+    when(mockPost.getOrganizationName()).thenReturn("WICS");
+    when(mockPost.getLocation()).thenReturn("DBH 6011");
+    when(mockPost.getMonth()).thenReturn(10);
+    when(mockPost.getDay()).thenReturn(20);
+    when(mockPost.getStartHour()).thenReturn(17);
+    when(mockPost.getStartMinute()).thenReturn(30);
+    when(mockPost.getEndHour()).thenReturn(23);
+    when(mockPost.getEndMinute()).thenReturn(59);
+    when(mockPost.getDescription()).thenReturn("beep boop bop");
 
-    String newPostEmail = email.addNewPost(mPost);
+    String newPostEmail = email.addNewPost(mockPost);
 
     Assert.assertTrue(newPostEmail.contains("WICS @ DBH 6011"));
     Assert.assertTrue(newPostEmail.contains("10/20"));
@@ -110,6 +109,6 @@ public final class EmailTest {
 
   @Test(expected = Exception.class)
   public void addNewPostWithNoInformation() throws Exception {
-    email.addNewPost(mPost);
+    email.addNewPost(mockPost);
   }
 }

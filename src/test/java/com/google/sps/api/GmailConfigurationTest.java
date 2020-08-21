@@ -82,12 +82,10 @@ public final class GmailConfigurationTest {
   private static final String SUCCESS_MSG = "Successfully sent a new post email to: ";
   private static final String LOGGER_NAME = "com.google.sps.api";
 
-  @Mock private static Gmail mGmail;
-  @Mock private static GmailAPI mGmailAPI;
-  @Mock private static MimeMessage mMimeMessage;
-  @Mock private static Message mMessage;
-  @Mock private static PreparedQuery mPreparedQuery;
-  @Mock private static Iterable<Entity> mEntityIterable;
+  @Mock private static Gmail mockGmail;
+  @Mock private static GmailAPI mockGmailAPI;
+  @Mock private static PreparedQuery mockPreparedQuery;
+  @Mock private static Iterable<Entity> mockEntityIterable;
 
   private static LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -136,10 +134,10 @@ public final class GmailConfigurationTest {
 
   @Test
   public void noUserAttendingCollege() throws Exception {
-    when(mPreparedQuery.asIterable()).thenReturn(mEntityIterable);
+    when(mockPreparedQuery.asIterable()).thenReturn(mockEntityIterable);
     GmailConfiguration.notifyUsers(COLLEGE_B, post);
 
-    verify(mPreparedQuery, never()).asIterable();
+    verify(mockPreparedQuery, never()).asIterable();
     Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 
@@ -147,16 +145,17 @@ public final class GmailConfigurationTest {
   public void sendEmailWithAuthorizedService() {
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
 
-    Assert.assertEquals(0, memoryAppender.countEventsForLogger(LOGGER_NAME));
+    Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
+    Assert.assertTrue(memoryAppender.contains(SUCCESS_MSG + TO, Level.INFO));    
   }
 
   @Test(expected = Exception.class)
   public void sendEmailWithUnauthorizedService() throws Exception {
-    when(mGmailAPI.getGmailService()).thenReturn(mGmail);
+    when(mockGmailAPI.getGmailService()).thenReturn(mockGmail);
 
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
 
-    verify(mGmailAPI, times(1)).getGmailService();
+    verify(mockGmailAPI, times(1)).getGmailService();
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 }
