@@ -7,15 +7,15 @@
 - [Motivation](#Context)
 - [Technologies](#Technologies)
 - [Demos](#Demos)
-  - [Find your college]
-  - [Find food at your college]
-  - [Make a new post]
-  - [Sign up for emails]
-  - [Receive emails]
+  - [Find your college](#find-your-college)
+  - [Find food at your college](#find-food-at-your-college)
+  - [Make a new post](#make-a-new-post)
+  - [Sign up for email notifications](#sign-up-for-email-notifications)
+  - [Receive email notifications](#receive-email-notifications)
 - [Usage](#Usage)
-- [License](#License)
 - [Authors](#Authors)
 - [Contributing](#Contributing)
+- [License](#License)
 - [Disclaimer](#Disclaimer)
 
 ## Description
@@ -71,9 +71,11 @@ On a college's page, the map and feed allow users to browse food available at th
 ### Make a new post
 The new post modal features validation for all of its field and uses the Geocoding Service to automatically translate addresses entered by the user into map coordinates.
 
-### Sign up for emails
+### Sign up for email notifications
+Signing up for email notifications allows users to get emails for each new post at their college of interest. They're greeted with a welcome email upon signing up.
 
-### Receive emails
+### Receive email notifications
+Upon organizations making new posts at a user's college of interest, email notifications will give the user a brief overview of the event in question.
 
 ## Usage
 
@@ -96,7 +98,7 @@ Google STEP (Student Training in Engineering Program) Pod #186, Summer 2020
 
 [@ubahl](https://github.com/ubahl):
 - Creating + storing posts
-- Displaying postings
+- Displaying posts
 
 
 ## Contributing
