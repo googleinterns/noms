@@ -3,20 +3,20 @@
 >A full-stack web application connecting students and college organizations to battle food insecurity and food waste.
 
 ## Overview
-- [Description](##Description)
-- [Motivation](##Context)
-- [Technologies](##Technologies)
-- [Demos](##Demos)
+- [Description](#Description)
+- [Motivation](#Context)
+- [Technologies](#Technologies)
+- [Demos](#Demos)
   - [Find your college]
   - [Find food at your college]
   - [Make a new post]
   - [Sign up for emails]
   - [Receive emails]
-- [Usage](##Usage)
-- [License](##License)
-- [Authors](##Authors)
-- [Contributing](##Contributing)
-- [Disclaimer](##Disclaimer)
+- [Usage](#Usage)
+- [License](#License)
+- [Authors](#Authors)
+- [Contributing](#Contributing)
+- [Disclaimer](#Disclaimer)
 
 ## Description
 
