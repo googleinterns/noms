@@ -144,7 +144,7 @@ select {
   box-sizing: border-box;
   font: 400 1rem Arial, sans-serif;
   font-size: 1rem;
-  margin-bottom: 0;
+  margin-bottom: 15px;
   margin-top: 0;
   outline: none;
   padding: 12px 20px;
@@ -169,6 +169,21 @@ select {
 
 .modal-span {
   white-space: nowrap;
+}
+
+#modal-upload-image {
+  /* border: 1px solid var(--dark-grey);
+  border-radius: 50px;
+  color: var(--dark-grey);
+  outline: none;
+  padding: 12px 20px; */
+
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
 }
 
 #modal-submit {
