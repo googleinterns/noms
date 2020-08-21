@@ -1,6 +1,6 @@
 # 🍱 noms
 
-A full-stack web application connecting students and college organizations to battle food insecurity and food waste.
+>A full-stack web application connecting students and college organizations to battle food insecurity and food waste.
 
 ## Overview
 - [Description](##Description)
@@ -41,6 +41,8 @@ The day-to-day programming on campus belies the reality of many students; while 
 
 It is not just students that suffer from leftover food being thrown out; the Earth does, too. This kind of potential food waste is, environmentally speaking, [the worst kind there is](https://moveforhunger.org/the-environmental-impact-of-food-waste): food that has completed the entire cycle of growing, transportation, storage, and preparation—just to end up in the bin.
 
+**noms** hopes to bridge this gap between college organizations and students, and aid the environment while we're at it.
+
 ## Technologies
 
 - **Frontend**: HTML, CSS, JavaScript
@@ -57,6 +59,21 @@ It is not just students that suffer from leftover food being thrown out; the Ear
 - **Deployment**: Google App Engine
 
 ## Demos
+
+View the demos as full-quality videos [here](#).
+
+### Find your college
+The landing page presents users the option to find their college's page. Upon typing, an autocomplete dropdown (not visible with the screen recording software) suggests college names.
+
+### Find food at your college
+On a college's page, the map and feed allow users to browse food available at their college. The user is present on the map as a blue marker. Filters allow the user to narrow down the type of post.
+
+### Make a new post
+The new post modal features validation for all of its field and uses the Geocoding Service to automatically translate addresses entered by the user into map coordinates.
+
+### Sign up for emails
+
+### Receive emails
 
 ## Usage
 
