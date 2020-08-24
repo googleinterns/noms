@@ -110,6 +110,12 @@ let toggleLegendButton;
 /** @type {HTMLButtonElement} */
 let toggleFiltersButton;
 
+/** @type {HTMLElement} */
+let modalMonth;
+
+/** @type {HTMLElement} */
+let modalDay;
+
 //
 // Constants
 //
@@ -164,6 +170,8 @@ async function onLoad() {
   const happeningNowCheckbox = document.getElementById('happening-now');
   const distanceSlider = document.getElementById('distance');
   const keywordsInput = document.getElementById('keywords');
+  modalMonth = document.getElementById('modal-month');
+  modalDay = document.getElementById('modal-day');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -175,6 +183,8 @@ async function onLoad() {
   happeningNowCheckbox.addEventListener('change', filterAndUpdatePagePosts);
   distanceSlider.addEventListener('change', filterAndUpdatePagePosts);
   keywordsInput.addEventListener('input', filterAndUpdatePagePosts);
+  modalMonth.addEventListener('input', showDateTipOnModal);
+  modalDay.addEventListener('input', showDateTipOnModal);
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -930,12 +940,9 @@ async function checkLocationAndSubmit() {
       url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
       modalForm.action = url;
 
-      const month = document.getElementById('modal-month').value;
-      const day = document.getElementById('modal-day').value;
-      // getMonth() + 1 because JavaScript indexes months starting with 0.
-      if (month > new Date().getMonth() + 1 || day > new Date().getDate()) {
+      if (dateIsInTheFuture(modalMonth.value, modalDay.value)) {
         const subtitle = document.getElementById('modal-submitted-subtitle');
-        subtitle.innerText += ` Users will see your post on ${month}/${day}.`;
+        subtitle.innerText += ` Users will see your post on ${modalMonth.value}/${modalDay.value}.`;
       }
 
       // Hides form modal, shows submit message and focuses on it.
@@ -1125,4 +1132,44 @@ function calculateMilesBetweenTwoCoords(locationA, locationB) {
   // Use the Pythagorean theorem to find the hypotenuse length given latDiff and longDiff
   // We don't need to take Earth's curvature into consideration as differences are small (<3 miles).
   return Math.sqrt(latDiff * latDiff + longDiff * longDiff);
+}
+
+/**
+ * Checks if a date is in the future.
+ * @param {number} month - The month of the year, indexed from 1.
+ * @param {day} day - The day of the month, indexed from 1.
+ * @return {boolean} Whether or not the date is in the future.
+ */
+function dateIsInTheFuture(month, day) {
+  // getMonth() + 1 because JavaScript indexes months starting with 0.
+  if (month > new Date().getMonth() + 1 || day > new Date().getDate()) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * If the user inputs a date in the future, display a tip below the dates
+ * that explains that the post won't be seen until the day of the post.
+ */
+function showDateTipOnModal() {
+  const container = document.getElementById('modal-date-tip');
+
+  if (dateIsInTheFuture(modalMonth.value, modalDay.value)) {
+    const tip = document.createElement('p');
+    tip.setAttribute('class', 'modal-date-tip-text');
+    tip.innerText = 'Tip: If you\'re making a post for a future date, ' +
+    ' it won\'t appear in the feed until that day';
+    container.appendChild(tip);
+
+    const gotItButton = document.createElement('button');
+    gotItButton.innerText = '✓ Got it!';
+    gotItButton.type = 'button';
+    container.appendChild(gotItButton);
+  } else if (container.firstChild) {
+    while (container.firstChild) {
+      // Removing lastChild is faster than the firstChild in most implementations.
+      container.removeChild(container.lastChild);
+    }
+  }
 }

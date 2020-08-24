@@ -245,6 +245,13 @@ select {
   outline: none;
 }
 
+.modal-date-tip-text {
+  color: #07536a;
+  font-size: 0.8rem;
+  margin: 1rem;
+  white-space: normal;
+}
+
 @media screen and (max-width: 678px) {
   #page-container {
     margin-left: 5%;
