@@ -930,6 +930,12 @@ async function checkLocationAndSubmit() {
       url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
       modalForm.action = url;
 
+      const month = document.getElementById('modal-month');
+      const day = document.getElementById('modal-day');
+      if (month > new Date().getMonth() + 1 || day > new Date().getDate()) {
+        modalSubmittedTitle.innerText += `Users will see your post on ${month}/${day}.`;
+      }
+
       // Hides form modal, shows submit message and focuses on it.
       modalCard.style.display = 'none';
       modalSubmitted.style.display = 'block';
