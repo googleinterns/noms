@@ -226,6 +226,11 @@ select {
   margin-left: 12px;
 }
 
+#modal-submitted-subtitle {
+  color: #333;
+  margin: 0 0 1rem 1rem;
+}
+
 #modal-submitted-title:focus,
 #modal-close:focus,
 #modal-title:focus,
