@@ -1,5 +1,5 @@
 # 🍱 noms
-[![Super Linter](https://github.com/{owner}/{repo}/workflows/Super%20Linter/badge.svg)](https://github.com/googleinterns/noms/actions)
+[![Super Linter](https://github.com/googleinterns/noms/workflows/Super%20Linter/badge.svg)](https://github.com/googleinterns/noms/actions)
 
 
 >A full-stack web application connecting students and college organizations to battle food insecurity and food waste.
