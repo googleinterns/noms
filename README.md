@@ -6,7 +6,7 @@
 
 ## Overview
 - [Description](#Description)
-- [Motivation](#Context)
+- [Motivation](#Motivation)
 - [Technologies](#Technologies)
 - [Demos](#Demos)
   - [Find your college](#find-your-college)
