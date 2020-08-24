@@ -76,7 +76,7 @@ On a college's page, the map and feed allow users to browse food available at th
 
 
 ### Make a new post
-The new post modal features validation for all of its field and uses the Geocoding Service to automatically translate addresses entered by the user into map coordinates.
+The new post modal features validation for all of its fields and uses the Geocoding Service to automatically translate addresses entered by the user into map coordinates.
 
 ![](https://user-images.githubusercontent.com/35010111/91067907-5afe2580-e5e8-11ea-98c9-07d6fd0ae721.gif)
 
