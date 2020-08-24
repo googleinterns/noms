@@ -60,22 +60,34 @@ It is not just students that suffer from leftover food being thrown out; the Ear
 
 ## Demos
 
-View the demos as full-quality videos [here](#).
-
 ### Find your college
-The landing page presents users the option to find their college's page. Upon typing, an autocomplete dropdown (not visible with the screen recording software) suggests college names.
+The landing page presents users the option to find their college's page. Upon typing, an autocomplete dropdown  suggests college names.
+
+![](https://user-images.githubusercontent.com/35010111/91064467-24261080-e5e4-11ea-9954-b1712004ebb8.gif)
+
 
 ### Find food at your college
 On a college's page, the map and feed allow users to browse food available at their college. The user is present on the map as a blue marker. Filters allow the user to narrow down the type of post.
 
+![](https://user-images.githubusercontent.com/35010111/91066586-bd562680-e5e6-11ea-9248-8b3ef66ad6dc.gif)
+![](https://user-images.githubusercontent.com/35010111/91067113-5e44e180-e5e7-11ea-9026-bf5ca84d6b9c.gif)
+
+
 ### Make a new post
 The new post modal features validation for all of its field and uses the Geocoding Service to automatically translate addresses entered by the user into map coordinates.
+
+![](https://user-images.githubusercontent.com/35010111/91067907-5afe2580-e5e8-11ea-98c9-07d6fd0ae721.gif)
 
 ### Sign up for email notifications
 Signing up for email notifications allows users to get emails for each new post at their college of interest. They're greeted with a welcome email upon signing up.
 
+![](https://user-images.githubusercontent.com/35010111/91069224-fba11500-e5e9-11ea-8e01-6e17694f9a73.gif)
+<img src="https://user-images.githubusercontent.com/35010111/91068374-09a26600-e5e9-11ea-982e-579fd0f8c943.png" width="800">
+
 ### Receive email notifications
 Upon organizations making new posts at a user's college of interest, email notifications will give the user a brief overview of the event in question.
+
+<img src="https://user-images.githubusercontent.com/35010111/91069756-a4e80b00-e5ea-11ea-9616-2a653af159c8.png" width="800">
 
 ## Usage
 
