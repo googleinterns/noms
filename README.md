@@ -87,7 +87,7 @@ Signing up for email notifications allows users to get emails for each new post 
 <img src="https://user-images.githubusercontent.com/35010111/91068374-09a26600-e5e9-11ea-982e-579fd0f8c943.png" width="800">
 
 ### Receive email notifications
-Upon organizations making new posts at a user's college of interest, email notifications will give the user a brief overview of the event in question.
+Upon organizations making new posts at a user's college of interest, email notifications will give the user a brief overview of the event in question. The box's style is smaller than that of the welcome email to denote that a single post is a smaller event.
 
 <img src="https://user-images.githubusercontent.com/35010111/91069756-a4e80b00-e5ea-11ea-9616-2a653af159c8.png" width="800">
 
