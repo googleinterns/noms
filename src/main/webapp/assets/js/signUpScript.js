@@ -134,7 +134,7 @@ function validateForm() {
  */
 function validateFormEmail(invalidIds, errorMessages, formElements) {
   const email = formElements.namedItem('email').value;
-  var emailPattern = /^[a-zA-Z0-9._-]+@google.com$/;
+  const emailPattern = /^[a-zA-Z0-9._-]+@google.com$/;
   if (!emailPattern.test(email)) {
     invalidIds.push('email');
     errorMessages.push('email must follow @google.com');
@@ -166,7 +166,6 @@ function validateFormRadioButtons(invalidIds, errorMessages, formElements) {
  * @return {void}
  */
 function validateFormText(invalidIds, errorMessages, formElements) {
-
   // Checks if any text elements are blank.
   for (let i = 0; i < formElements.length; i++) {
     if (formElements[i].type === 'text' || formElements[i].type === 'email') {
@@ -203,7 +202,7 @@ function validateFormCollege(invalidIds, errorMessages, formElements) {
 }
 
 /**
- * Highlight invalid inputs with a red background and 
+ * Highlight invalid inputs with a red background and
  * adds error messages.
  * @param {array} invalidIds
  * @param {array} errorMessages
