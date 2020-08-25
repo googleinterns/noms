@@ -191,11 +191,12 @@ select {
   border-radius: 50px;
   color: var(--dark-grey);
   cursor: pointer;
-  float: right;
   font: 400 13.3333px Arial;
-  margin-top: 15px;
+  margin-bottom: 15px;
   outline: none;
   padding: 10px 20px;
+  position: absolute;
+  right: 30px;
 }
 
 #modal-upload-label:hover {
@@ -207,11 +208,11 @@ select {
   border: none;
   border-radius: 50px;
   color: white;
-  float: right;
   height: 35px;
   margin-bottom: 15px;
-  margin-top: 15px;
+  margin-top: 50px;
   outline: none;
+  position: absolute;
   right: 30px;
   width: 80px;
 }
