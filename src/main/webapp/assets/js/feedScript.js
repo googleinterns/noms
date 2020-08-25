@@ -1151,11 +1151,15 @@ function dateIsInTheFuture(month, day) {
 /**
  * If the user inputs a date in the future, display a tip below the dates
  * that explains that the post won't be seen until the day of the post.
+ * By default, this function adds the tip if it's not present, and removes
+ * it if it is.
+ * @param {boolean} show - An optional parameter that forces the state of the tip.
  */
-function showDateTipOnModal() {
+function showDateTipOnModal(show = null) {
   const container = document.getElementById('modal-date-tip');
 
-  if (dateIsInTheFuture(modalMonth.value, modalDay.value)) {
+  if ((dateIsInTheFuture(modalMonth.value, modalDay.value) || show === true) &&
+      !container.firstChild) {
     const tip = document.createElement('p');
     tip.setAttribute('class', 'modal-date-tip-text');
     tip.innerText = 'Tip: If you\'re making a post for a future date, ' +
@@ -1165,7 +1169,12 @@ function showDateTipOnModal() {
     const gotItButton = document.createElement('button');
     gotItButton.innerText = '✓ Got it!';
     gotItButton.type = 'button';
-    container.appendChild(gotItButton);
+    gotItButton.setAttribute('class', 'modal-date-tip-button');
+    // Always hide the tip if they click the 'got it' button.
+    gotItButton.addEventListener('click', () => {
+      showDateTipOnModal(false);
+    }, false);
+    tip.appendChild(gotItButton);
   } else if (container.firstChild) {
     while (container.firstChild) {
       // Removing lastChild is faster than the firstChild in most implementations.

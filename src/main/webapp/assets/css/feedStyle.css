@@ -227,7 +227,7 @@ select {
 }
 
 #modal-submitted-subtitle {
-  color: #333;
+  color: #565656;
   margin: 0 0 1rem 1rem;
 }
 
@@ -248,8 +248,17 @@ select {
 .modal-date-tip-text {
   color: #07536a;
   font-size: 0.8rem;
-  margin: 1rem;
+  margin: 0 1rem 1rem 1rem;
   white-space: normal;
+}
+
+.modal-date-tip-button {
+  border: none;
+  border-radius: 5px;
+  color: #246679;
+  font-size: 0.8rem;
+  margin: 0 0.5rem;
+  white-space: nowrap;
 }
 
 @media screen and (max-width: 678px) {
