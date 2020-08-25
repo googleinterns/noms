@@ -110,6 +110,9 @@ let toggleLegendButton;
 /** @type {HTMLButtonElement} */
 let toggleFiltersButton;
 
+/** @type {HTMLElement} */
+let modalFileUpload;
+
 //
 // Constants
 //
@@ -157,6 +160,7 @@ async function onLoad() {
   modalForm = document.getElementById('modal-form');
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
+  modalFileUpload = document.getElementById('modal-upload-image');
   modalSubmitted = document.getElementById('modal-submitted');
   modalSubmittedTitle = document.getElementById('modal-submitted-title');
   toggleFiltersButton = document.getElementById('toggle-filters-button');
@@ -175,6 +179,7 @@ async function onLoad() {
   happeningNowCheckbox.addEventListener('change', filterAndUpdatePagePosts);
   distanceSlider.addEventListener('change', filterAndUpdatePagePosts);
   keywordsInput.addEventListener('input', filterAndUpdatePagePosts);
+  modalFileUpload.addEventListener('change', displayUploadedFile);
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -679,6 +684,16 @@ function closeModal() {
     modal.style.display = 'none';
     modalForm.reset();
     createPostButton.focus();
+  }
+}
+
+function displayUploadedFile() {
+  let modalUploadLabel = document.getElementById('modal-upload-label');  
+  const fileName = this.value.split( '\\' ).pop();
+  if (fileName) {
+    modalUploadLabel.innerText = fileName;
+  } else {
+    modalUploadLabel.innerText = 'upload an image';
   }
 }
 
