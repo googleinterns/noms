@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', onLoad);
 //
 
 /** @type {HTMLElement} */
+let emailForm;
+
+/** @type {HTMLElement} */
 let formSubmitted;
 
 /** @type {HTMLElement} */
@@ -35,9 +38,6 @@ let formSubmittedTitle;
 
 /** @type {HTMLElement} */
 let submitFormButton;
-
-/** @type {HTMLElement} */
-let emailForm;
 
 //
 // Functions
@@ -72,21 +72,12 @@ async function onLoad() {
   // When users select an option from the dropdown, set the college id.
   document.getElementById('colleges-input-form').addEventListener('change', setCollegeID);
 
-  submitFormButton = document.getElementById('form-submit');
+  // When users submit the form, initiate form validation.
   emailForm = document.getElementById('email-form');
+  submitFormButton = document.getElementById('form-submit');
   formSubmitted = document.getElementById('form-submitted');
   formSubmittedTitle = document.getElementById('form-submitted-title');
-  submitFormButton.addEventListener('click', submitModal);
-}
-
-/**
- * Checks if the given input is blank.
- * @param {String} input
- * @return {void}
- */
-function isBlank(input) {
-  const trimmed = input.trim();
-  return !trimmed;
+  submitFormButton.addEventListener('click', submitForm);
 }
 
 /**
@@ -107,57 +98,140 @@ function setCollegeID() {
 }
 
 /**
- * On click of the submit button, sends modal data to the servlet.
+ * On click of the submit button, validate form data and send data to the servlet.
  * @return {void}
  */
-async function submitModal() {
+async function submitForm() {
   // Disable multiple submissions.
   submitFormButton.disabled = true;
 
-  if (validateModal()) {
-    checkLocationAndSubmit();
+  if (validateForm()) {
+
+    // Hides form form, shows submit message and focuses on it.
+    // Closes the submit form after 2000 ms, and submits the form.
+    emailForm.action = "/user"
+    formSubmitted.style.display = 'block';
+    setTimeout(function() {
+      formSubmitted.style.display = 'none';
+      emailForm.submit();
+    }, 2000);
   } else {
     submitFormButton.disabled = false;
   }
 }
 
 /**
- * Checks if the month and day are a valid date.
+ * Goes through the form elements and marks the invalid inputs.
+ * Returns whether all the inputs are valid.
+ * @return {boolean}
+ */
+function validateForm() {
+  const invalidIds = [];
+  const errorMessages = [];
+  const formElements = emailForm.elements;
+  console.log("hello");
+  console.log(formElements);
+
+  disableInjection(formElements);
+
+  console.log("hello");
+  console.log(formElements);
+  validateFormText(invalidIds, errorMessages, formElements);
+  validateFormEmail(invalidIds, errorMessages, formElements);
+  validateFormRadioButtons(invalidIds, errorMessages, formElements);
+  markInvalidInputs(invalidIds, errorMessages, formElements);
+
+  return (invalidIds.length === 0);
+}
+
+/**
+ * Checks if the email is valid.
  * @param {array} invalidIds
  * @param {array} errorMessages
  * @param {array} formElements
  * @return {void}
  */
-function validateModalDate(invalidIds, errorMessages, formElements) {
-  const month = formElements.namedItem('modal-month').value;
-  const day = formElements.namedItem('modal-day').value;
-  const monthDayLengths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  if (month > 12 || month < 1) {
-    invalidIds.push('modal-month');
-    errorMessages.push('month must be between 1 and 12');
-  }
-  if (day < 1 || day > monthDayLengths[month - 1] || isBlank(day)) {
-    invalidIds.push('modal-day');
-    errorMessages.push('invalid date');
+function validateFormEmail(invalidIds, errorMessages, formElements) {
+  const email = formElements.namedItem('email').value;
+  var emailPattern = /^[a-zA-Z0-9._-]+@google.com$/;
+  if (!emailPattern.test(email)) {
+    invalidIds.push('email');
+    errorMessages.push('email must follow @google.com');
   }
 }
 
+/**
+ * Checks if at least one radio button has been checked.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ * @return {void}
+ */
+function validateFormRadioButtons(invalidIds, errorMessages, formElements) {
+  const subscribe = formElements.namedItem('email-notif')[0].checked;
+  const unsubscribe = formElements.namedItem('email-notif')[1].checked;
+
+  if (!subscribe && !unsubscribe ) {
+    invalidIds.push('subscribe/unsubscribe');
+    errorMessages.push('must pick to subscribe or unsubscribe');
+  }
+}
 
 /**
- * Goes through the form elements and marks the invalid inputs.
- * Returns whether all the inputs are valid.
- * @return {boolean}
+ * Goes through the form elements. If it is a text input, adds an error if it is blank.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ * @return {void}
  */
-function validateModal() {
-  const invalidIds = [];
-  const errorMessages = [];
-  const formElements = emailForm.elements;
+function validateFormText(invalidIds, errorMessages, formElements) {
+  for (let i = 0; i < formElements.length; i++) {
+    if (formElements[i].type === 'text' || formElements[i].type === 'email') {
+      if (isBlank(formElements[i].value)) {
+        invalidIds.push(formElements[i].id);
+        const errorMessage = formElements[i].name + ' is blank';
+        errorMessages.push(errorMessage);
+      }
+    }
+  }
+}
 
-  disableInjection(formElements);
-  validateModalText(invalidIds, errorMessages, formElements);
-  markInvalidInputs(invalidIds, errorMessages, formElements);
+/**
+ * Checks if the given input is blank.
+ * @param {String} input
+ * @return {void}
+ */
+function isBlank(input) {
+  const trimmed = input.trim();
+  return !trimmed;
+}
 
-  return (invalidIds.length === 0);
+/**
+ * Goes through the invalid inputs and colors them red.
+ * Adds error messages.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ * @return {void}
+ */
+function markInvalidInputs(invalidIds, errorMessages, formElements) {
+  resetMarks(formElements);
+  invalidIds.forEach((id) => {
+    const elt = formElements.namedItem(id);
+    if (elt) {
+      elt.style.background = '#ff999966';
+    }
+  });
+  if (errorMessages.length > 0) {
+    const formError = document.createElement('div');
+    formError.setAttribute('id', 'form-input-error');
+    formError.innerHTML += '<ul>';
+    errorMessages.forEach((message) => {
+      formError.innerHTML += '<li>' + message + '</li>';
+    });
+    formError.innerHTML += '</ul>';
+    emailForm.insertBefore(formError, submitFormButton);
+  }
 }
 
 /**
@@ -178,83 +252,7 @@ function disableInjection(formElements) {
 }
 
 /**
- * Goes through the form elements. If it is a text input, adds an error if it is blank.
- * @param {array} invalidIds
- * @param {array} errorMessages
- * @param {array} formElements
- * @return {void}
- */
-function validateModalText(invalidIds, errorMessages, formElements) {
-  for (let i = 0; i < formElements.length; i++) {
-    if (formElements[i].type === 'text' || formElements[i].type === 'textarea') {
-      if (isBlank(formElements[i].value)) {
-        invalidIds.push(formElements[i].id);
-        const errorMessage = formElements[i].placeholder + ' is blank';
-        errorMessages.push(errorMessage);
-      }
-    }
-  }
-}
-
-/**
- * Checks if the inputted address is valid.
- * Submits if address is verified.
- * @return {void}
- */
-async function checkLocationAndSubmit() {
-
-  url = `/user`;
-  emailForm.action = url;
-
-  // Hides form modal, shows submit message and focuses on it.
-  modalCard.style.display = 'none';
-  formSubmitted.style.display = 'block';
-  // Closes the submit modal after 2000 ms, and submits the form.
-  setTimeout(function() {
-    closeSubmit();
-    emailForm.submit();
-  }, 2000);
-}
-
-/**
- * Closes the submit modal.
- * @return {void}
- */
-function closeSubmit() {
-  formSubmitted.style.display = 'none';
-}
-
-/**
- * Goes through the invalid inputs and colors them red.
- * Adds error messages.
- * @param {array} invalidIds
- * @param {array} errorMessages
- * @param {array} formElements
- * @return {void}
- */
-function markInvalidInputs(invalidIds, errorMessages, formElements) {
-  resetMarks(formElements);
-  invalidIds.forEach((id) => {
-    const elt = formElements.namedItem(id);
-    if (elt) {
-      elt.style.background = '#ff999966';
-    }
-  });
-  if (errorMessages.length > 0) {
-    const modalError = document.createElement('div');
-    modalError.setAttribute('id', 'modal-input-error');
-    modalError.setAttribute('tabindex', '0');
-    modalError.innerHTML += '<ul>';
-    errorMessages.forEach((message) => {
-      modalError.innerHTML += '<li>' + message + '</li>';
-    });
-    modalError.innerHTML += '</ul>';
-    emailForm.insertBefore(modalError, submitFormButton);
-  }
-}
-
-/**
- * Resets all the input backgrounds to modal grey and gets rid of previous error text.
+ * Resets all the input backgrounds to form grey and gets rid of previous error text.
  * @param {array} formElements
  * @return {void}
  */
@@ -263,8 +261,8 @@ function resetMarks(formElements) {
     const element = formElements[i];
     element.style.background = '#1b18181a';
   }
-  const modalError = document.getElementById('modal-input-error');
-  if (modalError) {
-    emailForm.removeChild(modalError);
+  const formError = document.getElementById('form-input-error');
+  if (formError) {
+    emailForm.removeChild(formError);
   }
 }
