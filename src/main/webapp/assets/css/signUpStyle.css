@@ -105,21 +105,19 @@ button:hover {
   border: none;
 }
 
-#form-submitted {
-  background: white;
+#subscribe-form-submitted,
+#unsubscribe-form-submitted {
+  background: var(--tan);
   border-radius: 15px;
   box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
+  color: #fff;
   display: none;
   left: 25%;
   overflow: auto;
-  padding: 30px;
+  padding: 2rem;
   position: fixed;
   top: 50%;
   transform: translate(0, -50%);
   width: 50%;
   z-index: 1;
-}
-
-#form-submitted-title {
-  margin-left: 12px;
 }

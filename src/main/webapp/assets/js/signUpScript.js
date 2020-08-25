@@ -31,10 +31,10 @@ document.addEventListener('DOMContentLoaded', onLoad);
 let emailForm;
 
 /** @type {HTMLElement} */
-let formSubmitted;
+let subscribeFormSubmitted;
 
 /** @type {HTMLElement} */
-let formSubmittedTitle;
+let unsubscribeFormSubmitted;
 
 /** @type {HTMLElement} */
 let submitFormButton;
@@ -69,32 +69,12 @@ async function onLoad() {
   collegeDataList.appendChild(fragment);
   collegeDataList.setAttribute('id', 'colleges');
 
-  // When users select an option from the dropdown, set the college id.
-  document.getElementById('colleges-input-form').addEventListener('change', setCollegeID);
-
   // When users submit the form, initiate form validation.
   emailForm = document.getElementById('email-form');
   submitFormButton = document.getElementById('form-submit');
-  formSubmitted = document.getElementById('form-submitted');
-  formSubmittedTitle = document.getElementById('form-submitted-title');
+  subscribeFormSubmitted = document.getElementById('subscribe-form-submitted');
+  unsubscribeFormSubmitted = document.getElementById('unsubscribe-form-submitted');
   submitFormButton.addEventListener('click', submitForm);
-}
-
-/**
- * When the user selects a college from the dropdown, we immediately
- * set the ID to be that college's unique ID.
- */
-function setCollegeID() {
-  const collegeName = document.getElementById('colleges-input-form').value;
-  const option = document.querySelector(`#colleges option[value='${collegeName}']`);
-
-  // Set hidden input to hold unique college id.
-  // TODO: display 'We haven't heard of that college!"/similar to the user if not recognized.
-  if (option) {
-    const collegeId = option.dataset.value;
-    const selectedCollege = document.getElementById('cID');
-    selectedCollege.value = collegeId;
-  }
 }
 
 /**
@@ -106,15 +86,16 @@ async function submitForm() {
   submitFormButton.disabled = true;
 
   if (validateForm()) {
+    emailForm.action = "/user";
 
-    // Hides form form, shows submit message and focuses on it.
-    // Closes the submit form after 2000 ms, and submits the form.
-    emailForm.action = "/user"
-    formSubmitted.style.display = 'block';
-    setTimeout(function() {
-      formSubmitted.style.display = 'none';
-      emailForm.submit();
-    }, 2000);
+    // Based on user subscribing or unsubscribing, show confirmation that form
+    // was submitted.
+    if(document.getElementById("subscribe").checked) {
+      subscribeFormSubmitted.style.display = 'block';
+    } else {
+      unsubscribeFormSubmitted.style.display = 'block';
+    }
+    emailForm.submit();
   } else {
     submitFormButton.disabled = false;
   }
@@ -129,15 +110,11 @@ function validateForm() {
   const invalidIds = [];
   const errorMessages = [];
   const formElements = emailForm.elements;
-  console.log("hello");
-  console.log(formElements);
 
   disableInjection(formElements);
-
-  console.log("hello");
-  console.log(formElements);
   validateFormText(invalidIds, errorMessages, formElements);
   validateFormEmail(invalidIds, errorMessages, formElements);
+  validateFormCollege(invalidIds, errorMessages, formElements);
   validateFormRadioButtons(invalidIds, errorMessages, formElements);
   markInvalidInputs(invalidIds, errorMessages, formElements);
 
@@ -172,22 +149,24 @@ function validateFormRadioButtons(invalidIds, errorMessages, formElements) {
   const unsubscribe = formElements.namedItem('email-notif')[1].checked;
 
   if (!subscribe && !unsubscribe ) {
-    invalidIds.push('subscribe/unsubscribe');
+    invalidIds.push('subscribe');
     errorMessages.push('must pick to subscribe or unsubscribe');
   }
 }
 
 /**
- * Goes through the form elements. If it is a text input, adds an error if it is blank.
+ * Check if form text elements have been filled out completely.
  * @param {array} invalidIds
  * @param {array} errorMessages
  * @param {array} formElements
  * @return {void}
  */
 function validateFormText(invalidIds, errorMessages, formElements) {
+
+  // Checks if any text elements are blank.
   for (let i = 0; i < formElements.length; i++) {
     if (formElements[i].type === 'text' || formElements[i].type === 'email') {
-      if (isBlank(formElements[i].value)) {
+      if (!formElements[i].value.trim()) {
         invalidIds.push(formElements[i].id);
         const errorMessage = formElements[i].name + ' is blank';
         errorMessages.push(errorMessage);
@@ -197,18 +176,30 @@ function validateFormText(invalidIds, errorMessages, formElements) {
 }
 
 /**
- * Checks if the given input is blank.
- * @param {String} input
+ * Check if valid college.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
  * @return {void}
  */
-function isBlank(input) {
-  const trimmed = input.trim();
-  return !trimmed;
+function validateFormCollege(invalidIds, errorMessages, formElements) {
+  const collegeName = document.getElementById('colleges-input-form').value;
+  const option = document.querySelector(`#colleges option[value='${collegeName}']`);
+
+  if (option) {
+    const collegeId = option.dataset.value;
+    const selectedCollege = document.getElementById('cID');
+    selectedCollege.value = collegeId;
+  } else {
+    invalidIds.push(formElements.namedItem('colleges').id);
+    const errorMessage = 'we currently do not support that college; please pick college from given list';
+    errorMessages.push(errorMessage);
+  }
 }
 
 /**
- * Goes through the invalid inputs and colors them red.
- * Adds error messages.
+ * Highlight invalid inputs with a red background and 
+ * adds error messages.
  * @param {array} invalidIds
  * @param {array} errorMessages
  * @param {array} formElements
@@ -217,9 +208,9 @@ function isBlank(input) {
 function markInvalidInputs(invalidIds, errorMessages, formElements) {
   resetMarks(formElements);
   invalidIds.forEach((id) => {
-    const elt = formElements.namedItem(id);
-    if (elt) {
-      elt.style.background = '#ff999966';
+    const element = formElements.namedItem(id);
+    if (element) {
+      element.style.background = '#ff999966';
     }
   });
   if (errorMessages.length > 0) {
@@ -252,7 +243,7 @@ function disableInjection(formElements) {
 }
 
 /**
- * Resets all the input backgrounds to form grey and gets rid of previous error text.
+ * Resets all the input backgrounds and gets rid of previous error text.
  * @param {array} formElements
  * @return {void}
  */

@@ -40,9 +40,9 @@
           <h2>get notified with emails</h2>
           <form id="email-form" method="post" autocomplete="off">
             <label class="input-name">name</label>
-            <input type="text" name="name" id="name" maxlength="50" required>
+            <input type="text" name="name" id="name" maxlength="35" required>
             <label class="input-name" for="email">email</label>
-            <input type="email" name="email" id="email" maxlength = "50" pattern=".+@google.com" title="Must be @google.com." required>
+            <input type="email" name="email" id="email" maxlength = "35" pattern=".+@google.com" title="Must be @google.com." required>
             <label class="input-name">college</label>
             <div class="selectdiv">
               <input type="text" list="colleges" name="colleges" id="colleges-input-form" required>
@@ -61,10 +61,14 @@
             </div>
             <button id="form-submit" type="button">submit</button>
           </form>
-        </div>
-        <div aria-label="form submitted" id="form-submitted">
-          <h1 id="form-submitted-title">form has been submitted!</h1>
-          <p id="form-submitted-text">thanks for joining the noms fam! check your email for a subscription confirmation!</p>
+          <div id="subscribe-form-submitted">
+            <h1>form has been submitted!</h1>
+            <p>thanks for joining the noms fam! check your email for a subscription confirmation!</p>
+          </div>
+          <div id="unsubscribe-form-submitted">
+            <h1>form has been submitted!</h1>
+            <p>hope you have enjoyed your time with noms!</p>
+          </div>
         </div>
       </div>
     </div>
