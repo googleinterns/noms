@@ -93,7 +93,8 @@
   margin-left: 12px;
 }
 
-input[type=text] {
+input[type=text],
+#modal-num-people {
   background: var(--modal-grey);
   border: none;
   border-radius: 50px;

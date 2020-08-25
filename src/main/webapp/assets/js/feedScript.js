@@ -172,6 +172,10 @@ async function onLoad() {
   const keywordsInput = document.getElementById('keywords');
   modalMonth = document.getElementById('modal-month');
   modalDay = document.getElementById('modal-day');
+  const modalOrganizationName = document.getElementById('modal-org-name');
+  const modalLocation = document.getElementById('modal-location');
+  const modalTypeFood = document.getElementById('modal-type-food');
+  const modalDescription = document.getElementById('modal-description');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -185,6 +189,10 @@ async function onLoad() {
   keywordsInput.addEventListener('input', filterAndUpdatePagePosts);
   modalMonth.addEventListener('input', showDateTipOnModal);
   modalDay.addEventListener('input', showDateTipOnModal);
+  modalOrganizationName.addEventListener('keydown', limitCharacterInput);
+  modalLocation.addEventListener('keydown', limitCharacterInput);
+  modalTypeFood.addEventListener('keydown', limitCharacterInput);
+  modalDescription.addEventListener('keydown', limitCharacterInput);
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -721,6 +729,7 @@ function validateModal() {
   validateModalText(invalidIds, errorMessages, formElements);
   validateModalDate(invalidIds, errorMessages, formElements);
   validateModalTime(invalidIds, errorMessages, formElements);
+  validateModalNumber(invalidIds, errorMessages, formElements);
   markInvalidInputs(invalidIds, errorMessages, formElements);
 
   return (invalidIds.length === 0);
@@ -896,6 +905,21 @@ function validateModalText(invalidIds, errorMessages, formElements) {
         errorMessages.push(errorMessage);
       }
     }
+  }
+}
+
+/**
+ * Validates number inputs that aren't date/time.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ * @return {void}
+ */
+function validateModalNumber(invalidIds, errorMessages, formElements) {
+  const modalNumPeople = document.getElementById('modal-num-people');
+  if (!modalNumPeople.value) {
+    invalidIds.push('modal-num-people');
+    errorMessages.push('number of people the event can feed is blank');
   }
 }
 
@@ -1180,5 +1204,17 @@ function showDateTipOnModal(show = null) {
       // Removing lastChild is faster than the firstChild in most implementations.
       container.removeChild(container.lastChild);
     }
+  }
+}
+
+/**
+ * Limits the input of a textbox to a specified regex.
+ * @param {KeyboardEvent} e - The keypress event.
+ */
+function limitCharacterInput(e) {
+  const regex = RegExp('[a-zA-Z0-9 .,\\n!]');
+
+  if (!regex.test(e.key) && e.key != 'backspace' && e.key.length == 1) {
+    e.preventDefault();
   }
 }

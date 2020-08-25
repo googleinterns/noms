@@ -116,6 +116,7 @@ public class Post {
         description = descriptionUnparsed;
         this.collegeId = collegeId;
 
+
         // Adjust the start and end hour based on whether the hour is AM or PM.
         startHour = startHour % 12;
         String startAMorPM = request.getParameter("startAMorPM");
@@ -126,14 +127,14 @@ public class Post {
         String endAMorPM = request.getParameter("endAMorPM");
         if (endAMorPM.equals("pm")) {
             endHour += 12;
-        }
-        
+        }     
+
         // Check that values are within expected ranges.
         if (month < 0 || month > 11 ||
             day < 0 || day > 31 ||
-            startHour < 0 || startHour > 12 ||
+            startHour < 0 || startHour > 23 ||
             startMinute < 0 || startMinute > 59 ||
-            endHour < 0 || endHour > 12 ||
+            endHour < 0 || endHour > 23 ||
             endMinute < 0 || endMinute > 59 ||
             numberOfPeopleItFeeds < 0 ||
             startHour > endHour ||
