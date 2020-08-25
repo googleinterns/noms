@@ -19,10 +19,16 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 public class Post {
+
+    private static final Pattern arbitraryTextPattern = Pattern.compile("^[a-zA-Z0-9 .,\\n!]+$");
+    private static final Pattern arbitraryPositiveIntegerPattern = Pattern.compile("^[0-9]+$");
+    private static final Pattern arbitraryDoublePattern = Pattern.compile("^-{0,1}[0-9]+\\.[0-9]+$");
 
     private String postId = "";
     private String organizationName = "";
@@ -36,27 +42,78 @@ public class Post {
     private String location = "";
     private double lat = 0.0;
     private double lng = 0.0;
-    private String numberOfPeopleItFeeds = "";
+    private int numberOfPeopleItFeeds = 0;
     private String typeOfFood = "";
     private String description = "";
     private String collegeId = "";
     private int timeSort = 0;
 
+    public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
+
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
-        organizationName = request.getParameter("organizationName");
-        month = Integer.parseInt(request.getParameter("month")) - 1; // Months are indexed at 0.
-        day = Integer.parseInt(request.getParameter("day"));
-        startHour = Integer.parseInt(request.getParameter("startHour"));
-        startMinute = Integer.parseInt(request.getParameter("startMinute"));
-        endHour = Integer.parseInt(request.getParameter("endHour"));
-        endMinute = Integer.parseInt(request.getParameter("endMinute"));
-        location = request.getParameter("location");
-        lat = Double.parseDouble(request.getParameter("lat"));
-        lng = Double.parseDouble(request.getParameter("lng"));
-        numberOfPeopleItFeeds = request.getParameter("numberOfPeopleItFeeds");
-        typeOfFood = request.getParameter("typeOfFood");
-        description = request.getParameter("description");
+        String organizationNameUnparsed = request.getParameter("organizationName");
+        String monthUnparsed = request.getParameter("month");
+        String dayUnparsed = request.getParameter("day");
+        String startHourUnparsed = request.getParameter("startHour");
+        String startMinuteUnparsed = request.getParameter("startMinute");
+        String endHourUnparsed = request.getParameter("endHour");
+        String endMinuteUnparsed = request.getParameter("endMinute");
+        String locationUnparsed = request.getParameter("location");
+        String latUnparsed = request.getParameter("lat");
+        String lngUnparsed = request.getParameter("lng");
+        String numberOfPeopleItFeedsUnparsed = request.getParameter("numberOfPeopleItFeeds");
+        String typeOfFoodUnparsed = request.getParameter("typeOfFood");
+        String descriptionUnparsed = request.getParameter("description");
+
+        // Perform input validation before we attempt to parse the inputs, as things like integers
+        // might be invalid and would cause parseInt() to throw an exception.
+        Matcher organizationNameMatcher = arbitraryTextPattern.matcher(organizationNameUnparsed);
+        Matcher monthMatcher = arbitraryPositiveIntegerPattern.matcher(monthUnparsed);
+        Matcher dayMatcher = arbitraryPositiveIntegerPattern.matcher(dayUnparsed);
+        Matcher startHourMatcher = arbitraryPositiveIntegerPattern.matcher(startHourUnparsed);
+        Matcher startMinuteMatcher = arbitraryPositiveIntegerPattern.matcher(startMinuteUnparsed);
+        Matcher endHourMatcher = arbitraryPositiveIntegerPattern.matcher(endHourUnparsed);
+        Matcher endMinuteMatcher = arbitraryPositiveIntegerPattern.matcher(endMinuteUnparsed);
+        Matcher locationMatcher = arbitraryTextPattern.matcher(locationUnparsed);
+        Matcher latMatcher = arbitraryDoublePattern.matcher(latUnparsed);
+        Matcher lngMatcher = arbitraryDoublePattern.matcher(lngUnparsed);
+        Matcher numberOfPeopleItFeedsMatcher = arbitraryPositiveIntegerPattern.matcher(numberOfPeopleItFeedsUnparsed);
+        Matcher typeOfFoodMatcher = arbitraryTextPattern.matcher(typeOfFoodUnparsed);
+        Matcher descriptionMatcher = arbitraryTextPattern.matcher(descriptionUnparsed);
+
+        // Check that values use the expected character sets.
+        if (!organizationNameMatcher.matches() ||
+            !monthMatcher.matches() ||
+            !dayMatcher.matches() ||
+            !startHourMatcher.matches() ||
+            !startMinuteMatcher.matches() ||
+            !endHourMatcher.matches() ||
+            !endMinuteMatcher.matches() ||
+            !locationMatcher.matches() ||
+            !latMatcher.matches() ||
+            !lngMatcher.matches() ||
+            !numberOfPeopleItFeedsMatcher.matches() ||
+            !typeOfFoodMatcher.matches() ||
+            !descriptionMatcher.matches()) {
+          valid = false;
+          return;
+        }
+
+        // After validating that what we have are indeed numbers/valid strings, parse and assign.
+        organizationName = organizationNameUnparsed;
+        month = Integer.parseInt(monthUnparsed) - 1; // Months are indexed at 0.
+        day = Integer.parseInt(dayUnparsed);
+        startHour = Integer.parseInt(startHourUnparsed);
+        startMinute = Integer.parseInt(startMinuteUnparsed);
+        endHour = Integer.parseInt(endHourUnparsed);
+        endMinute = Integer.parseInt(endMinuteUnparsed);
+        location = locationUnparsed;
+        lat = Double.parseDouble(latUnparsed);
+        lng = Double.parseDouble(lngUnparsed);
+        numberOfPeopleItFeeds = Integer.parseInt(numberOfPeopleItFeedsUnparsed);
+        typeOfFood = typeOfFoodUnparsed;
+        description = descriptionUnparsed;
         this.collegeId = collegeId;
 
         // Adjust the start and end hour based on whether the hour is AM or PM.
@@ -69,6 +126,20 @@ public class Post {
         String endAMorPM = request.getParameter("endAMorPM");
         if (endAMorPM.equals("pm")) {
             endHour += 12;
+        }
+        
+        // Check that values are within expected ranges.
+        if (month < 0 || month > 11 ||
+            day < 0 || day > 31 ||
+            startHour < 0 || startHour > 12 ||
+            startMinute < 0 || startMinute > 59 ||
+            endHour < 0 || endHour > 12 ||
+            endMinute < 0 || endMinute > 59 ||
+            numberOfPeopleItFeeds < 0 ||
+            startHour > endHour ||
+            (startHour == endHour && startMinute > endMinute)) {
+          valid = false;
+          return;
         }
 
         // Translate the start time into minutes to allow for sorting.
@@ -127,7 +198,7 @@ public class Post {
         location = (String) entity.getProperty("location");
         lat = Double.parseDouble(entity.getProperty("lat").toString());
         lng = Double.parseDouble(entity.getProperty("lng").toString());
-        numberOfPeopleItFeeds = (String) entity.getProperty("numberOfPeopleItFeeds");
+        numberOfPeopleItFeeds = Integer.parseInt(entity.getProperty("numberOfPeopleItFeeds").toString());
         typeOfFood = (String) entity.getProperty("typeOfFood");
         description = (String) entity.getProperty("description");
         timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
@@ -204,7 +275,7 @@ public class Post {
       return lng;
     }
 
-    public String getNumberOfPeopleItFeeds() {
+    public int getNumberOfPeopleItFeeds() {
       return numberOfPeopleItFeeds;
     }
 

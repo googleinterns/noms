@@ -73,10 +73,13 @@ public class PostDataServlet extends HttpServlet {
     String collegeId = request.getParameter("collegeId");
     Post newPost = new Post();
     newPost.requestToPost(request, collegeId);
-    Entity newPostEntity = newPost.postToEntity();
-    datastore.put(newPostEntity);
 
-    GmailConfiguration.notifyUsers(collegeId, newPost);
+    if (newPost.valid) {
+      Entity newPostEntity = newPost.postToEntity();
+      datastore.put(newPostEntity);
+
+      GmailConfiguration.notifyUsers(collegeId, newPost);
+    }
 
     String redirectURL ="/find-events.html?" + "collegeid=" + collegeId;
     response.sendRedirect(redirectURL);
