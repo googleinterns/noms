@@ -89,7 +89,7 @@ input[type=radio] {
   text-align: left;
 }
 
-input[type=submit] {
+#form-submit {
   background-color: var(--light-maroon);
   border: none;
   border-radius: 4px;
@@ -100,7 +100,26 @@ input[type=submit] {
   width: 30%;
 }
 
-input[type=submit]:hover {
+button:hover {
   background-color: var(--dark-maroon);
   border: none;
+}
+
+#form-submitted {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
+  display: none;
+  left: 25%;
+  overflow: auto;
+  padding: 30px;
+  position: fixed;
+  top: 50%;
+  transform: translate(0, -50%);
+  width: 50%;
+  z-index: 1;
+}
+
+#form-submitted-title {
+  margin-left: 12px;
 }

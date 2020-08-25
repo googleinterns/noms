@@ -38,7 +38,7 @@
         <div class="content">
           <!-- email notification form -->
           <h2>get notified with emails</h2>
-          <form action="/user" method="POST" autocomplete="off">
+          <form id="email-form" method="post" autocomplete="off">
             <label class="input-name">name</label>
             <input type="text" name="name" maxlength = "30" required>
             <label class="input-name" for="email">email</label>
@@ -59,8 +59,11 @@
                 <label for="unsubscribe">unsubscribe</label>
               </div>
             </div>
-            <input type="submit" value="submit">
+            <button id="form-submit" type="button">submit</button>
           </form>
+        </div>
+        <div aria-label="form submitted" id="form-submitted">
+          <h1 id="form-submitted-title"> Form has been submitted! </h1>
         </div>
       </div>
     </div>
