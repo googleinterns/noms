@@ -107,10 +107,10 @@ button:hover {
 
 #subscribe-form-submitted,
 #unsubscribe-form-submitted {
-  background: var(--tan);
+  background: #fff;
   border-radius: 15px;
   box-shadow: 0 1px 10px grey, 0 -1px 10px grey;
-  color: #fff;
+  color: #000;
   display: none;
   left: 25%;
   overflow: auto;

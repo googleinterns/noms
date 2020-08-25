@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // This file provides the JavaScript induced on the sign up page (sign-up.html) with
-// form validation to impose strict restrictions on user input (from feedScript.js) and 
+// form validation to impose strict restrictions on user input (from feedScript.js) and
 // college dropdown support (from indexScript.js).
 
 //
@@ -86,16 +86,20 @@ async function submitForm() {
   submitFormButton.disabled = true;
 
   if (validateForm()) {
-    emailForm.action = "/user";
+    emailForm.action = '/user';
 
     // Based on user subscribing or unsubscribing, show confirmation that form
     // was submitted.
-    if(document.getElementById("subscribe").checked) {
+    if (document.getElementById('subscribe').checked) {
       subscribeFormSubmitted.style.display = 'block';
     } else {
       unsubscribeFormSubmitted.style.display = 'block';
     }
-    emailForm.submit();
+
+    // Waits for 4000 ms so user can read confirmation and submits the form.
+    setTimeout(function() {
+      emailForm.submit();
+    }, 4000);
   } else {
     submitFormButton.disabled = false;
   }
@@ -192,7 +196,8 @@ function validateFormCollege(invalidIds, errorMessages, formElements) {
     selectedCollege.value = collegeId;
   } else {
     invalidIds.push(formElements.namedItem('colleges').id);
-    const errorMessage = 'we currently do not support that college; please pick college from given list';
+    const errorMessage = 'we currently do not support that college; ' +
+     'please pick college from given list';
     errorMessages.push(errorMessage);
   }
 }
