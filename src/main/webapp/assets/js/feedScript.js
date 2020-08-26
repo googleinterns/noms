@@ -194,6 +194,9 @@ async function onLoad() {
   modalTypeFood.addEventListener('keydown', limitCharacterInput);
   modalDescription.addEventListener('keydown', limitCharacterInput);
 
+  // Populate post modal time slots with 'smart' values
+  populatePostModalTime();
+
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
@@ -1217,4 +1220,27 @@ function limitCharacterInput(e) {
   if (!regex.test(e.key) && e.key != 'backspace' && e.key.length == 1) {
     e.preventDefault();
   }
+}
+
+/**
+ * Populates the post modal's time slots with 'smart' values
+ * based on the current time.
+ */
+function populatePostModalTime() {
+  const modalStartHour = document.getElementById('modal-start-hour');
+  const modalStartMinute = document.getElementById('modal-start-minute');
+  const startAmOrPm = document.getElementById('start-am-or-pm');
+  const modalEndHour = document.getElementById('modal-end-hour');
+  const modalEndMinute = document.getElementById('modal-end-minute');
+  const endAmOrPm = document.getElementById('end-am-or-pm');
+
+  const nowHours = parseInt(new Date().getHours());
+  modalStartHour.value = nowHours > 12 ? nowHours - 12 : nowHours;
+  modalStartMinute.value = '00';
+  startAmOrPm.value = nowHours >= 12 ? 'pm' : 'am';
+
+  const anHourFromNow = (nowHours + 1) % 24;
+  modalEndHour.value = anHourFromNow > 12 ? anHourFromNow - 12 : anHourFromNow;
+  modalEndMinute.value = '00';
+  endAmOrPm.value = anHourFromNow >= 12 ? 'pm' : 'am';
 }
