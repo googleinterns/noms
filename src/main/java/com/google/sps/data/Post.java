@@ -97,7 +97,6 @@ public class Post {
         description = descriptionUnparsed;
         this.collegeId = collegeId;
 
-
         // Adjust the start and end hour based on whether the hour is AM or PM.
         startHour = startHour % 12;
         String startAMorPM = request.getParameter("startAMorPM");

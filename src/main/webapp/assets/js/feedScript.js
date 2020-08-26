@@ -916,7 +916,6 @@ function validateModalText(invalidIds, errorMessages, formElements) {
  * @param {array} invalidIds
  * @param {array} errorMessages
  * @param {array} formElements
- * @return {void}
  */
 function validateModalNumber(invalidIds, errorMessages, formElements) {
   const modalNumPeople = document.getElementById('modal-num-people');
