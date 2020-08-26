@@ -17,18 +17,14 @@ package com.google.sps.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.sps.data.InputPattern;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 public class Post {
-
-    private static final Pattern arbitraryTextPattern = Pattern.compile("^[a-zA-Z0-9 .,\\n!]+$");
-    private static final Pattern arbitraryPositiveIntegerPattern = Pattern.compile("^[0-9]+$");
-    private static final Pattern arbitraryDoublePattern = Pattern.compile("^-{0,1}[0-9]+\\.[0-9]+$");
 
     private String postId = "";
     private String organizationName = "";
@@ -68,34 +64,19 @@ public class Post {
 
         // Perform input validation before we attempt to parse the inputs, as things like integers
         // might be invalid and would cause parseInt() to throw an exception.
-        Matcher organizationNameMatcher = arbitraryTextPattern.matcher(organizationNameUnparsed);
-        Matcher monthMatcher = arbitraryPositiveIntegerPattern.matcher(monthUnparsed);
-        Matcher dayMatcher = arbitraryPositiveIntegerPattern.matcher(dayUnparsed);
-        Matcher startHourMatcher = arbitraryPositiveIntegerPattern.matcher(startHourUnparsed);
-        Matcher startMinuteMatcher = arbitraryPositiveIntegerPattern.matcher(startMinuteUnparsed);
-        Matcher endHourMatcher = arbitraryPositiveIntegerPattern.matcher(endHourUnparsed);
-        Matcher endMinuteMatcher = arbitraryPositiveIntegerPattern.matcher(endMinuteUnparsed);
-        Matcher locationMatcher = arbitraryTextPattern.matcher(locationUnparsed);
-        Matcher latMatcher = arbitraryDoublePattern.matcher(latUnparsed);
-        Matcher lngMatcher = arbitraryDoublePattern.matcher(lngUnparsed);
-        Matcher numberOfPeopleItFeedsMatcher = arbitraryPositiveIntegerPattern.matcher(numberOfPeopleItFeedsUnparsed);
-        Matcher typeOfFoodMatcher = arbitraryTextPattern.matcher(typeOfFoodUnparsed);
-        Matcher descriptionMatcher = arbitraryTextPattern.matcher(descriptionUnparsed);
-
-        // Check that values use the expected character sets.
-        if (!organizationNameMatcher.matches() ||
-            !monthMatcher.matches() ||
-            !dayMatcher.matches() ||
-            !startHourMatcher.matches() ||
-            !startMinuteMatcher.matches() ||
-            !endHourMatcher.matches() ||
-            !endMinuteMatcher.matches() ||
-            !locationMatcher.matches() ||
-            !latMatcher.matches() ||
-            !lngMatcher.matches() ||
-            !numberOfPeopleItFeedsMatcher.matches() ||
-            !typeOfFoodMatcher.matches() ||
-            !descriptionMatcher.matches()) {
+        if (!InputPattern.TEXT.matcher(organizationNameUnparsed).matches() ||
+            !InputPattern.POSITIVE_INTEGER.matcher(monthUnparsed).matches() ||
+            !InputPattern.POSITIVE_INTEGER.matcher(dayUnparsed).matches() ||
+            !InputPattern.POSITIVE_INTEGER.matcher(startHourUnparsed).matches() ||
+            !InputPattern.POSITIVE_INTEGER.matcher(startMinuteUnparsed).matches() ||
+            !InputPattern.POSITIVE_INTEGER.matcher(endHourUnparsed).matches() ||
+            !InputPattern.POSITIVE_INTEGER.matcher(endMinuteUnparsed).matches() ||
+            !InputPattern.TEXT.matcher(locationUnparsed).matches() ||
+            !InputPattern.DOUBLE.matcher(latUnparsed).matches() ||
+            !InputPattern.DOUBLE.matcher(lngUnparsed).matches() ||
+            !InputPattern.POSITIVE_INTEGER.matcher(numberOfPeopleItFeedsUnparsed).matches() ||
+            !InputPattern.TEXT.matcher(typeOfFoodUnparsed).matches() ||
+            !InputPattern.TEXT.matcher(descriptionUnparsed).matches()) {
           valid = false;
           return;
         }
