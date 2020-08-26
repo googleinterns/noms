@@ -37,7 +37,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Test
-        run: mvn -Dtest=\!*IntTest test
+        run: mvn test -Dtest=\!GmailConfigurationTest
   build:
     runs-on: ubuntu-latest
     steps:

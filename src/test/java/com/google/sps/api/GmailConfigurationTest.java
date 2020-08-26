@@ -119,7 +119,7 @@ public final class GmailConfigurationTest {
   }
 
   @Test
-  public void userAttendingCollegeIntTest() throws Exception {
+  public void userAttendingCollege() throws Exception {
     Entity userEntity = new Entity("User", EMAIL);
     userEntity.setProperty("name", NAME);
     userEntity.setProperty("college", COLLEGE_A);
@@ -133,7 +133,7 @@ public final class GmailConfigurationTest {
   }
 
   @Test
-  public void noUserAttendingCollegeIntTest() throws Exception {
+  public void noUserAttendingCollege() throws Exception {
     when(mockPreparedQuery.asIterable()).thenReturn(mockEntityIterable);
     GmailConfiguration.notifyUsers(COLLEGE_B, post);
 
@@ -142,7 +142,7 @@ public final class GmailConfigurationTest {
   }
 
   @Test
-  public void sendEmailWithAuthorizedServiceIntTest() {
+  public void sendEmailWithAuthorizedService() {
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
 
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
@@ -150,7 +150,7 @@ public final class GmailConfigurationTest {
   }
 
   @Test(expected = Exception.class)
-  public void sendEmailWithUnauthorizedServiceIntTest() throws Exception {
+  public void sendEmailWithUnauthorizedService() throws Exception {
     when(mockGmailAPI.getGmailService()).thenReturn(mockGmail);
 
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
