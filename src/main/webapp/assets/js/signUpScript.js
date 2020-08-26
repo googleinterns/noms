@@ -88,7 +88,6 @@ async function submitForm() {
     const submittedConfirmationMessage = document.getElementById('subscribe').checked ?
       'thanks for joining the noms fam! check your email for a subscription confirmation!' :
       'hope you have enjoyed your time with noms!';
-    
     document.getElementById('confirmation-text').innerHTML = submittedConfirmationMessage;
     formSubmitted.style.display = 'block';
     emailForm.submit();
