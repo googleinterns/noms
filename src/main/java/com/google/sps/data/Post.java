@@ -48,7 +48,7 @@ public class Post {
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
-        String organizationNameUnparsed = request.getParameter("organizationName");
+        String orgNameUnparsed = request.getParameter("organizationName");
         String monthUnparsed = request.getParameter("month");
         String dayUnparsed = request.getParameter("day");
         String startHourUnparsed = request.getParameter("startHour");
@@ -64,25 +64,25 @@ public class Post {
 
         // Perform input validation before we attempt to parse the inputs, as things like integers
         // might be invalid and would cause parseInt() to throw an exception.
-        if (!InputPattern.TEXT.matcher(organizationNameUnparsed).matches() ||
+        if (!InputPattern.TEXT.matcher(orgNameUnparsed).matches() || orgNameUnparsed.length() > 75 ||
             !InputPattern.POSITIVE_INTEGER.matcher(monthUnparsed).matches() ||
             !InputPattern.POSITIVE_INTEGER.matcher(dayUnparsed).matches() ||
             !InputPattern.POSITIVE_INTEGER.matcher(startHourUnparsed).matches() ||
             !InputPattern.POSITIVE_INTEGER.matcher(startMinuteUnparsed).matches() ||
             !InputPattern.POSITIVE_INTEGER.matcher(endHourUnparsed).matches() ||
             !InputPattern.POSITIVE_INTEGER.matcher(endMinuteUnparsed).matches() ||
-            !InputPattern.TEXT.matcher(locationUnparsed).matches() ||
+            !InputPattern.TEXT.matcher(locationUnparsed).matches() || locationUnparsed.length() > 100 ||
             !InputPattern.DOUBLE.matcher(latUnparsed).matches() ||
             !InputPattern.DOUBLE.matcher(lngUnparsed).matches() ||
             !InputPattern.POSITIVE_INTEGER.matcher(numberOfPeopleItFeedsUnparsed).matches() ||
-            !InputPattern.TEXT.matcher(typeOfFoodUnparsed).matches() ||
-            !InputPattern.TEXT.matcher(descriptionUnparsed).matches()) {
+            !InputPattern.TEXT.matcher(typeOfFoodUnparsed).matches() || typeOfFoodUnparsed.length() > 75 ||
+            !InputPattern.TEXT.matcher(descriptionUnparsed).matches() || descriptionUnparsed.length() > 500) {
           valid = false;
           return;
         }
 
         // After validating that what we have are indeed numbers/valid strings, parse and assign.
-        organizationName = organizationNameUnparsed;
+        organizationName = orgNameUnparsed;
         month = Integer.parseInt(monthUnparsed) - 1; // Months are indexed at 0.
         day = Integer.parseInt(dayUnparsed);
         startHour = Integer.parseInt(startHourUnparsed);

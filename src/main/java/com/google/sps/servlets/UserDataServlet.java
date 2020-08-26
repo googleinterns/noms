@@ -54,10 +54,10 @@ public class UserDataServlet extends HttpServlet {
 
     // Before we do anything with these inputs, we validate that appropriate characters
     // were used and that the payload is unlikely to be malicious.
-    if (!InputPattern.PERSON_NAME.matcher(name).matches() ||
-        !InputPattern.GOOGLE_EMAIL.matcher(email).matches() ||
+    if (!InputPattern.PERSON_NAME.matcher(name).matches() || name.length() > 30
+        !InputPattern.GOOGLE_EMAIL.matcher(email).matches() || email.length > 30
         !InputPattern.POSITIVE_INTEGER.matcher(college).matches() ||
-        !InputPattern.TEXT.matcher(subscription).matches()) {
+        !InputPattern.TEXT.matcher(subscription).matches() || subscription.length > 30) {
 
       // If these were invalid, the user likely didn't use our official form to
       // make this request, so we just silently reject the POST.
