@@ -215,6 +215,7 @@ select {
   width: 80px;
 }
 
+#modal-upload-label:focus,
 #modal-submit:focus {
   background-color: var(--light-teal);
 }

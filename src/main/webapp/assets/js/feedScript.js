@@ -691,6 +691,7 @@ function closeModal() {
   if (modal) {
     modal.style.display = 'none';
     modalForm.reset();
+    resetMarks(modalForm.elements);
     createPostButton.focus();
   }
 }
@@ -716,6 +717,10 @@ async function submitModal() {
     checkLocationAndSubmit();
   } else {
     submitModalButton.disabled = false;
+    const errorMessage = document.getElementById('modal-input-error');
+    if(errorMessage) {
+      errorMessage.focus();
+    }
   }
 }
 
@@ -1027,8 +1032,14 @@ window.onclick = function(event) {
 };
 
 document.addEventListener('keydown', function(e) {
-  const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+  const isSpacePressed = e.keyCode === 32;
+  if (isSpacePressed && document.activeElement === modalUploadLabel) {
+    modalFileUpload.click();
+  }
+});
 
+document.addEventListener('keydown', function(e) {
+  const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
   if (!isTabPressed) {
     return;
   }
