@@ -61,7 +61,7 @@ public class UserDataServlet extends HttpServlet {
 
       // If these were invalid, the user likely didn't use our official form to
       // make this request, so we just silently reject the POST.
-      LOGGER.warn("User sent malformed inputs to email notification endpoint.")
+      LOGGER.warn("User sent malformed inputs to email notification endpoint.");
       response.sendRedirect("/index.html");
       return;
     }

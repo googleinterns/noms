@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', onLoad);
  * Fires as soon as the DOM is loaded.
  */
 async function onLoad() {
+  document.getElementById('name-input').addEventListener('keydown', limitCharacterInput);
+
   const collegeLocations = await (await fetch('./assets/college-locations.json')).json();
 
   // Grab the datalist and remove its ID (destroying the select-datalist relationship),
@@ -70,5 +72,17 @@ function setCollegeID() {
     const collegeId = option.dataset.value;
     const selectedCollege = document.getElementById('cID');
     selectedCollege.value = collegeId;
+  }
+}
+
+/**
+ * Limits the input of a textbox to a specified regex.
+ * @param {KeyboardEvent} e - The keypress event.
+ */
+function limitCharacterInput(e) {
+  const regex = RegExp('[a-zA-Z .,\'-]');
+
+  if (!regex.test(e.key) && e.key != 'backspace' && e.key.length == 1) {
+    e.preventDefault();
   }
 }
