@@ -113,6 +113,12 @@ let toggleFiltersButton;
 /** @type {HTMLElement} */
 let modalFileUpload;
 
+/** @type {HTMLElement} */
+let modalUploadLabel;
+
+/** @type {HTMLElement} */
+let modalButtonDiv;
+
 //
 // Constants
 //
@@ -161,6 +167,8 @@ async function onLoad() {
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
   modalFileUpload = document.getElementById('modal-upload-image');
+  modalUploadLabel = document.getElementById('modal-upload-label');
+  modalButtonDiv = document.getElementById('button-holder');
   modalSubmitted = document.getElementById('modal-submitted');
   modalSubmittedTitle = document.getElementById('modal-submitted-title');
   toggleFiltersButton = document.getElementById('toggle-filters-button');
@@ -687,8 +695,7 @@ function closeModal() {
   }
 }
 
-function displayUploadedFile() {
-  let modalUploadLabel = document.getElementById('modal-upload-label');  
+function displayUploadedFile() { 
   const fileName = this.value.split( '\\' ).pop();
   if (fileName) {
     modalUploadLabel.innerText = fileName;
@@ -726,6 +733,7 @@ function validateModal() {
   validateModalText(invalidIds, errorMessages, formElements);
   validateModalDate(invalidIds, errorMessages, formElements);
   validateModalTime(invalidIds, errorMessages, formElements);
+  validateModalFile(invalidIds, errorMessages);
   markInvalidInputs(invalidIds, errorMessages, formElements);
 
   return (invalidIds.length === 0);
@@ -758,9 +766,10 @@ function resetMarks(formElements) {
     const element = formElements[i];
     element.style.background = '#1b18181a';
   }
+  modalUploadLabel.style.background = 'white';
   const modalError = document.getElementById('modal-input-error');
   if (modalError) {
-    modalForm.removeChild(modalError);
+    modalButtonDiv.removeChild(modalError);
   }
 }
 
@@ -775,21 +784,48 @@ function resetMarks(formElements) {
 function markInvalidInputs(invalidIds, errorMessages, formElements) {
   resetMarks(formElements);
   invalidIds.forEach((id) => {
-    const elt = formElements.namedItem(id);
+    const elt = document.getElementById(id);
     if (elt) {
-      elt.style.background = '#ff999966';
+      elt.style.backgroundColor = '#ff999966';
     }
   });
   if (errorMessages.length > 0) {
     const modalError = document.createElement('div');
     modalError.setAttribute('id', 'modal-input-error');
     modalError.setAttribute('tabindex', '0');
-    modalError.innerHTML += '<ul>';
+    let errorHTMLString = '<ul>';
+    // modalError.innerHTML += '<ul>';
     errorMessages.forEach((message) => {
-      modalError.innerHTML += '<li>' + message + '</li>';
+      errorHTMLString += '<li>' + message + '</li>';
+    //   modalError.innerHTML += '<li>' + message + '</li>';
     });
-    modalError.innerHTML += '</ul>';
-    modalForm.insertBefore(modalError, submitModalButton);
+    // modalError.innerHTML += '</ul>';
+    errorHTMLString += '</ul>';
+    console.log(errorHTMLString);
+    modalError.innerHTML = errorHTMLString;
+    modalButtonDiv.insertBefore(modalError, submitModalButton);
+  }
+}
+
+function validateModalFile(invalidIds, errorMessages) {
+  let file = modalFileUpload.files[0];
+  console.log(file);
+  if (file) {
+    console.log(file.type);
+    if (file.type.includes('image')) {
+      if (file.size > 4000000) {
+        invalidIds.push('modal-upload-label');
+        errorMessages.push('image is too large');   
+      }
+      if (file.size < 2000) {
+        invalidIds.push('modal-upload-label');
+        errorMessages.push('image is too small');
+      }
+    } else {
+      invalidIds.push('modal-upload-label');
+      errorMessages.push('please upload an image');
+    }
+    console.log(file.size);
   }
 }
 
@@ -929,14 +965,14 @@ async function checkLocationAndSubmit() {
         `We couldn't find address '${modalLocation}'. ` +
         'Please check your address for errors. ' +
         'If you wish to submit anyway, no pin will be added to the map.';
-      modalForm.insertBefore(modalError, document.getElementById('modal-submit'));
+      modalButtonDiv.insertBefore(modalError, document.getElementById('modal-submit'));
       submitModalButton.disabled = false;
     // Else, if the invalid address is the same as we last checked
     // or the address is just plain valid, then add the post to the Datastore.
     } else {
       const modalError = document.getElementById('modal-map-error');
       if (modalError) {
-        modalForm.removeChild(modalError);
+        modalButtonDiv.removeChild(modalError);
       }
 
       // (0,0) denotes a nonexistent lat/long, since it's a location in the ocean + is falsy.

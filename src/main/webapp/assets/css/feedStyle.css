@@ -171,13 +171,12 @@ select {
   white-space: nowrap;
 }
 
-#modal-upload-image {
-  /* border: 1px solid var(--dark-grey);
-  border-radius: 50px;
-  color: var(--dark-grey);
-  outline: none;
-  padding: 12px 20px; */
+#button-holder {
+  display: flex;
+  flex-flow: column wrap;
+}
 
+#modal-upload-image {
   width: 0.1px;
   height: 0.1px;
   opacity: 0;
@@ -187,6 +186,8 @@ select {
 }
 
 #modal-upload-label {
+  align-self: flex-end;
+  background: white;
   border: 1px solid var(--dark-grey);
   border-radius: 50px;
   color: var(--dark-grey);
@@ -195,8 +196,7 @@ select {
   margin-bottom: 15px;
   outline: none;
   padding: 10px 20px;
-  position: absolute;
-  right: 30px;
+  width: fit-content;
 }
 
 #modal-upload-label:hover {
@@ -204,16 +204,14 @@ select {
 }
 
 #modal-submit {
+  align-self: flex-end;
   background: var(--dark-green);
   border: none;
   border-radius: 50px;
   color: white;
   height: 35px;
   margin-bottom: 15px;
-  margin-top: 50px;
   outline: none;
-  position: absolute;
-  right: 30px;
   width: 80px;
 }
 
@@ -288,10 +286,14 @@ select {
   }
 }
 
+ul {
+  margin: 0;
+}
+
 #modal-map-error,
 #modal-input-error {
   color: #b60000;
-  margin: 1rem 1rem 0 1rem;
+  margin: 0 1rem;
 }
 
 /*
