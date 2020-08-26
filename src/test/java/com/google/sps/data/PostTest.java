@@ -441,4 +441,31 @@ public final class PostTest {
     Assert.assertFalse(testPost.valid);
   }
 
+  // Test an event with a really long (and thus invalid) input.
+  @Test
+  public void testInvalidOrgNameLength() {
+
+    String collegeId = "122931";
+    String organizationName = "We are the organization of long-namedness and believe long names are good.";
+    String month = "12";
+    String day = "31";
+    String startHour = "4";
+    String startMinute = "30";
+    String startAMorPM = "am";
+    String endHour = "5";
+    String endMinute = "15";
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    String lat = "37.3476132";
+    String lng = "-121.9394005";
+    String numberOfPeopleItFeeds = "-3";
+    String typeOfFood = "Chocolate cake";
+    String description = "Birthday Party!!!";
+
+    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    Assert.assertFalse(testPost.valid);
+  }
+
 }
