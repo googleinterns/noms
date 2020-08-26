@@ -38,14 +38,14 @@
         <div class="content">
           <!-- email notification form -->
           <h2>get notified with emails</h2>
-          <form action="/user" method="POST" autocomplete="off">
+          <form id="email-form" method="post" autocomplete="off">
             <label class="input-name">name</label>
-            <input type="text" name="name" maxlength = "30" id="name-input" required>
+            <input type="text" name="name" id="name" maxlength="35" required>
             <label class="input-name" for="email">email</label>
-            <input type="email" name="email" maxlength = "30" pattern=".+@google.com" title="Must be @google.com." required>
+            <input type="email" name="email" id="email" maxlength = "35" pattern=".+@google.com" title="Must be @google.com." required>
             <label class="input-name">college</label>
             <div class="selectdiv">
-              <input type="text" list="colleges" id="colleges-input-form" required>
+              <input type="text" list="colleges" name="colleges" id="colleges-input-form" required>
               <datalist name="colleges" id="colleges"></datalist>
             </div>
             <input type="hidden" id="cID" name="cID">
@@ -59,8 +59,12 @@
                 <label for="unsubscribe">unsubscribe</label>
               </div>
             </div>
-            <input type="submit" value="submit">
+            <button id="form-submit" type="button">submit</button>
           </form>
+          <div id="form-submitted">
+            <h1>form has been submitted!</h1>
+            <p id="confirmation-text"></p>
+          </div>
         </div>
       </div>
     </div>
