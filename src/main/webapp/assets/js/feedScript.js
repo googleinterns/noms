@@ -940,6 +940,14 @@ function validateModalText(invalidIds, errorMessages, formElements) {
   }
 }
 
+async function getBlobstoreUrl() {
+  const url = '/createBlobstoreUrl';
+  const response = await fetch(url);
+  const message = await response.text();
+  console.log(message);
+  return message;
+}
+
 /**
  * Checks if the inputted address is valid.
  * Submits if address is verified.
@@ -978,7 +986,9 @@ async function checkLocationAndSubmit() {
       // (0,0) denotes a nonexistent lat/long, since it's a location in the ocean + is falsy.
       const lat = latLngResult ? latLngResult.lat : 0;
       const lng = latLngResult ? latLngResult.long : 0;
-      url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
+
+      const baseUrl = await getBlobstoreUrl();
+      url = baseUrl + '?collegeId=${collegeId}&lat=${lat}&lng=${lng}';
       modalForm.action = url;
 
       // Hides form modal, shows submit message and focuses on it.
