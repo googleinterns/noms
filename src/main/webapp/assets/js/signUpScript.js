@@ -31,10 +31,7 @@ document.addEventListener('DOMContentLoaded', onLoad);
 let emailForm;
 
 /** @type {HTMLElement} */
-let subscribeFormSubmitted;
-
-/** @type {HTMLElement} */
-let unsubscribeFormSubmitted;
+let formSubmitted;
 
 /** @type {HTMLElement} */
 let submitFormButton;
@@ -72,14 +69,12 @@ async function onLoad() {
   // When users submit the form, initiate form validation.
   emailForm = document.getElementById('email-form');
   submitFormButton = document.getElementById('form-submit');
-  subscribeFormSubmitted = document.getElementById('subscribe-form-submitted');
-  unsubscribeFormSubmitted = document.getElementById('unsubscribe-form-submitted');
+  formSubmitted = document.getElementById('form-submitted');
   submitFormButton.addEventListener('click', submitForm);
 }
 
 /**
  * On click of the submit button, validate form data and send data to the servlet.
- * @return {void}
  */
 async function submitForm() {
   // Disable multiple submissions.
@@ -89,17 +84,14 @@ async function submitForm() {
     emailForm.action = '/user';
 
     // Based on user subscribing or unsubscribing, show confirmation that form
-    // was submitted.
-    if (document.getElementById('subscribe').checked) {
-      subscribeFormSubmitted.style.display = 'block';
-    } else {
-      unsubscribeFormSubmitted.style.display = 'block';
-    }
-
-    // Waits for 4000 ms so user can read confirmation and submits the form.
-    setTimeout(function() {
-      emailForm.submit();
-    }, 4000);
+    // was submitted and submit the form.
+    const submittedConfirmationMessage = document.getElementById('subscribe').checked ?
+      'thanks for joining the noms fam! check your email for a subscription confirmation!' :
+      'hope you have enjoyed your time with noms!';
+    
+    document.getElementById('confirmation-text').innerHTML = submittedConfirmationMessage;
+    formSubmitted.style.display = 'block';
+    emailForm.submit();
   } else {
     submitFormButton.disabled = false;
   }
@@ -107,8 +99,7 @@ async function submitForm() {
 
 /**
  * Goes through the form elements and marks the invalid inputs.
- * Returns whether all the inputs are valid.
- * @return {boolean}
+ * @return {boolean} whether all the inputs are valid
  */
 function validateForm() {
   const invalidIds = [];
@@ -127,10 +118,9 @@ function validateForm() {
 
 /**
  * Checks if the email is valid.
- * @param {array} invalidIds
- * @param {array} errorMessages
- * @param {array} formElements
- * @return {void}
+ * @param {Array<string>} invalidIds - ids of invalid inputs
+ * @param {Array<string>} errorMessages - error messages of invalid inputs
+ * @param {Array<HTMLElement>} formElements - email form input elements
  */
 function validateFormEmail(invalidIds, errorMessages, formElements) {
   const email = formElements.namedItem('email').value;
@@ -143,16 +133,15 @@ function validateFormEmail(invalidIds, errorMessages, formElements) {
 
 /**
  * Checks if at least one radio button has been checked.
- * @param {array} invalidIds
- * @param {array} errorMessages
- * @param {array} formElements
- * @return {void}
+ * @param {Array<string>} invalidIds - ids of invalid inputs
+ * @param {Array<string>} errorMessages - error messages of invalid inputs
+ * @param {Array<HTMLElement>} formElements - email form input elements
  */
 function validateFormRadioButtons(invalidIds, errorMessages, formElements) {
-  const subscribe = formElements.namedItem('email-notif')[0].checked;
-  const unsubscribe = formElements.namedItem('email-notif')[1].checked;
+  const subscribeRadioButton = formElements.namedItem('email-notif')[0].checked;
+  const unsubscribeRadioButton = formElements.namedItem('email-notif')[1].checked;
 
-  if (!subscribe && !unsubscribe ) {
+  if (!subscribeRadioButton && !unsubscribeRadioButton) {
     invalidIds.push('subscribe');
     errorMessages.push('must pick to subscribe or unsubscribe');
   }
@@ -160,10 +149,9 @@ function validateFormRadioButtons(invalidIds, errorMessages, formElements) {
 
 /**
  * Check if form text elements have been filled out completely.
- * @param {array} invalidIds
- * @param {array} errorMessages
- * @param {array} formElements
- * @return {void}
+ * @param {Array<string>} invalidIds - ids of invalid inputs
+ * @param {Array<string>} errorMessages - error messages of invalid inputs
+ * @param {Array<HTMLElement>} formElements - email form input elements
  */
 function validateFormText(invalidIds, errorMessages, formElements) {
   // Checks if any text elements are blank.
@@ -180,10 +168,9 @@ function validateFormText(invalidIds, errorMessages, formElements) {
 
 /**
  * Check if valid college.
- * @param {array} invalidIds
- * @param {array} errorMessages
- * @param {array} formElements
- * @return {void}
+ * @param {Array<string>} invalidIds - ids of invalid inputs
+ * @param {Array<string>} errorMessages - error messages of invalid inputs
+ * @param {Array<HTMLElement>} formElements - email form input elements
  */
 function validateFormCollege(invalidIds, errorMessages, formElements) {
   const collegeName = document.getElementById('colleges-input-form').value;
@@ -204,10 +191,9 @@ function validateFormCollege(invalidIds, errorMessages, formElements) {
 /**
  * Highlight invalid inputs with a red background and
  * adds error messages.
- * @param {array} invalidIds
- * @param {array} errorMessages
- * @param {array} formElements
- * @return {void}
+ * @param {Array<string>} invalidIds - ids of invalid inputs
+ * @param {Array<string>} errorMessages - error messages of invalid inputs
+ * @param {Array<HTMLElement>} formElements - email form input elements
  */
 function markInvalidInputs(invalidIds, errorMessages, formElements) {
   resetMarks(formElements);
@@ -233,8 +219,7 @@ function markInvalidInputs(invalidIds, errorMessages, formElements) {
  * Goes through the elements and encodes common HTML enities.
  * By using these codes, ensures that the user's inputs are seen as data, not code.
  * This is a measure against a malicious users trying to changing site data.
- * @param {array} formElements
- * @return {void}
+ * @param {Array<HTMLElement>} formElements - email form input elements
  */
 function disableInjection(formElements) {
   for (let i = 0; i < formElements.length - 1; i++) {
@@ -248,8 +233,7 @@ function disableInjection(formElements) {
 
 /**
  * Resets all the input backgrounds and gets rid of previous error text.
- * @param {array} formElements
- * @return {void}
+ * @param {Array<HTMLElement>} formElements - email form input elements
  */
 function resetMarks(formElements) {
   for (let i = 0; i < formElements.length - 1; i++) {
