@@ -1196,6 +1196,7 @@ function showDateTipOnModal(show = null) {
     const gotItButton = document.createElement('button');
     gotItButton.innerText = '✓ Got it!';
     gotItButton.type = 'button';
+    gotItButton.setAttribute('aria-label', 'Dismiss tip');
     gotItButton.setAttribute('class', 'modal-date-tip-button');
     // Always hide the tip if they click the 'got it' button.
     gotItButton.addEventListener('click', () => {
