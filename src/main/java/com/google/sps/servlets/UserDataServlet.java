@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.Email;
+import com.google.sps.data.InputPattern;
 import com.google.sps.api.GmailConfiguration;
 
 import java.io.IOException;
@@ -50,6 +51,20 @@ public class UserDataServlet extends HttpServlet {
     String email = request.getParameter("email");
     String college = request.getParameter("cID");
     String subscription = request.getParameter("email-notif");
+
+    // Before we do anything with these inputs, we validate that appropriate characters
+    // were used and that the payload is unlikely to be malicious.
+    if (!InputPattern.PERSON_NAME.matcher(name).matches() ||
+        !InputPattern.GOOGLE_EMAIL.matcher(email).matches() ||
+        !InputPattern.POSITIVE_INTEGER.matcher(college).matches() ||
+        !InputPattern.TEXT.matcher(subscription).matches()) {
+
+      // If these were invalid, the user likely didn't use our official form to
+      // make this request, so we just silently reject the POST.
+      LOGGER.warn("User sent malformed inputs to email notification endpoint.")
+      response.sendRedirect("/index.html");
+      return;
+    }
 
     // Check if user wants to unsubscribe.
     if (subscription.equals("unsubscribe")) {

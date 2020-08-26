@@ -21,9 +21,11 @@ import java.util.regex.Pattern;
 /** Wraps the regex class and a select group of patterns for convenience. */
 public final class InputPattern {
 
-  public static final Pattern TEXT = Pattern.compile("^[a-zA-Z0-9 .,\\n!]+$");
-  public static final Pattern POSITIVE_INTEGER = Pattern.compile("^[0-9]+$");
   public static final Pattern DOUBLE = Pattern.compile("^-{0,1}[0-9]+\\.[0-9]+$");
+  public static final Pattern GOOGLE_EMAIL = Pattern.compile("^[a-zA-Z0-9._-]+@google.com$");
+  public static final Pattern PERSON_NAME = Pattern.compile("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$");
+  public static final Pattern POSITIVE_INTEGER = Pattern.compile("^[0-9]+$");
+  public static final Pattern TEXT = Pattern.compile("^[a-zA-Z0-9 .,\\n!]+$");
 
   // Make the constructor private to emulate a static class.
   // Since this is a utility class, instantiating an instance isn't meaningful.
