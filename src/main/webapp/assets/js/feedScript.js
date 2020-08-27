@@ -901,10 +901,16 @@ function isBlank(input) {
  */
 function validateModalText(invalidIds, errorMessages, formElements) {
   for (let i = 0; i < formElements.length; i++) {
-    if (formElements[i].type === 'text' || formElements[i].type === 'textarea') {
+    if (formElements[i].type === 'text') {
       if (isBlank(formElements[i].value)) {
         invalidIds.push(formElements[i].id);
         const errorMessage = formElements[i].placeholder + ' is blank';
+        errorMessages.push(errorMessage);
+      }
+    } else if (formElements[i].type === 'textarea') {
+      if (formElements[i].value.length < 15) {
+        invalidIds.push(formElements[i].id);
+        const errorMessage = formElements[i].placeholder + ' needs at least 15 characters';
         errorMessages.push(errorMessage);
       }
     }
