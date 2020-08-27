@@ -633,28 +633,34 @@ async function addPosts(posts) {
     postCard.setAttribute('id', post.id);
     postCard.setAttribute('tabindex', '0');
 
+    // Add image.
+
+    // Add a div for all the post card text.
+    const postText = document.createElement('div');
+
     // Create and add title.
     const title = document.createElement('h2');
     title.setAttribute('class', 'card-title');
     title.setAttribute('tabindex', '0');
     title.innerText = titleText;
-    postCard.appendChild(title);
+    postText.appendChild(title);
 
     // Create and add subtitle.
     const subtitle = document.createElement('h3');
     subtitle.setAttribute('class', 'card-subtitle');
     subtitle.setAttribute('tabindex', '0');
     subtitle.innerText = subtitleText;
-    postCard.appendChild(subtitle);
+    postText.appendChild(subtitle);
 
     // Create and add description.
     const description = document.createElement('p');
     description.setAttribute('class', 'card-description');
     description.setAttribute('tabindex', '0');
     description.innerText = descriptionText;
-    postCard.appendChild(description);
+    postText.appendChild(description);
 
-    // Add card to the page.
+    // Add the text to the card and card to the page.
+    postCard.appendChild(postText);
     allPosts.append(postCard);
   }
 }
