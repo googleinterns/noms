@@ -138,10 +138,14 @@ function initMap() {
         .map((i) => representativeColleges[i]);
 
   for (const college of lessColleges) {
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       position: {lat: college.LAT, lng: college.LON},
       map: map,
       title: college.NAME,
+    });
+
+    marker.addListener('click', function() {
+      window.location.href = `/find-events.html?collegeid=${college.UNITID}`;
     });
   }
 }
