@@ -76,6 +76,9 @@ let userLocation = null;
 /** @type {Array<google.maps.Marker>} */
 let markers = [];
 
+/** @type {boolean} */
+let userHasDismissedDateTipBefore = false;
+
 //
 // Elements
 //
@@ -1176,7 +1179,8 @@ function calculateMilesBetweenTwoCoords(locationA, locationB) {
  */
 function dateIsInTheFuture(month, day) {
   // getMonth() + 1 because JavaScript indexes months starting with 0.
-  if (month > new Date().getMonth() + 1 || day > new Date().getDate()) {
+  if (month < new Date().getMonth() ||
+      (month >= new Date().getMonth() + 1 && day > new Date().getDate())) {
     return true;
   }
   return false;
@@ -1194,7 +1198,7 @@ function showDateTipOnModal(e, show = null) {
   const container = document.getElementById('modal-date-tip');
   const dateInFuture = dateIsInTheFuture(modalMonth.value, modalDay.value);
 
-  if ((dateInFuture || show === true) && !container.firstChild) {
+  if ((dateInFuture || show === true) && !container.firstChild && !userHasDismissedDateTipBefore) {
     const tip = document.createElement('p');
     tip.setAttribute('class', 'modal-date-tip-text');
     tip.innerText = 'Tip: If you\'re making a post for a future date, ' +
@@ -1208,6 +1212,7 @@ function showDateTipOnModal(e, show = null) {
     gotItButton.setAttribute('class', 'modal-date-tip-button');
     // Always hide the tip if they click the 'got it' button.
     gotItButton.addEventListener('click', () => {
+      userHasDismissedDateTipBefore = true;
       showDateTipOnModal(null, false);
     }, false);
     tip.appendChild(gotItButton);
