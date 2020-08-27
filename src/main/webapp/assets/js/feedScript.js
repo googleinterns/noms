@@ -428,6 +428,7 @@ async function fetchPosts(collegeId) {
       numOfPeopleFoodWillFeed: message[i]['numberOfPeopleItFeeds'],
       foodType: message[i]['typeOfFood'],
       description: message[i]['description'],
+      imageServingUrl: message[i]['imageServingUrl']
     };
     posts.push(post);
   }
@@ -634,6 +635,9 @@ async function addPosts(posts) {
     postCard.setAttribute('tabindex', '0');
 
     // Add image.
+    const cardImage = document.createElement('img');
+    cardImage.setAttribute('class', 'card-image');
+    cardImage.setAttribute('src', post.imageServingUrl);
 
     // Add a div for all the post card text.
     const postText = document.createElement('div');
@@ -660,6 +664,7 @@ async function addPosts(posts) {
     postText.appendChild(description);
 
     // Add the text to the card and card to the page.
+    postCard.appendChild(cardImage);
     postCard.appendChild(postText);
     allPosts.append(postCard);
   }
