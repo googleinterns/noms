@@ -103,7 +103,7 @@
         <button aria-label="close modal" id="modal-close" tabindex="0" type="button">&#10005;</button>
         <h1 id="modal-title" tabindex="0">Create a Post</h1>
         <form id="modal-form" method="post">
-          <input aria-label="organization name" id="modal-org-name" maxlength="75" name="organizationName" placeholder="organization name" tabindex="0" type="text" required><br>
+          <input aria-label="organization name" id="modal-org-name" maxlength="75" name="organizationName" placeholder="organization name" tabindex="0" type="text" onpaste="return false" required><br>
 
           <span class="modal-span">
             <p id="modal-time-text" tabindex="0">date:</p>
@@ -115,7 +115,7 @@
           <span class="modal-span">
             <p id="modal-time-text" tabindex="0">start:</p>
             <input aria-label="start hour" id="modal-start-hour" max="12" maxlength="2" min="1" name="startHour" placeholder="h" step="1" tabindex="0" type="number">
-            <input aria-label="start minute" id="modal-start-minute" max="60" maxlength="2" min="0" name="startMinute" placeholder="m" step="1" tabindex="0" type="number">
+            <input aria-label="start minute" id="modal-start-minute" max="59" maxlength="2" min="0" name="startMinute" placeholder="m" step="1" tabindex="0" type="number">
             <select aria-label="start AM or PM?" id="start-am-or-pm" name="startAMorPM" role="listbox">
               <option aria-hidden="false" aria-label="am" role="option" value="am">am</option>
               <option aria-hidden="false" aria-label="pm" role="option" value="pm">pm</option>
@@ -125,23 +125,26 @@
           <span class="modal-span">
             <p id="modal-time-text" tabindex="0">end:</p>
             <input aria-label="end hour" id="modal-end-hour" max="12" maxlength="2" min="1" name="endHour" placeholder="h" step="1" tabindex="0" type="number">
-            <input aria-label="end minute" id="modal-end-minute" max="60" maxlength="2" min="0" name="endMinute" placeholder="m" step="1" tabindex="0" type="number">
+            <input aria-label="end minute" id="modal-end-minute" max="59" maxlength="2" min="0" name="endMinute" placeholder="m" step="1" tabindex="0" type="number">
             <select aria-label="end AM or PM?" id="end-am-or-pm" name="endAMorPM" role="listbox">
               <option aria-hidden="false" aria-label="am" role="option" value="am">am</option>
               <option aria-hidden="false" aria-label="pm" role="option" value="pm">pm</option>
             </select>
           </span>
 
-          <input aria-label="location" id="modal-location" maxlength="100" name="location" placeholder="location" tabindex="0" type="text" required><br>
-          <input aria-label="type of food" id="modal-type-food" maxlength="75" name="typeOfFood"  placeholder="type of food" tabindex="0" type="text" required><br>
-          <input aria-label="how many people can it feed"  id="modal-num-people" maxlength="50" name="numberOfPeopleItFeeds" placeholder="how many people can it feed?" tabindex="0" type="text" required><br>
-          <textarea aria-label="description" id="modal-description" maxlength="500" name="description" placeholder="description" rows="3" tabindex="0" ></textarea><br>
+          <span id="modal-date-tip" class="modal-span" aria-live="polite"></span>
+
+          <input aria-label="location" id="modal-location" maxlength="100" name="location" placeholder="location" tabindex="0" type="text" onpaste="return false" required><br>
+          <input aria-label="type of food" id="modal-type-food" maxlength="25" name="typeOfFood"  placeholder="type of food" tabindex="0" type="text" onpaste="return false" required><br>
+          <input aria-label="how many people can it feed"  id="modal-num-people" maxlength="3" min="1" max="999" name="numberOfPeopleItFeeds" placeholder="how many people can it feed?" tabindex="0" type="number" required><br>
+          <textarea aria-label="description" id="modal-description" maxlength="500" name="description" placeholder="description" rows="3" tabindex="0" onpaste="return false"></textarea><br>
           
           <button id="modal-submit" tabindex="0" type="button">submit</button>
         <form>
       </div>
       <div aria-label="post submitted" id="modal-submitted" tabindex="0">
         <h1 id="modal-submitted-title" tabindex="0"> Post Submitted! </h1>
+        <h4 id="modal-submitted-subtitle" tabindex="0"></h4>
       </div>
     </div>
 

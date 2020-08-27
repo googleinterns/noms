@@ -1,0 +1,21 @@
+# Runs the GitHub Super Linter on all JS and CSS files changed in a PR.
+
+name: Lint
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Super-Linter
+      uses: docker://github/super-linter:v3
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        VALIDATE_JAVASCRIPT_ES: true
+        JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.js
+        VALIDATE_CSS: true
