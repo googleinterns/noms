@@ -18,15 +18,17 @@ import com.google.sps.data.Post;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
-import java.util.Formatter;
+import java.util.ArrayList; 
 
 /** Creates and converts HTML templates for email sending. */
 public class Email {
 
   public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
   public static final String newPostSubject = "⭐ noms: new free food near you!";
+  public static final String dailyDigestSubject = "⭐ noms: daily digest of free food";
   private static final String welcomeContentPath = "WelcomeEmail.html";
   private static final String newPostPath = "NewPost.html";
+  private static final String dailyDigestPath = "DailyDigest.html";
 
   /**
     * Convert HTML to String for MimeMessage to configure it into emails.
