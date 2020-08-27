@@ -947,7 +947,9 @@ function validateModalText(invalidIds, errorMessages, formElements) {
 
 async function getBlobstoreUrl() {
   const url = '/createBlobstoreUrl';
-  const response = await fetch(url);
+  const response = await fetch(url,{
+    method: 'GET'
+  });
   const message = await response.text();
   console.log(message);
   return message;
@@ -993,7 +995,8 @@ async function checkLocationAndSubmit() {
       const lng = latLngResult ? latLngResult.long : 0;
 
       const baseUrl = await getBlobstoreUrl();
-      url = baseUrl + '?collegeId=${collegeId}&lat=${lat}&lng=${lng}';
+    //   url = baseUrl;
+      url = baseUrl + '?collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
       modalForm.action = url;
 
       // Hides form modal, shows submit message and focuses on it.

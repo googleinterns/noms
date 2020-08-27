@@ -22,6 +22,18 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.List;
+import java.util.Map;
+
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+
 public class Post {
 
     private String postId = "";
@@ -41,6 +53,7 @@ public class Post {
     private String description = "";
     private String collegeId = "";
     private int timeSort = 0;
+    private String imageServingUrl = "";
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) {
@@ -78,6 +91,8 @@ public class Post {
         Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
         year = nowTime.get(Calendar.YEAR);
 
+        // Store serving url.
+        imageServingUrl = getUploadedFileUrl(request, "foodImage");
     }
 
     /* Translate the entities from the Datastore query to Post objects and return in an array. */
@@ -133,6 +148,7 @@ public class Post {
         timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
         collegeId = (String) entity.getKind();
         postId = entity.getKey().toString();
+        imageServingUrl = (String) entity.getProperty("imageServingUrl");
     }
 
     /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
@@ -159,6 +175,7 @@ public class Post {
         newPost.setProperty("description", description);
 
         newPost.setProperty("timeSort", timeSort);
+        newPost.setProperty("imageServingUrl", imageServingUrl);
 
         return newPost;
     }
@@ -219,4 +236,36 @@ public class Post {
     public String getCollegeId() {
       return collegeId;
     }
+
+      /**
+   * Returns a URL that points to the uploaded file, or null if the user didn't upload a file.
+   */
+  private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName){
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(formInputElementName);
+
+    // User submitted form without selecting a file, so we can't get a URL. (devserver)
+    if(blobKeys == null || blobKeys.isEmpty()) {
+      return null;
+    }
+
+    // Our form only contains a single file input, so get the first index.
+    BlobKey blobKey = blobKeys.get(0);
+
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    if (blobInfo.getSize() == 0) {
+      blobstoreService.delete(blobKey);
+      return null;
+    }
+
+    // We could check the validity of the file here, e.g. to make sure it's an image file
+    // https://stackoverflow.com/q/10779564/873165
+
+    // Use ImagesService to get a URL that points to the uploaded file.
+    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+    return imagesService.getServingUrl(options);
+  }
 }
