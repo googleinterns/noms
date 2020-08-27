@@ -966,10 +966,12 @@ async function checkLocationAndSubmit() {
       url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
       modalForm.action = url;
 
+      const subtitle = document.getElementById('modal-submitted-subtitle');
       if (dateIsInTheFuture(modalMonth.value, modalDay.value)) {
         const subtitle = document.getElementById('modal-submitted-subtitle');
         subtitle.innerText += ` Users will see your post on ${modalMonth.value}/${modalDay.value}.`;
       }
+      subtitle.innerText += ` A notification has been sent to all subscribed users.`;
 
       // Hides form modal, shows submit message and focuses on it.
       modalCard.style.display = 'none';

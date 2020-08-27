@@ -75,7 +75,7 @@ public class Post {
         !InputPattern.DOUBLE.matcher(latUnparsed).matches() ||
         !InputPattern.DOUBLE.matcher(lngUnparsed).matches() ||
         !InputPattern.POSITIVE_INTEGER.matcher(numberOfPeopleItFeedsUnparsed).matches() ||
-        !InputPattern.TEXT.matcher(typeOfFoodUnparsed).matches() || typeOfFoodUnparsed.length() > 75 ||
+        !InputPattern.TEXT.matcher(typeOfFoodUnparsed).matches() || typeOfFoodUnparsed.length() > 25 ||
         !InputPattern.TEXT.matcher(descriptionUnparsed).matches() || descriptionUnparsed.length() > 500) {
       valid = false;
       return;
