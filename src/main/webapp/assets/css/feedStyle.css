@@ -516,6 +516,8 @@ ul {
   background: white;
   border-radius: 15px;
   box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
+  display: flex;
+  flex-flow: row wrap;
   margin-bottom: 5px;
   margin-top: 20px;
   min-height: 100px;

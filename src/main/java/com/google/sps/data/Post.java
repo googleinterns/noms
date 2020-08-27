@@ -93,6 +93,9 @@ public class Post {
 
         // Store serving url.
         imageServingUrl = getUploadedFileUrl(request, "foodImage");
+        if (imageServingUrl == null) {
+          imageServingUrl = "https://cdn5.vectorstock.com/i/1000x1000/58/89/fork-and-knife-sign-vector-18355889.jpg";
+        }
     }
 
     /* Translate the entities from the Datastore query to Post objects and return in an array. */
