@@ -24,10 +24,15 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
+
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.SortDirection;
+
 import com.google.sps.data.Email;
 import com.google.sps.api.GmailConfiguration;
 import com.google.sps.data.Post;
@@ -35,6 +40,7 @@ import com.google.sps.data.Post;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 import javax.servlet.annotation.WebServlet;
@@ -58,9 +64,10 @@ public class DailyDigestServlet extends HttpServlet {
 
     // Query all colleges from Datastore.
     // for ( Entity college : datastore.getAllColleges ) : String collegeId = (String) college.getProperty("collegeId");
+    String collegeId = "110653";
     ArrayList<Post> rankedPosts = rankPosts(collegeId);
     if (rankedPosts.size() > 0) {
-      GmailConfiguration.sendEmail(email, Email.dailyDigestSubject, Email.addRankedPosts(rankedPosts));	
+      GmailConfiguration.notifyUsers(collegeId, rankedPosts);
     }
   }
 
@@ -70,9 +77,33 @@ public class DailyDigestServlet extends HttpServlet {
     * @param collegeId of a college
     * @return 3 max of the most highly ranked posts
     */
-  private static ArrayList<Post> rankPosts(String collegeId) throws TooManyResultsException {
+  public static ArrayList<Post> rankPosts(String collegeId) throws TooManyResultsException {
 
     ArrayList<Post> rankedPosts = new ArrayList<Post>();
+    
+    // Use amount of people an event can feed as most impactful rank element to sort.
+    Query q = new Query(collegeId).setFilter(getTodayFilter())
+      .addSort("numberOfPeopleItFeeds", SortDirection.DESCENDING);
+    PreparedQuery pq = datastore.prepare(q);
+
+    // Add the posts to return our ranked elemetns.
+    for (Entity entity: pq.asIterable(FetchOptions.Builder.withLimit(3))) {
+      Post newPost = new Post();
+      newPost.entityToPost(entity);
+      rankedPosts.add(newPost);
+    }
+
+    // Rank posts by how long each event is.
+
+    return rankedPosts;
+  }
+
+  /**
+    * Create a filter that limits results to today's posts.
+    *
+    * @return month AND day filter
+    */
+  private static CompositeFilter getTodayFilter() {
     
     // Get today's date.
     Calendar today = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
@@ -84,18 +115,6 @@ public class DailyDigestServlet extends HttpServlet {
     Filter dayFilter = new FilterPredicate("day", FilterOperator.EQUAL, day);
     CompositeFilter monthAndDayFilter = CompositeFilterOperator.and(monthFilter, dayFilter);
 
-    // Use amount of people an event can feed as most impactful rank element to sort.
-    Query q = new Query(collegeId).setFilter(monthAndDayFilter)
-      .addSort("numberOfPeopleItFeeds", SortDirection.DESCENDING);
-    PreparedQuery pq = datastore.prepare(q);
-
-    // Add the posts to return our ranked elemetns.
-    for (Entity entity: pq.asIterable(FetchOptions.Builder.withLimit(3))) {
-      Post newPost = new Post();
-      newPost.entityToPost(entity);
-      rankedPosts.add(newPost);
-    }
-
-    return rankedPosts;
+    return monthAndDayFilter;
   }
 }

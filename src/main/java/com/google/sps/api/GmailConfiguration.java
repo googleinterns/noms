@@ -36,8 +36,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Properties;
-
+import java.lang.Iterable;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -149,22 +150,46 @@ public class GmailConfiguration {
   }	
 
   /**
-    * Send emails to all users associated with the specific college.
+    * Send emails to all users associated with the specific college about a new post.
     *
     * @param collegeId unique id of a college
     * @throws IOException
     */
   public static void notifyUsers(String collegeId, Post newPost) throws IOException {
     
-    // Find all users that attend the college.
-    Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
-    Query q = new Query("User").setFilter(universityFilter);
-    PreparedQuery pq = datastore.prepare(q);
-
     // Email the users to notify them that a new post has been added.
-    for (Entity user : pq.asIterable()) {
+    for (Entity user : getAllUsersForACollege(collegeId)) {
       String email = user.getKey().getName().toString();
       sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
     }
+  }
+
+  /**s
+    * Send emails to all users associated with the specific college with ranked posts.
+    *
+    * @param collegeId unique id of a college
+    * @throws IOException
+    */
+  public static void notifyUsers(String collegeId, ArrayList<Post> rankedPosts) throws IOException {
+    
+    // Email the users to notify them with ranked posts for the day.
+    for (Entity user : getAllUsersForACollege(collegeId)) {
+      String email = user.getKey().getName().toString();
+      sendEmail(email, Email.newPostSubject, Email.addRankedPosts(rankedPosts));	
+    }
+  }
+
+  /**
+    * Find all users for a specific college through querying datastore.
+    *
+    * @param collegeId unique id of a college
+    * @return iterable of user entities
+    */
+  private static Iterable<Entity> getAllUsersForACollege(String collegeId) {
+    
+    Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
+    Query q = new Query("User").setFilter(universityFilter);
+    PreparedQuery pq = datastore.prepare(q);
+    return pq.asIterable();
   }
 }

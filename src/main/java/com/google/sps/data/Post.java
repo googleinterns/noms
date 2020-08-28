@@ -15,8 +15,14 @@ Holds the information in the cards
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.InputPattern;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +51,11 @@ public class Post {
   private int timeSort = 0;
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
+
+  public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final String PROJECTID = "step186-2020";
+  private static final String VERSIONID = "latest";
+
 
   /* Fill in the important Post details from the POST request. */
   public void requestToPost(HttpServletRequest request, String collegeId) {
@@ -190,7 +201,16 @@ public class Post {
 
   /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
   public Entity postToEntity() {
-    Entity newPost = new Entity(collegeId);
+
+    // try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+    //   SecretVersionName secretVersionName = SecretVersionName.of(PROJECTID, "college-key", VERSIONID);
+    //   AccessSecretVersionResponse secretResponse = client.accessSecretVersion(secretVersionName);
+    //   return secretResponse.getPayload().getData().toStringUtf8();
+    // }
+
+    Key k2 = KeyFactory.createKey("College","aglub19hcHBfaWRyFAsSB0NvbGxlZ2UYgICAgICAwAgM");
+    Entity college = new Entity(collegeId, k2);
+    Entity newPost = new Entity("Post", college.getKey());
 
     newPost.setProperty("organizationName", organizationName);
 
