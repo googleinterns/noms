@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.Email;
+import com.google.sps.data.InputPattern;
 import com.google.sps.api.GmailConfiguration;
 
 import java.io.IOException;
@@ -30,15 +31,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+// More information can be found here: http://www.slf4j.org/manual.html.
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Servlet that adds, updates, and deletes Users in Datastore */
 @WebServlet("/user")
 public class UserDataServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static final Logger LOGGER = Logger.getLogger(UserDataServlet.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserDataServlet.class);
 
   /** POST a user's information. */
   @Override
@@ -50,16 +52,31 @@ public class UserDataServlet extends HttpServlet {
     String college = request.getParameter("cID");
     String subscription = request.getParameter("email-notif");
 
+    // Before we do anything with these inputs, we validate that appropriate characters
+    // were used and that the payload is unlikely to be malicious.
+    if (!InputPattern.PERSON_NAME.matcher(name).matches() || name.length() > 35 ||
+        !InputPattern.GOOGLE_EMAIL.matcher(email).matches() || email.length() > 35 ||
+        !InputPattern.POSITIVE_INTEGER.matcher(college).matches() ||
+        !InputPattern.TEXT.matcher(subscription).matches() || subscription.length() > 30) {
+
+      // If these were invalid, the user likely didn't use our official form to
+      // make this request, so we just silently reject the POST.
+      LOGGER.warn("User sent malformed inputs to email notification endpoint.");
+      response.sendRedirect("/index.html");
+      return;
+    }
+
     // Check if user wants to unsubscribe.
     if (subscription.equals("unsubscribe")) {
 
       // Remove user if in database.
       Key userKey = KeyFactory.createKey("User", email);
       try {
-        datastore.get(userKey);
+        Entity task = datastore.get(userKey);
         datastore.delete(userKey);
+        LOGGER.info("User was unsubscribed and removed from Datastore.");
       } catch (EntityNotFoundException e) {
-        LOGGER.log(Level.SEVERE, "User wants to unsubscribe but was never subscribed in the first place. ", e);
+        LOGGER.warn("User was unable to unsubscribe but was never subscribed.");
       }
 
     } else {
@@ -70,9 +87,10 @@ public class UserDataServlet extends HttpServlet {
 
       // Datastores updates the entity if it existed before based on email key.
       datastore.put(userEntity);
+      LOGGER.info("User was subscribed to email notifications and added to Datastore.");
 
       // Send a welcome email.
-      GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.getStringFromHTML(Email.welcomeContentPath));	
+      GmailConfiguration.sendEmail(email, Email.welcomeSubject, Email.getWelcomeString());	
     }
 
     response.sendRedirect("/index.html");

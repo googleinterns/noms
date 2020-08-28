@@ -76,6 +76,9 @@ let userLocation = null;
 /** @type {Array<google.maps.Marker>} */
 let markers = [];
 
+/** @type {boolean} */
+let userHasDismissedDateTipBefore = false;
+
 //
 // Elements
 //
@@ -118,6 +121,12 @@ let modalUploadLabel;
 
 /** @type {HTMLElement} */
 let modalButtonDiv;
+
+/** @type {HTMLElement} */
+let modalMonth;
+
+/** @type {HTMLElement} */
+let modalDay;
 
 //
 // Constants
@@ -176,6 +185,12 @@ async function onLoad() {
   const happeningNowCheckbox = document.getElementById('happening-now');
   const distanceSlider = document.getElementById('distance');
   const keywordsInput = document.getElementById('keywords');
+  modalMonth = document.getElementById('modal-month');
+  modalDay = document.getElementById('modal-day');
+  const modalOrganizationName = document.getElementById('modal-org-name');
+  const modalLocation = document.getElementById('modal-location');
+  const modalTypeFood = document.getElementById('modal-type-food');
+  const modalDescription = document.getElementById('modal-description');
 
   // Event Listeners that need the DOM elements.
   createPostButton.addEventListener('click', showModal);
@@ -188,6 +203,15 @@ async function onLoad() {
   distanceSlider.addEventListener('change', filterAndUpdatePagePosts);
   keywordsInput.addEventListener('input', filterAndUpdatePagePosts);
   modalFileUpload.addEventListener('change', displayUploadedFile);
+  modalMonth.addEventListener('input', showDateTipOnModal);
+  modalDay.addEventListener('input', showDateTipOnModal);
+  modalOrganizationName.addEventListener('keydown', limitCharacterInput);
+  modalLocation.addEventListener('keydown', limitCharacterInput);
+  modalTypeFood.addEventListener('keydown', limitCharacterInput);
+  modalDescription.addEventListener('keydown', limitCharacterInput);
+
+  // Populate post modal time slots with 'smart' values
+  populatePostModalTime();
 
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
@@ -754,6 +778,7 @@ function validateModal() {
   validateModalDate(invalidIds, errorMessages, formElements);
   validateModalTime(invalidIds, errorMessages, formElements);
   validateModalFile(invalidIds, errorMessages);
+  validateModalNumber(invalidIds, errorMessages, formElements);
   markInvalidInputs(invalidIds, errorMessages, formElements);
 
   return (invalidIds.length === 0);
@@ -950,10 +975,16 @@ function isBlank(input) {
  */
 function validateModalText(invalidIds, errorMessages, formElements) {
   for (let i = 0; i < formElements.length; i++) {
-    if (formElements[i].type === 'text' || formElements[i].type === 'textarea') {
+    if (formElements[i].type === 'text') {
       if (isBlank(formElements[i].value)) {
         invalidIds.push(formElements[i].id);
         const errorMessage = formElements[i].placeholder + ' is blank';
+        errorMessages.push(errorMessage);
+      }
+    } else if (formElements[i].type === 'textarea') {
+      if (formElements[i].value.length < 15) {
+        invalidIds.push(formElements[i].id);
+        const errorMessage = formElements[i].placeholder + ' needs at least 15 characters';
         errorMessages.push(errorMessage);
       }
     }
@@ -968,6 +999,20 @@ async function getBlobstoreUrl() {
   const message = await response.text();
   console.log(message);
   return message;
+}
+
+/**
+ * Validates number inputs that aren't date/time.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @param {array} formElements
+ */
+function validateModalNumber(invalidIds, errorMessages, formElements) {
+  const modalNumPeople = document.getElementById('modal-num-people');
+  if (!modalNumPeople.value) {
+    invalidIds.push('modal-num-people');
+    errorMessages.push('number of people the event can feed is blank');
+  }
 }
 
 /**
@@ -1013,6 +1058,13 @@ async function checkLocationAndSubmit() {
     //   url = baseUrl;
       url = baseUrl + '?collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
       modalForm.action = url;
+
+      const subtitle = document.getElementById('modal-submitted-subtitle');
+      if (dateIsInTheFuture(modalMonth.value, modalDay.value)) {
+        const subtitle = document.getElementById('modal-submitted-subtitle');
+        subtitle.innerText += ` Users will see your post on ${modalMonth.value}/${modalDay.value}.`;
+      }
+      subtitle.innerText += ` A notification has been sent to all subscribed users.`;
 
       // Hides form modal, shows submit message and focuses on it.
       modalCard.style.display = 'none';
@@ -1207,4 +1259,92 @@ function calculateMilesBetweenTwoCoords(locationA, locationB) {
   // Use the Pythagorean theorem to find the hypotenuse length given latDiff and longDiff
   // We don't need to take Earth's curvature into consideration as differences are small (<3 miles).
   return Math.sqrt(latDiff * latDiff + longDiff * longDiff);
+}
+
+/**
+ * Checks if a date is in the future.
+ * @param {number} month - The month of the year, indexed from 1.
+ * @param {day} day - The day of the month, indexed from 1.
+ * @return {boolean} Whether or not the date is in the future.
+ */
+function dateIsInTheFuture(month, day) {
+  // getMonth() + 1 because JavaScript indexes months starting with 0.
+  if (month < new Date().getMonth() ||
+      (month >= new Date().getMonth() + 1 && day > new Date().getDate())) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * If the user inputs a date in the future, display a tip below the dates
+ * that explains that the post won't be seen until the day of the post.
+ * By default, this function adds the tip if it's not present, and removes
+ * it if it is.
+ * @param {Event} e - The event triggering this function.
+ * @param {boolean} show - An optional parameter that forces the state of the tip.
+ */
+function showDateTipOnModal(e, show = null) {
+  const container = document.getElementById('modal-date-tip');
+  const dateInFuture = dateIsInTheFuture(modalMonth.value, modalDay.value);
+
+  if ((dateInFuture || show === true) && !container.firstChild && !userHasDismissedDateTipBefore) {
+    const tip = document.createElement('p');
+    tip.setAttribute('class', 'modal-date-tip-text');
+    tip.innerText = 'Tip: If you\'re making a post for a future date, ' +
+    ' it won\'t appear in the feed until that day';
+    container.appendChild(tip);
+
+    const gotItButton = document.createElement('button');
+    gotItButton.innerText = '✓ Got it!';
+    gotItButton.type = 'button';
+    gotItButton.setAttribute('aria-label', 'Dismiss tip');
+    gotItButton.setAttribute('class', 'modal-date-tip-button');
+    // Always hide the tip if they click the 'got it' button.
+    gotItButton.addEventListener('click', () => {
+      userHasDismissedDateTipBefore = true;
+      showDateTipOnModal(null, false);
+    }, false);
+    tip.appendChild(gotItButton);
+  } else if ((!dateInFuture || show === false) && container.firstChild) {
+    while (container.firstChild) {
+      // Removing lastChild is faster than the firstChild in most implementations.
+      container.removeChild(container.lastChild);
+    }
+  }
+}
+
+/**
+ * Limits the input of a textbox to a specified regex.
+ * @param {KeyboardEvent} e - The keypress event.
+ */
+function limitCharacterInput(e) {
+  const regex = RegExp('[a-zA-Z0-9 .,\\n!]');
+
+  if (!regex.test(e.key) && e.key != 'backspace' && e.key.length == 1) {
+    e.preventDefault();
+  }
+}
+
+/**
+ * Populates the post modal's time slots with 'smart' values
+ * based on the current time.
+ */
+function populatePostModalTime() {
+  const modalStartHour = document.getElementById('modal-start-hour');
+  const modalStartMinute = document.getElementById('modal-start-minute');
+  const startAmOrPm = document.getElementById('start-am-or-pm');
+  const modalEndHour = document.getElementById('modal-end-hour');
+  const modalEndMinute = document.getElementById('modal-end-minute');
+  const endAmOrPm = document.getElementById('end-am-or-pm');
+
+  const nowHours = parseInt(new Date().getHours());
+  modalStartHour.value = nowHours > 12 ? nowHours - 12 : nowHours;
+  modalStartMinute.value = '00';
+  startAmOrPm.value = nowHours >= 12 ? 'pm' : 'am';
+
+  const anHourFromNow = (nowHours + 1) % 24;
+  modalEndHour.value = anHourFromNow > 12 ? anHourFromNow - 12 : anHourFromNow;
+  modalEndMinute.value = '00';
+  endAmOrPm.value = anHourFromNow >= 12 ? 'pm' : 'am';
 }

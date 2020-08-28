@@ -14,6 +14,8 @@
 
 package com.google.sps.api;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -48,10 +50,16 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+// More information can be found here: http://www.slf4j.org/manual.html.
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Create and send emails from an authorized account. */
 public class GmailConfiguration {
 
   private static final String FROM = "me";
+  private static final Logger LOGGER = LoggerFactory.getLogger(GmailConfiguration.class);
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   
   /**
     * Create a MimeMessage using the parameters provided.
@@ -62,7 +70,7 @@ public class GmailConfiguration {
     * @return the MimeMessage to be used to send email
     * @throws MessagingException
     */
-  public static MimeMessage createEmail(String to, String subject, String bodyText) 
+  private static MimeMessage createEmail(String to, String subject, String bodyText) 
       throws MessagingException {
 
     Properties props = new Properties();
@@ -85,7 +93,7 @@ public class GmailConfiguration {
     * @throws IOException
     * @throws MessagingException
     */
-  public static Message createMessageWithEmail(MimeMessage emailContent)
+  private static Message createMessageWithEmail(MimeMessage emailContent)
       throws MessagingException, IOException {
 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -108,7 +116,7 @@ public class GmailConfiguration {
     * @throws MessagingException
     * @throws IOException
     */
-  public static Message sendMessage(Gmail service, MimeMessage emailContent)
+  private static Message sendMessage(Gmail service, MimeMessage emailContent)
       throws MessagingException, IOException {
     
     Message message = createMessageWithEmail(emailContent);
@@ -131,11 +139,12 @@ public class GmailConfiguration {
       Gmail service = GmailAPI.getGmailService();	
       MimeMessage Mimemessage = createEmail(to, subject, content);	
       Message message = createMessageWithEmail(Mimemessage);	
-      message = service.users().messages().send("me", message).execute();	
+      message = service.users().messages().send(FROM, message).execute();	
+      LOGGER.info("Successfully sent a new post email to: " + to);
 
     } catch (Exception e) {
 
-      System.out.println("ERROR: Unable to send message : " + e.toString());
+      LOGGER.error("Unable to send messsage due to: " + e.toString());
     }
   }	
 
@@ -150,7 +159,7 @@ public class GmailConfiguration {
     // Find all users that attend the college.
     Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
     Query q = new Query("User").setFilter(universityFilter);
-    PreparedQuery pq = PostDataServlet.datastore.prepare(q);
+    PreparedQuery pq = datastore.prepare(q);
 
     // Email the users to notify them that a new post has been added.
     for (Entity user : pq.asIterable()) {
