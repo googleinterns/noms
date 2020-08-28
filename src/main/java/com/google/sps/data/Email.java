@@ -26,6 +26,7 @@ public class Email {
   public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
   public static final String newPostSubject = "⭐ noms: new free food near you!";
   public static final String dailyDigestSubject = "⭐ noms: daily digest of free food";
+
   private static final String welcomeContentPath = "WelcomeEmail.html";
   private static final String newPostPath = "NewPost.html";
   private static final String dailyDigestPath = "DailyDigest.html";
@@ -83,7 +84,7 @@ public class Email {
     * @return string of HTML file with 3 ranked posts
     * @throws IOException
     */
-  public static String addRankedPosts(ArrayList<Post> posts) throws IOException {
+  public static String addRankedPosts(ArrayList<Post> rankedPosts) throws IOException {
 
     String emailContent = getStringFromHTML(dailyDigestPath);
 
@@ -93,7 +94,7 @@ public class Email {
     String lastPartOfEmail = emailContent.substring(split);
     
     // Add all ranked posts information to email content.
-    for (Post post : posts) {
+    for (Post post : rankedPosts) {
       firstPartOfEmail += "\n<p>" + post.getOrganizationName() +
         " @ " + post.getLocation() + 
         " | " + getFormattedTime(post.getStartHour(), post.getStartMinute()) + 

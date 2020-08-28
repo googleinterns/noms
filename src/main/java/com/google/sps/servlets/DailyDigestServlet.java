@@ -20,12 +20,20 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.sps.data.Email;
 import com.google.sps.api.GmailConfiguration;
 import com.google.sps.data.Post;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.TimeZone;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -48,15 +56,10 @@ public class DailyDigestServlet extends HttpServlet {
 
     // Query all colleges from Datastore.
 
-    // For each college, rankPosts()
-
-    // For each arraylist, add those ranked posts into the email 
-
-
-
-    // send that email
-   
-    
+    ArrayList<Post> rankedPosts = rankPosts(collegeId);
+    if (rankedPosts.size() > 0) {
+      GmailConfiguration.sendEmail(email, Email.dailyDigestSubject, Email.addRankedPosts(rankedPosts));	
+    }
   }
 
   /**
@@ -66,9 +69,29 @@ public class DailyDigestServlet extends HttpServlet {
     * @return 3 max of the most highly ranked posts
     */
   private static ArrayList<Post> rankPosts(String collegeId) {
-    
-    // 
 
+    ArrayList<Post> rankedPosts = new ArrayList<Post>();
+    
+    // Get today's date.
+    Calendar today = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
+    int month = today.get(Calendar.MONTH);
+    int day = today.get(Calendar.DATE);
+
+    // Filter through posts that happen today.
+    Filter monthFilter = new FilterPredicate("month", FilterOperator.EQUAL, month);
+    Filter dayFilter = new FilterPredicate("day", FilterOperator.EQUAL, day);
+    Filter monthAndDayFilter = Filter.newBuilder()
+      .setCompositeFilter(
+        CompositeFilter.newBuilder()
+          .addFilters(monthFilter)
+          .addFilters(dayFilter)
+            .build())
+              .build();
+
+    Query q = new Query(collegeId).setFilter(monthAndDayFilter);
+    PreparedQuery pq = datastore.prepare(q);
+
+    // Figure out how else to rank
   }
 }
   
