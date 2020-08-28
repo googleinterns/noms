@@ -99,4 +99,3 @@ public class DailyDigestServlet extends HttpServlet {
     return rankedPosts;
   }
 }
-  
