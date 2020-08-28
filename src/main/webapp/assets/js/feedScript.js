@@ -667,7 +667,7 @@ async function addPosts(posts) {
       imageSource = './assets/svg/forkandknife.svg';
     }
     cardImage.setAttribute('src', imageSource);
-    // Catches unexpected errors with the image sourceStr .
+    // Catches unexpected errors with the image source.
     cardImage.onerror = function() {
       cardImage.setAttribute('src', './assets/svg/forkandknife.svg');
     };
@@ -867,7 +867,8 @@ function validateModalFile(invalidIds, errorMessages) {
   const file = modalFileUpload.files[0];
   if (file) {
     if (file.type.includes('image')) {
-      if (file.size > 4000000) {
+      const largestFileSize = 4000000;
+      if (file.size > largestFileSize) {
         invalidIds.push('modal-upload-label');
         errorMessages.push('image is too large');
       }

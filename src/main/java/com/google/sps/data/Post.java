@@ -145,9 +145,9 @@ public class Post {
     Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     year = nowTime.get(Calendar.YEAR);
 
-    // If there is an image uploaded, sets the Blob Key and Serving Url.
-    // If there is no Serving Url, sets it to the String "no image."
+    // Implements a try-catch statement in case the Servlet is accessed directly, instead of through Blob Upload URL.
     try {
+      // If there is an image uploaded, sets the Blob Key and Serving Url.
       blobKey = getBlobKey(request, "foodImage");
       imageServingUrl = getServingUrl(blobKey);
       if (imageServingUrl == null) {
@@ -155,6 +155,7 @@ public class Post {
       }
     }
     catch (Exception e) {
+      // In the case the Blob Upload URL is not used, sets the servingUrl and blobKey to default values.
       System.out.println(e);
       imageServingUrl = "no image";
       blobKey = null;
@@ -284,9 +285,6 @@ public class Post {
       blobstoreService.delete(blobKey);
       return null;
     }
-
-    // We could check the validity of the file here, e.g. to make sure it's an image file
-    // https://stackoverflow.com/q/10779564/873165
 
     // Use ImagesService to get a URL that points to the uploaded file.
     ImagesService imagesService = ImagesServiceFactory.getImagesService();

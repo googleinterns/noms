@@ -14,7 +14,7 @@ public class CreateBlobstoreUrlServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Creates a upload URL for sending the form submission.
+    // Creates an upload URL for sending the form submission.
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     String uploadUrl = blobstoreService.createUploadUrl("/postData") ;
 
