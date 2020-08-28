@@ -50,7 +50,7 @@ public class Post {
   private String location = "";
   private double lat = 0.0;
   private double lng = 0.0;
-  private String numberOfPeopleItFeeds = "";
+  private int numberOfPeopleItFeeds = 0;
   private String typeOfFood = "";
   private String description = "";
   private String collegeId = "";
@@ -145,8 +145,8 @@ public class Post {
     Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     year = nowTime.get(Calendar.YEAR);
 
-    // If there is an image uploaded, set the Blob Key and Serving Url.
-    // If there is no Serving Url, set it to the String "no image."
+    // If there is an image uploaded, sets the Blob Key and Serving Url.
+    // If there is no Serving Url, sets it to the String "no image."
     blobKey = getBlobKey(request, "foodImage");
     imageServingUrl = getServingUrl(blobKey);
     if (imageServingUrl == null) {
@@ -194,6 +194,7 @@ public class Post {
     Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
 
     for (Entity entity: queryResult.asIterable()) {
+
       // Create a calendar based off the post timing.
       Calendar postTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
       int postMonth = Integer.parseInt(entity.getProperty("month").toString());
@@ -202,7 +203,7 @@ public class Post {
       int postHour = Integer.parseInt(entity.getProperty("endHour").toString());
       int postMinute = Integer.parseInt(entity.getProperty("endMinute").toString());
       postTime.set(postYear, postMonth, postDay, postHour, postMinute);
-            
+ 
       // If the post time is before the current time, delete from Datastore.
       if (postTime.before(nowTime)) {
         // Delete the blob.
@@ -237,14 +238,14 @@ public class Post {
     location = (String) entity.getProperty("location");
     lat = Double.parseDouble(entity.getProperty("lat").toString());
     lng = Double.parseDouble(entity.getProperty("lng").toString());
-    numberOfPeopleItFeeds = (String) entity.getProperty("numberOfPeopleItFeeds");
+    numberOfPeopleItFeeds = Integer.parseInt(entity.getProperty("numberOfPeopleItFeeds").toString());
     typeOfFood = (String) entity.getProperty("typeOfFood");
     description = (String) entity.getProperty("description");
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
     collegeId = (String) entity.getKind();
     postId = entity.getKey().toString();
     imageServingUrl = (String) entity.getProperty("imageServingUrl");
-    blobKey = null; // Do not set the blobKey, for this can be used to change the blob.
+    blobKey = null; // Does not set the blobKey. It can be used to change the blob, so it should not be sent to the client side.
   }
 
   private BlobKey getBlobKey(HttpServletRequest request, String formInputElementName) {
@@ -252,12 +253,12 @@ public class Post {
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
 
-    // User submitted form without selecting a file, so we can't get a URL. (devserver)
+    // If the user did not select a file, we cannot generate a blobKey.
     if(blobKeys == null || blobKeys.isEmpty()) {
       return null;
     }
 
-    // Our form only contains a single file input, so get the first index.
+    // The form only contains a single file input, so get the first index.
     BlobKey blobKey = blobKeys.get(0);
 
     return blobKey;
@@ -270,7 +271,7 @@ public class Post {
       return null;
     }
 
-    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    // If the user did not select a file, we cannot generate a URL.
     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
     if (blobInfo.getSize() == 0) {
       blobstoreService.delete(blobKey);

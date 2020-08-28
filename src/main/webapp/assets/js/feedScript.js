@@ -452,7 +452,7 @@ async function fetchPosts(collegeId) {
       numOfPeopleFoodWillFeed: message[i]['numberOfPeopleItFeeds'],
       foodType: message[i]['typeOfFood'],
       description: message[i]['description'],
-      imageServingUrl: message[i]['imageServingUrl']
+      imageServingUrl: message[i]['imageServingUrl'],
     };
     posts.push(post);
   }
@@ -658,12 +658,13 @@ async function addPosts(posts) {
     postCard.setAttribute('id', post.id);
     postCard.setAttribute('tabindex', '0');
 
-    // Add image.
+    // Add image from the image serving URL.
+    // If there is not a valid URL, then display the stock SVG.
     const cardImage = document.createElement('img');
     cardImage.setAttribute('class', 'card-image');
     let imageSource = post.imageServingUrl;
-    if (imageSource === "no image") {
-      imageSource = './assets/svg/forkandknife.svg'
+    if (imageSource === 'no image') {
+      imageSource = './assets/svg/forkandknife.svg';
     }
     cardImage.setAttribute('src', imageSource);
 
@@ -735,7 +736,11 @@ function closeModal() {
   }
 }
 
-function displayUploadedFile() { 
+/**
+ * Updates the text of the upload button to the uploaded file's name.
+ * @return {void}
+ */
+function displayUploadedFile() {
   const fileName = this.value.split( '\\' ).pop();
   if (fileName) {
     modalUploadLabel.innerText = fileName;
@@ -757,7 +762,7 @@ async function submitModal() {
   } else {
     submitModalButton.disabled = false;
     const errorMessage = document.getElementById('modal-input-error');
-    if(errorMessage) {
+    if (errorMessage) {
       errorMessage.focus();
     }
   }
@@ -839,38 +844,33 @@ function markInvalidInputs(invalidIds, errorMessages, formElements) {
     modalError.setAttribute('id', 'modal-input-error');
     modalError.setAttribute('tabindex', '0');
     let errorHTMLString = '<ul>';
-    // modalError.innerHTML += '<ul>';
     errorMessages.forEach((message) => {
       errorHTMLString += '<li>' + message + '</li>';
-    //   modalError.innerHTML += '<li>' + message + '</li>';
     });
-    // modalError.innerHTML += '</ul>';
     errorHTMLString += '</ul>';
-    console.log(errorHTMLString);
     modalError.innerHTML = errorHTMLString;
     modalButtonDiv.insertBefore(modalError, submitModalButton);
   }
 }
 
+/**
+ * Adds an error message if the file is larger than 4MB or is not an image.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @return {void}
+ */
 function validateModalFile(invalidIds, errorMessages) {
-  let file = modalFileUpload.files[0];
-  console.log(file);
+  const file = modalFileUpload.files[0];
   if (file) {
-    console.log(file.type);
     if (file.type.includes('image')) {
       if (file.size > 4000000) {
         invalidIds.push('modal-upload-label');
-        errorMessages.push('image is too large');   
-      }
-      if (file.size < 2000) {
-        invalidIds.push('modal-upload-label');
-        errorMessages.push('image is too small');
+        errorMessages.push('image is too large'); 
       }
     } else {
       invalidIds.push('modal-upload-label');
       errorMessages.push('please upload an image');
     }
-    console.log(file.size);
   }
 }
 
@@ -991,13 +991,17 @@ function validateModalText(invalidIds, errorMessages, formElements) {
   }
 }
 
+/**
+ * Requests a Blobstore Upload URL from the CreateBlobstoreUrlServlet.
+ * This URL is used for form submission.
+ * @return {String}
+ */
 async function getBlobstoreUrl() {
   const url = '/createBlobstoreUrl';
-  const response = await fetch(url,{
-    method: 'GET'
+  const response = await fetch(url, {
+    method: 'GET',
   });
   const message = await response.text();
-  console.log(message);
   return message;
 }
 
@@ -1055,7 +1059,6 @@ async function checkLocationAndSubmit() {
       const lng = latLngResult ? latLngResult.long : 0;
 
       const baseUrl = await getBlobstoreUrl();
-    //   url = baseUrl;
       url = baseUrl + '?collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
       modalForm.action = url;
 
