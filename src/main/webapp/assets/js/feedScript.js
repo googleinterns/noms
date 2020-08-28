@@ -1007,6 +1007,7 @@ async function getBlobstoreUrl() {
     method: 'GET',
   });
   const responseStatus = await response.status;
+  // Only return a URL if there is a successful response.
   if (responseStatus === 200) {
     const message = await response.text();
     return message;

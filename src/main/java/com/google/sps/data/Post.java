@@ -147,7 +147,7 @@ public class Post {
 
     // Implements a try-catch statement in case the Servlet is accessed directly, instead of through Blob Upload URL.
     try {
-      // If there is an image uploaded, sets the Blob Key and Serving Url.
+      // If there is an image uploaded, set the Blob Key and Serving Url.
       blobKey = getBlobKey(request, "foodImage");
       imageServingUrl = getServingUrl(blobKey);
       if (imageServingUrl == null) {
@@ -155,14 +155,14 @@ public class Post {
       }
     }
     catch (Exception e) {
-      // In the case the Blob Upload URL is not used, sets the servingUrl and blobKey to default values.
+      // In the case the Blob Upload URL is not used, set the servingUrl and blobKey to default values.
       System.out.println(e);
       imageServingUrl = "no image";
       blobKey = null;
     }
   }
 
-  /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
+  /* Create a new entity with the college ID and the Post information. Sets all the properties. */
   public Entity postToEntity() {
     Entity newPost = new Entity(collegeId);
 
@@ -212,15 +212,15 @@ public class Post {
       int postMinute = Integer.parseInt(entity.getProperty("endMinute").toString());
       postTime.set(postYear, postMonth, postDay, postHour, postMinute);
  
-      // If the post time is before the current time, delete from Datastore.
+      // If the post time is before the current time, delete the post from storage.
       if (postTime.before(nowTime)) {
-        // Delete the blob.
+        // Delete the blob from Blobstore.
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
         BlobKey blobKey = (BlobKey) (entity.getProperty("blobKey"));
         if (blobKey != null) {
           blobstoreService.delete(blobKey);
         }
-        // Delete the datastore entity.
+        // Delete the entity from Datastore.
         datastore.delete(entity.getKey());
       }
       // Only add the post to result if it is on the same day.
