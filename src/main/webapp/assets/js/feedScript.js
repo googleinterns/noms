@@ -667,8 +667,8 @@ async function addPosts(posts) {
       imageSource = './assets/svg/forkandknife.svg';
     }
     cardImage.setAttribute('src', imageSource);
-    // Catches an unexpected errors.
-    cardImage.onerror = function () {
+    // Catches unexpected errors with the image source.
+    cardImage.onerror = function() {
       cardImage.setAttribute('src', './assets/svg/forkandknife.svg');
     };
 
@@ -1068,10 +1068,10 @@ async function checkLocationAndSubmit() {
       const lng = latLngResult ? latLngResult.long : 0;
 
       const baseUrl = await getBlobstoreUrl();
-      if(!baseUrl) {
-        alert("Server Error. Try again later.");
+      if (!baseUrl) {
+        alert('Server Error. Try again later.');
         submitModalButton.disabled = false;
-	    return;
+        return;
       }
       url = baseUrl + '?collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
       modalForm.action = url;
