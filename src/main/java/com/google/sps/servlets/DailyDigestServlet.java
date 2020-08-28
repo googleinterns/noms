@@ -51,14 +51,13 @@ import org.slf4j.LoggerFactory;
 public class DailyDigestServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserDataServlet.class);
 
   /** GETs information about users to send daily digest emails. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Query all colleges from Datastore.
-
+    // for ( Entity college : datastore.getAllColleges ) : String collegeId = (String) college.getProperty("collegeId");
     ArrayList<Post> rankedPosts = rankPosts(collegeId);
     if (rankedPosts.size() > 0) {
       GmailConfiguration.sendEmail(email, Email.dailyDigestSubject, Email.addRankedPosts(rankedPosts));	
