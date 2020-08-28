@@ -77,6 +77,34 @@ public class Email {
   }
 
   /**
+    * Add all ranked posts into daily digest email.
+    *
+    * @param posts ranked from a college
+    * @return string of HTML file with 3 ranked posts
+    * @throws IOException
+    */
+  public static String addRankedPosts(ArrayList<Post> posts) throws IOException {
+
+    String emailContent = getStringFromHTML(dailyDigestPath);
+
+    // Split up email content to inject multiple posts in between.
+    int split = emailContent.indexOf("</p>") + 3;
+    String firstPartOfEmail = emailContent.substring(0, split);
+    String lastPartOfEmail = emailContent.substring(split);
+    
+    // Add all ranked posts information to email content.
+    for (Post post : posts) {
+      firstPartOfEmail += "\n<p>" + post.getOrganizationName() +
+        " @ " + post.getLocation() + 
+        " | " + getFormattedTime(post.getStartHour(), post.getStartMinute()) + 
+        " - " + getFormattedTime(post.getEndHour(), post.getEndMinute()) + 
+        "</p>" + "\n<p>description: " + post.getDescription() + "</p>";
+    }
+
+    return firstPartOfEmail + "\n" + lastPartOfEmail;
+  }
+
+  /**
     * Convert hour and minute to easier to see timestamps.
     *
     * @param hour of event
