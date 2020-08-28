@@ -14,13 +14,16 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -68,7 +71,7 @@ public class DailyDigestServlet extends HttpServlet {
     * @param collegeId of a college
     * @return 3 max of the most highly ranked posts
     */
-  private static ArrayList<Post> rankPosts(String collegeId) {
+  private static ArrayList<Post> rankPosts(String collegeId) throws TooManyResultsException {
 
     ArrayList<Post> rankedPosts = new ArrayList<Post>();
     
@@ -77,21 +80,24 @@ public class DailyDigestServlet extends HttpServlet {
     int month = today.get(Calendar.MONTH);
     int day = today.get(Calendar.DATE);
 
-    // Filter through posts that happen today.
+    // Filter through a college to find posts that happen today.
     Filter monthFilter = new FilterPredicate("month", FilterOperator.EQUAL, month);
     Filter dayFilter = new FilterPredicate("day", FilterOperator.EQUAL, day);
-    Filter monthAndDayFilter = Filter.newBuilder()
-      .setCompositeFilter(
-        CompositeFilter.newBuilder()
-          .addFilters(monthFilter)
-          .addFilters(dayFilter)
-            .build())
-              .build();
+    CompositeFilter monthAndDayFilter = CompositeFilterOperator.and(monthFilter, dayFilter);
 
-    Query q = new Query(collegeId).setFilter(monthAndDayFilter);
+    // Use amount of people an event can feed as most impactful rank element to sort.
+    Query q = new Query(collegeId).setFilter(monthAndDayFilter)
+      .addSort("numberOfPeopleItFeeds", SortDirection.DESCENDING);
     PreparedQuery pq = datastore.prepare(q);
 
-    // Figure out how else to rank
+    // Add the posts to return our ranked elemetns.
+    for (Entity entity: pq.asIterable(FetchOptions.Builder.withLimit(3))) {
+      Post newPost = new Post();
+      newPost.entityToPost(entity);
+      rankedPosts.add(newPost);
+    }
+
+    return rankedPosts;
   }
 }
   
