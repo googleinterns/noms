@@ -233,7 +233,7 @@ public class Post {
     return currentPosts;
   }
 
-    /* Translate the fields of an entity from Datastore to a Post object. */
+  /* Translate the fields of an entity from Datastore to a Post object. */
   public void entityToPost(Entity entity) {
     organizationName = (String) entity.getProperty("organizationName");
     month = Integer.parseInt(entity.getProperty("month").toString());
