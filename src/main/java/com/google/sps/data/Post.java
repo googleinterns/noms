@@ -96,14 +96,11 @@ public class Post {
         Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
         year = nowTime.get(Calendar.YEAR);
 
-        // Store serving url.
+        // If there is an image uploaded, get the Serving Url.
+        // Otherwise, send "no image."
         imageServingUrl = getUploadedFileUrl(request, "foodImage");
         if (imageServingUrl == null) {
-          // Get a backup image, encoded in Base 64.
-	  String pathToStockPhoto = System.getProperty("user.home") + "/noms/src/main/java/com/google/sps/data/forkandknife.png";
-          byte[] fileContent = FileUtils.readFileToByteArray(new File(pathToStockPhoto));
-          String encodedString = Base64.getEncoder().encodeToString(fileContent);
-          imageServingUrl = "data:image/png;base64," + encodedString; 
+          imageServingUrl = "no image";
         }
     }
 

@@ -637,7 +637,11 @@ async function addPosts(posts) {
     // Add image.
     const cardImage = document.createElement('img');
     cardImage.setAttribute('class', 'card-image');
-    cardImage.setAttribute('src', post.imageServingUrl);
+    let imageSource = post.imageServingUrl;
+    if (imageSource === "no image") {
+      imageSource = './assets/svg/forkandknife.svg'
+    }
+    cardImage.setAttribute('src', imageSource);
 
     // Add a div for all the post card text.
     const postText = document.createElement('div');
