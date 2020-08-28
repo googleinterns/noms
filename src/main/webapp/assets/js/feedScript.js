@@ -658,7 +658,7 @@ async function addPosts(posts) {
     postCard.setAttribute('id', post.id);
     postCard.setAttribute('tabindex', '0');
 
-    // Add image from the image serving URL.
+    // Adds the image from the image serving URL.
     // If there is not a valid URL, then display the stock SVG.
     const cardImage = document.createElement('img');
     cardImage.setAttribute('class', 'card-image');
@@ -667,6 +667,10 @@ async function addPosts(posts) {
       imageSource = './assets/svg/forkandknife.svg';
     }
     cardImage.setAttribute('src', imageSource);
+    // Catches an unexpected errors.
+    cardImage.onerror = function () {
+      cardImage.setAttribute('src', './assets/svg/forkandknife.svg');
+    };
 
     // Add a div for all the post card text.
     const postText = document.createElement('div');
@@ -741,7 +745,7 @@ function closeModal() {
  * @return {void}
  */
 function displayUploadedFile() {
-  const fileName = this.value.split( '\\' ).pop();
+  const fileName = modalFileUpload.value.split( '\\' ).pop();
   if (fileName) {
     modalUploadLabel.innerText = fileName;
   } else {
@@ -865,7 +869,7 @@ function validateModalFile(invalidIds, errorMessages) {
     if (file.type.includes('image')) {
       if (file.size > 4000000) {
         invalidIds.push('modal-upload-label');
-        errorMessages.push('image is too large'); 
+        errorMessages.push('image is too large');
       }
     } else {
       invalidIds.push('modal-upload-label');
@@ -1001,8 +1005,13 @@ async function getBlobstoreUrl() {
   const response = await fetch(url, {
     method: 'GET',
   });
-  const message = await response.text();
-  return message;
+  const responseStatus = await response.status;
+  if (responseStatus === 200) {
+    const message = await response.text();
+    return message;
+  } else {
+    return;
+  }
 }
 
 /**
@@ -1059,6 +1068,11 @@ async function checkLocationAndSubmit() {
       const lng = latLngResult ? latLngResult.long : 0;
 
       const baseUrl = await getBlobstoreUrl();
+      if(!baseUrl) {
+        alert("Server Error. Try again later.");
+        submitModalButton.disabled = false;
+	    return;
+      }
       url = baseUrl + '?collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
       modalForm.action = url;
 

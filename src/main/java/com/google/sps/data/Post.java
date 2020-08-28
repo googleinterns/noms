@@ -284,9 +284,6 @@ public class Post {
     // Use ImagesService to get a URL that points to the uploaded file.
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
     ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-    if (options == null) {
-      return null;
-    }
     return imagesService.getServingUrl(options);
   }
 
