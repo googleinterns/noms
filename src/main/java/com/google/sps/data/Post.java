@@ -10,11 +10,11 @@ Holds the information in the cards
   - Type of food
   - Description
   - College Id
-  -
+  - BlobKey
+  - Image Serving URL
 */
 
 package com.google.sps.data;
-
 
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
@@ -147,10 +147,17 @@ public class Post {
 
     // If there is an image uploaded, sets the Blob Key and Serving Url.
     // If there is no Serving Url, sets it to the String "no image."
-    blobKey = getBlobKey(request, "foodImage");
-    imageServingUrl = getServingUrl(blobKey);
-    if (imageServingUrl == null) {
+    try {
+      blobKey = getBlobKey(request, "foodImage");
+      imageServingUrl = getServingUrl(blobKey);
+      if (imageServingUrl == null) {
+        imageServingUrl = "no image";
+      }
+    }
+    catch (Exception e) {
+      System.out.println(e);
       imageServingUrl = "no image";
+      blobKey = null;
     }
   }
 

@@ -667,7 +667,7 @@ async function addPosts(posts) {
       imageSource = './assets/svg/forkandknife.svg';
     }
     cardImage.setAttribute('src', imageSource);
-    // Catches unexpected errors with the image source.
+    // Catches unexpected errors with the image sourceStr .
     cardImage.onerror = function() {
       cardImage.setAttribute('src', './assets/svg/forkandknife.svg');
     };
