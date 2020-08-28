@@ -59,6 +59,7 @@ public class Post {
     private String collegeId = "";
     private int timeSort = 0;
     private String imageServingUrl = "";
+    private BlobKey blobKey;
 
     /* Fill in the important Post details from the POST request. */
     public void requestToPost(HttpServletRequest request, String collegeId) throws IOException{
@@ -98,7 +99,9 @@ public class Post {
 
         // If there is an image uploaded, get the Serving Url.
         // Otherwise, send "no image."
-        imageServingUrl = getUploadedFileUrl(request, "foodImage");
+        blobKey = getBlobKey(request, "foodImage");
+        imageServingUrl = getServingUrl(blobKey);
+        // imageServingUrl = getUploadedFileUrl(request, "foodImage");
         if (imageServingUrl == null) {
           imageServingUrl = "no image";
         }
@@ -126,7 +129,15 @@ public class Post {
             
             // If the post time is before the current time, delete from Datastore.
             if (postTime.before(nowTime)) {
+                // Delete the blob.
+                BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+                BlobKey blobKey = (BlobKey) (entity.getProperty("blobKey"));
+                if (blobKey != null) {
+                  blobstoreService.delete(blobKey);
+                }
+                // Delete the datastore entity.
                 datastore.delete(entity.getKey());
+
             }
             // Only add the post to result if it is on the same day.
             else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
@@ -158,6 +169,7 @@ public class Post {
         collegeId = (String) entity.getKind();
         postId = entity.getKey().toString();
         imageServingUrl = (String) entity.getProperty("imageServingUrl");
+        blobKey = null;
     }
 
     /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
@@ -185,6 +197,7 @@ public class Post {
 
         newPost.setProperty("timeSort", timeSort);
         newPost.setProperty("imageServingUrl", imageServingUrl);
+        newPost.setProperty("blobKey", blobKey);
 
         return newPost;
     }
@@ -261,6 +274,48 @@ public class Post {
 
     // Our form only contains a single file input, so get the first index.
     BlobKey blobKey = blobKeys.get(0);
+
+    if (blobKey == null) {
+      return null;
+    }
+
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    if (blobInfo.getSize() == 0) {
+      blobstoreService.delete(blobKey);
+      return null;
+    }
+
+    // We could check the validity of the file here, e.g. to make sure it's an image file
+    // https://stackoverflow.com/q/10779564/873165
+
+    // Use ImagesService to get a URL that points to the uploaded file.
+    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+    if (options == null) {
+      return null;
+    }
+    return imagesService.getServingUrl(options);
+  }
+
+  private BlobKey getBlobKey(HttpServletRequest request, String formInputElementName) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(formInputElementName);
+
+    // User submitted form without selecting a file, so we can't get a URL. (devserver)
+    if(blobKeys == null || blobKeys.isEmpty()) {
+      return null;
+    }
+
+    // Our form only contains a single file input, so get the first index.
+    BlobKey blobKey = blobKeys.get(0);
+
+    return blobKey;
+  }
+
+  private String getServingUrl(BlobKey blobKey) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     if (blobKey == null) {
       return null;
