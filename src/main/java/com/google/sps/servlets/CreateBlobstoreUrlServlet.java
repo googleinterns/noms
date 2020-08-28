@@ -18,7 +18,12 @@ public class CreateBlobstoreUrlServlet extends HttpServlet {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     String uploadUrl = blobstoreService.createUploadUrl("/postData") ;
 
+    String currentDir = System.getProperty("user.dir");
+    String homeDir = System.getProperty("user.home");
+
     response.setContentType("text/html");
-    response.getOutputStream().println(uploadUrl);
+    response.getWriter().println(uploadUrl);
+    // response.getWriter().println(currentDir + " " + homeDir);
+
   }
 }

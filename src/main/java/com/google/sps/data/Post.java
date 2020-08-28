@@ -22,6 +22,11 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.File;
+import org.apache.commons.io.FileUtils;
+import java.util.Base64;
+import java.io.IOException;
+
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +61,7 @@ public class Post {
     private String imageServingUrl = "";
 
     /* Fill in the important Post details from the POST request. */
-    public void requestToPost(HttpServletRequest request, String collegeId) {
+    public void requestToPost(HttpServletRequest request, String collegeId) throws IOException{
         organizationName = request.getParameter("organizationName");
         month = Integer.parseInt(request.getParameter("month")) - 1; // Months are indexed at 0.
         day = Integer.parseInt(request.getParameter("day"));
@@ -94,7 +99,11 @@ public class Post {
         // Store serving url.
         imageServingUrl = getUploadedFileUrl(request, "foodImage");
         if (imageServingUrl == null) {
-          imageServingUrl = "https://cdn5.vectorstock.com/i/1000x1000/58/89/fork-and-knife-sign-vector-18355889.jpg";
+          // Get a backup image, encoded in Base 64.
+	  String pathToStockPhoto = System.getProperty("user.home") + "/noms/src/main/java/com/google/sps/data/forkandknife.png";
+          byte[] fileContent = FileUtils.readFileToByteArray(new File(pathToStockPhoto));
+          String encodedString = Base64.getEncoder().encodeToString(fileContent);
+          imageServingUrl = "data:image/png;base64," + encodedString; 
         }
     }
 
@@ -256,6 +265,10 @@ public class Post {
     // Our form only contains a single file input, so get the first index.
     BlobKey blobKey = blobKeys.get(0);
 
+    if (blobKey == null) {
+      return null;
+    }
+
     // User submitted form without selecting a file, so we can't get a URL. (live server)
     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
     if (blobInfo.getSize() == 0) {
@@ -269,6 +282,9 @@ public class Post {
     // Use ImagesService to get a URL that points to the uploaded file.
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
     ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+    if (options == null) {
+      return null;
+    }
     return imagesService.getServingUrl(options);
   }
 }
