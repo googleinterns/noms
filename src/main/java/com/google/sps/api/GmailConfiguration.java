@@ -175,7 +175,7 @@ public class GmailConfiguration {
     // Email the users to notify them with ranked posts for the day.
     for (Entity user : getAllUsersForACollege(collegeId)) {
       String email = user.getKey().getName().toString();
-      sendEmail(email, Email.newPostSubject, Email.addRankedPosts(rankedPosts));	
+      sendEmail(email, Email.dailyDigestSubject, Email.addRankedPosts(rankedPosts));	
     }
   }
 

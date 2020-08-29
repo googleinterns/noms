@@ -59,14 +59,19 @@ public class DailyDigestServlet extends HttpServlet {
 
   /** GETs information about users to send daily digest emails. */
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Query all colleges from Datastore.
-    // for ( Entity college : datastore.getAllColleges ) : String collegeId = (String) college.getProperty("collegeId");
-    String collegeId = "110653";
-    ArrayList<Post> rankedPosts = rankPosts(collegeId);
-    if (rankedPosts.size() > 0) {
-      GmailConfiguration.notifyUsers(collegeId, rankedPosts);
+    Query collegesQ = new Query("College");
+    PreparedQuery collegesPQ = datastore.prepare(collegesQ);
+    for (Entity college: collegesPQ.asIterable()) {
+
+      // Send users a daily digest email about the top ranked 3 posts.
+      String collegeId = college.getKey().getName().toString();
+      ArrayList<Post> rankedPosts = rankPosts(collegeId);
+      if (rankedPosts.size() > 0) {
+        GmailConfiguration.notifyUsers(collegeId, rankedPosts);
+      }
     }
   }
 

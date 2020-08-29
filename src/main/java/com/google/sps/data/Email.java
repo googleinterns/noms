@@ -89,7 +89,7 @@ public class Email {
     String emailContent = getStringFromHTML(dailyDigestPath);
 
     // Split up email content to inject multiple posts in between.
-    int split = emailContent.indexOf("</p>") + 3;
+    int split = emailContent.indexOf("</p>") + 4;
     String firstPartOfEmail = emailContent.substring(0, split);
     String lastPartOfEmail = emailContent.substring(split);
     
