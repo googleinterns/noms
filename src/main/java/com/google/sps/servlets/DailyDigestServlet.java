@@ -72,7 +72,8 @@ public class DailyDigestServlet extends HttpServlet {
   }
 
   /**
-    * Rank today's posts in relation to a specific college.
+    * Rank a college's posts based on today's date, how many people it can
+    * feed, and the length of an event.
     *
     * @param collegeId of a college
     * @return 3 max of the most highly ranked posts
@@ -93,9 +94,8 @@ public class DailyDigestServlet extends HttpServlet {
       rankedPosts.add(newPost);
     }
 
-    // Rank posts by how long each event is.
-
-    return rankedPosts;
+    // Rank posts by the duration of each event.
+    return Collections.sort(rankedPosts);
   }
 
   /**

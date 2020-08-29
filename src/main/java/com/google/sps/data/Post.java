@@ -24,13 +24,15 @@ import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.InputPattern;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;   
 import java.util.regex.Matcher;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
-public class Post {
+public class Post implements Comparable<Post> {
 
   private String postId = "";
   private String organizationName = "";
@@ -234,6 +236,23 @@ public class Post {
     newPost.setProperty("timeSort", timeSort);
 
     return newPost;
+  }
+
+  /* Set sorting by duration of event. */
+  @Override     
+  public int compareTo(Post post) {          
+    return (this.getDuration() < post.getDuration() ? -1 : 
+      (this.getDureation() == candidate.getDuration() ? 0 : 1));     
+  }     
+
+  /* Get duration of an event in seconds.*/
+  private static int getDuration() {
+
+    LocalTime start = LocalTime.of(startHour, startMinute, 0, 0);
+    LocalTime end = LocalTime.of(endHour, endMinute, 0, 0);
+    Duration duration = Duration.between(LocalTime.MIDNIGHT, LocalTime.NOON); 
+  
+    return duration.getSeconds();
   }
 
   /* Class Getters. */
