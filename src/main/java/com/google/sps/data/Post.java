@@ -18,13 +18,11 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.InputPattern;
-import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;  
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;   
@@ -204,15 +202,8 @@ public class Post implements Comparable<Post> {
   /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
   public Entity postToEntity() {
 
-    // try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-    //   SecretVersionName secretVersionName = SecretVersionName.of(PROJECTID, "college-key", VERSIONID);
-    //   AccessSecretVersionResponse secretResponse = client.accessSecretVersion(secretVersionName);
-    //   return secretResponse.getPayload().getData().toStringUtf8();
-    // }
-
-    Key k2 = KeyFactory.createKey("College","aglub19hcHBfaWRyFAsSB0NvbGxlZ2UYgICAgICAwAgM");
-    Entity college = new Entity(collegeId, k2);
-    Entity newPost = new Entity("Post", college.getKey());
+    Key key = KeyFactory.createKey("College", "1");
+    Entity newPost = new Entity(collegeId, key);
 
     newPost.setProperty("organizationName", organizationName);
 
@@ -242,17 +233,17 @@ public class Post implements Comparable<Post> {
   @Override     
   public int compareTo(Post post) {          
     return (this.getDuration() < post.getDuration() ? -1 : 
-      (this.getDureation() == candidate.getDuration() ? 0 : 1));     
+      (this.getDuration() == post.getDuration() ? 0 : 1));     
   }     
 
   /* Get duration of an event in seconds.*/
-  private static int getDuration() {
+  private int getDuration() {
 
-    LocalTime start = LocalTime.of(startHour, startMinute, 0, 0);
-    LocalTime end = LocalTime.of(endHour, endMinute, 0, 0);
-    Duration duration = Duration.between(LocalTime.MIDNIGHT, LocalTime.NOON); 
-  
-    return duration.getSeconds();
+    LocalTime start = LocalTime.of(startHour, startMinute, 0);
+    LocalTime end = LocalTime.of(endHour, endMinute, 0);
+    int duration = (int) ChronoUnit.MINUTES.between(start, end);  
+
+    return duration;
   }
 
   /* Class Getters. */

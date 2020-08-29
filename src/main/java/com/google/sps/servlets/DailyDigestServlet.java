@@ -24,7 +24,6 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
-
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
@@ -39,9 +38,9 @@ import com.google.sps.data.Post;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;   
 import java.util.TimeZone;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -95,7 +94,9 @@ public class DailyDigestServlet extends HttpServlet {
     }
 
     // Rank posts by the duration of each event.
-    return Collections.sort(rankedPosts);
+    Collections.sort(rankedPosts);
+
+    return rankedPosts;
   }
 
   /**
