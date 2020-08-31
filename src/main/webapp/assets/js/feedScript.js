@@ -452,7 +452,8 @@ async function fetchPosts(collegeId) {
       numOfPeopleFoodWillFeed: message[i]['numberOfPeopleItFeeds'],
       foodType: message[i]['typeOfFood'],
       description: message[i]['description'],
-      imageServingUrl: message[i]['imageServingUrl'],
+    //   imageServingUrl: message[i]['imageServingUrl'],
+      blobKey: message[i]['blobKey'],
     };
     posts.push(post);
   }
@@ -638,6 +639,25 @@ function applyLogisticFunction(xValue, bounds) {
       (Math.exp(-((xValue - 28)/6)) + 1) + bounds.min);
 }
 
+function base64EncodeUnicode(str) {
+    // // First we escape the string using encodeURIComponent to get the UTF-8 encoding of the characters, 
+    // // then we convert the percent encodings into raw bytes, and finally feed it to btoa() function.
+    // utf8Bytes = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+    //         return String.fromCharCode('0x' + p1);
+    // });
+
+    // return btoa(utf8Bytes);
+    const array8Bit = [];
+    for (let i = 0; i < str.length; i++) {
+      const currentChar = str.charCodeAt(i);
+      const bottomHalf = String.fromCharCode(currentChar & 0xFF);
+      const topHalf = String.fromCharCode((currentChar >> 8) & 0xFF);
+      array8Bit.push(bottomHalf);
+      array8Bit.push(topHalf);
+    }
+    return array8Bit;
+}
+
 /**
  * Adds posts to the page.
  * @param {array} posts
@@ -662,15 +682,36 @@ async function addPosts(posts) {
     // If there is not a valid URL, then display the stock SVG.
     const cardImage = document.createElement('img');
     cardImage.setAttribute('class', 'card-image');
-    let imageSource = post.imageServingUrl;
-    if (imageSource === 'no image') {
+    let imageSource = await getServingUrl(post.blobKey);
+    if (!imageSource) {
       imageSource = './assets/svg/forkandknife.svg';
     }
-    cardImage.setAttribute('src', imageSource);
-    // Catches unexpected errors with the image source.
-    cardImage.onerror = function() {
-      cardImage.setAttribute('src', './assets/svg/forkandknife.svg');
-    };
+    // imageSource = './assets/svg/forkandknife.svg';
+    let bit8array = base64EncodeUnicode(imageSource);
+    let bit8arrayString = bit8array.join('');
+    console.log(bit8arrayString);
+    let imgsrc = btoa(bit8arrayString);
+    // base64 = btoa(imageSource.replace(/[\u00A0-\u2666]/g, function(c) {
+    //   return '&#' + c.charCodeAt(0) + ';';
+    // }));
+
+    // const byteArray = new Uint8Array(imageSource);
+    // console.log(byteArray);
+    // const str = String.fromCharCode.apply(null, byteArray);
+    imgsrc = 'data:image/*;base64,' + imgsrc;
+
+    console.log(imgsrc);
+
+    // console.log(imageSource);
+    // const imageSourceBase64 = 'data:image/*;base64,' + btoa(unescape(encodeURIComponent((imageSource))));
+    // console.log(imageSourceBase64);
+    cardImage.setAttribute('src', imgsrc);
+    cardImage.setAttribute('alt', 'ayy lmao');
+    // // Catches unexpected errors with the image source.
+    // cardImage.onerror = function() {
+    //   cardImage.setAttribute('src', './assets/svg/forkandknife.svg');
+    // };
+    // const url = await getServingUrl(post.blobKey);
 
     // Add a div for all the post card text.
     const postText = document.createElement('div');
@@ -700,6 +741,21 @@ async function addPosts(posts) {
     postCard.appendChild(cardImage);
     postCard.appendChild(postText);
     allPosts.append(postCard);
+  }
+}
+
+async function getServingUrl(blobKey) {
+  const url = '/serve?blob-key=' + blobKey;
+  const response = await fetch(url, {
+    method: 'GET',
+  });
+  const responseStatus = await response.status;
+  const message = await response.text();
+  // Only return a URL if there is a successful response.
+  if (responseStatus === 200) {
+    return message;
+  } else {
+    return;
   }
 }
 
@@ -1007,9 +1063,9 @@ async function getBlobstoreUrl() {
     method: 'GET',
   });
   const responseStatus = await response.status;
+  const message = await response.text();
   // Only return a URL if there is a successful response.
   if (responseStatus === 200) {
-    const message = await response.text();
     return message;
   } else {
     return;
@@ -1075,8 +1131,16 @@ async function checkLocationAndSubmit() {
         submitModalButton.disabled = false;
         return;
       }
-      url = baseUrl + '?collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
+      const url = baseUrl;
+    //   url = baseUrl + '?collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
       modalForm.action = url;
+
+      addAdditionalParameters(collegeId, lat, lng);
+
+    //   const modalFormElements = modalForm.elements;
+    //   const modalFormElementsType = type(modalFormElements);
+    //   const body = JSON.stringify(modalForm.elements)
+    //   console.log(body);
 
       const subtitle = document.getElementById('modal-submitted-subtitle');
       if (dateIsInTheFuture(modalMonth.value, modalDay.value)) {
@@ -1092,10 +1156,69 @@ async function checkLocationAndSubmit() {
       // Closes the submit modal after 2000 ms, and submits the form.
       setTimeout(function() {
         closeSubmit();
+        // postForm(url);
         modalForm.submit();
       }, 2000);
     }
   }
+}
+
+function addAdditionalParameters(collegeId, lat, lng) {
+  const collegeIdInput = document.createElement('input');
+  collegeIdInput.setAttribute('name', 'collegeId');
+  collegeIdInput.setAttribute('value', collegeId);
+  collegeIdInput.setAttribute('type', 'hidden');
+  modalForm.appendChild(collegeIdInput);
+
+  const latInput = document.createElement('input');
+  latInput.setAttribute('name', 'lat');
+  latInput.setAttribute('value', lat);
+  latInput.setAttribute('type', 'hidden');
+  modalForm.appendChild(latInput);
+
+  const lngInput = document.createElement('input');
+  lngInput.setAttribute('name', 'lng');
+  lngInput.setAttribute('value', lng);
+  lngInput.setAttribute('type', 'hidden');
+  modalForm.appendChild(lngInput);
+}
+
+async function postForm(url) {
+  const postBody = {
+      collegeId: '122931',
+      organizationName: 'hello',
+      month: '8',
+      day: '29',
+      startHour: '9',
+      startMinute: '29',
+      startAMorPM: 'pm',
+      endHour: '10',
+      endMinute: '20',
+      endAMorPM: 'pm',
+      location: 'kenna',
+      lat: '0',
+      lng: '0',
+      numOfPeopleFoodWillFeed: '20',
+      foodType: 'pizza',
+      description: 'yummmmmmmmmmmmmmmmmmm',
+      foodImage: modalFileUpload.files[0],
+  }
+
+  const response = await fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    // mode: 'cors', // no-cors, *cors, same-origin
+    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'include', // include, *same-origin, omit
+    headers: {
+    //   'Content-Type': 'application/json'
+      'Content-Type': 'multipart/form-data',
+    },
+    // redirect: 'follow', // manual, *follow, error
+    // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    // body: modalForm.elements, // body data type must match "Content-Type" header
+    body: postBody,
+  });
+//   return response.json(); // parses JSON response into native JavaScript objects
 }
 
 /**

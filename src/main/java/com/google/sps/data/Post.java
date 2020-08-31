@@ -36,6 +36,10 @@ import java.util.regex.Matcher;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.appengine.api.images.ImagesServiceFailureException;
+import java.net.URL;
+import java.net.MalformedURLException;
+
 public class Post {
 
   private String postId = "";
@@ -55,8 +59,8 @@ public class Post {
   private String description = "";
   private String collegeId = "";
   private int timeSort = 0;
-  private String imageServingUrl = "";
-  private BlobKey blobKey;
+//   private String imageServingUrl = "";
+  private String blobKey;
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
 
@@ -72,6 +76,8 @@ public class Post {
     String locationUnparsed = request.getParameter("location");
     String latUnparsed = request.getParameter("lat");
     String lngUnparsed = request.getParameter("lng");
+    // String latUnparsed = "0";
+    // String lngUnparsed = "0";
     String numberOfPeopleItFeedsUnparsed = request.getParameter("numberOfPeopleItFeeds");
     String typeOfFoodUnparsed = request.getParameter("typeOfFood");
     String descriptionUnparsed = request.getParameter("description");
@@ -145,21 +151,29 @@ public class Post {
     Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     year = nowTime.get(Calendar.YEAR);
 
-    // Implements a try-catch statement in case the Servlet is accessed directly, instead of through Blob Upload URL.
-    try {
+    // // Implements a try-catch statement in case the Servlet is accessed directly, instead of through Blob Upload URL.
+    // try {
       // If there is an image uploaded, set the Blob Key and Serving Url.
-      blobKey = getBlobKey(request, "foodImage");
-      imageServingUrl = getServingUrl(blobKey);
-      if (imageServingUrl == null) {
-        imageServingUrl = "no image";
-      }
-    }
-    catch (Exception e) {
-      // In the case the Blob Upload URL is not used, set the servingUrl and blobKey to default values.
-      System.out.println(e);
-      imageServingUrl = "no image";
-      blobKey = null;
-    }
+    blobKey = getBlobKey(request, "foodImage");
+    //   imageServingUrl = getServingUrl(blobKey);
+    // }
+    // catch (Exception e) {
+    //   // In the case the Blob Upload URL is not used, set the servingUrl and blobKey to default values.
+    //   System.out.println(e);
+    //   imageServingUrl = e.getMessage();
+    //   blobKey = null;
+    // }
+
+    // blobKey = getBlobKey(request, "foodImage");
+    // // Implements a try-catch statement in case the Servlet is accessed directly, instead of through Blob Upload URL.
+    // try {
+    //   // If there is an image uploaded, set the Blob Key and Serving Url.
+    //   imageServingUrl = getServingUrl(blobKey);
+    // }
+    // catch (Exception e) {
+    //   // In the case the Blob Upload URL is not used, set the servingUrl and blobKey to default values.
+    //   imageServingUrl = e.getCause().toString();
+    // }
   }
 
   /* Create a new entity with the college ID and the Post information. Sets all the properties. */
@@ -186,7 +200,7 @@ public class Post {
     newPost.setProperty("description", description);
 
     newPost.setProperty("timeSort", timeSort);
-    newPost.setProperty("imageServingUrl", imageServingUrl);
+    // newPost.setProperty("imageServingUrl", imageServingUrl);
     newPost.setProperty("blobKey", blobKey);
 
     return newPost;
@@ -216,9 +230,10 @@ public class Post {
       if (postTime.before(nowTime)) {
         // Delete the blob from Blobstore.
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-        BlobKey blobKey = (BlobKey) (entity.getProperty("blobKey"));
+        String blobKey = (String) (entity.getProperty("blobKey"));
         if (blobKey != null) {
-          blobstoreService.delete(blobKey);
+          BlobKey blobKeyToDelete = new BlobKey(blobKey);
+          blobstoreService.delete(blobKeyToDelete);
         }
         // Delete the entity from Datastore.
         datastore.delete(entity.getKey());
@@ -252,45 +267,79 @@ public class Post {
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
     collegeId = (String) entity.getKind();
     postId = entity.getKey().toString();
-    imageServingUrl = (String) entity.getProperty("imageServingUrl");
-    blobKey = null; // Does not set the blobKey. It can be used to change the blob, so it should not be sent to the client side.
+    // imageServingUrl = (String) entity.getProperty("imageServingUrl");
+    blobKey = (String) entity.getProperty("blobKey"); // Does not set the blobKey. It can be used to change the blob, so it should not be sent to the client side.
   }
 
-  private BlobKey getBlobKey(HttpServletRequest request, String formInputElementName) {
+  private String getBlobKey(HttpServletRequest request, String formInputElementName) {
+    // BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    // Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    // List<BlobKey> blobKeys = blobs.get(formInputElementName);
+
+    // // If the user did not select a file, we cannot generate a blobKey.
+    // if(blobKeys == null || blobKeys.isEmpty()) {
+    //   return null;
+    // }
+
+    // // The form only contains a single file input, so get the first index.
+    // BlobKey blobKey = blobKeys.get(0);
+
+    // return blobKey;
+
+
+    // BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    // Map<String, List<BlobInfo>> blobs = blobstoreService.getBlobInfos(request);
+    // List<BlobInfo> blobInfos = blobs.get(formInputElementName);
+
+    // // If the user did not select a file, we cannot generate a blobKey.
+    // if(blobInfos == null || blobInfos.isEmpty()) {
+    //   return null;
+    // }
+
+    // // The form only contains a single file input, so get the first index.
+    // BlobInfo blobInfo = blobInfos.get(0);
+    // BlobKey blobKey = blobInfo.getBlobKey();
+
+    // return blobKey;
+
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
 
-    // If the user did not select a file, we cannot generate a blobKey.
-    if(blobKeys == null || blobKeys.isEmpty()) {
-      return null;
-    }
+    return blobKeys.get(0).getKeyString();
 
-    // The form only contains a single file input, so get the first index.
-    BlobKey blobKey = blobKeys.get(0);
-
-    return blobKey;
+    // if (blobKeys == null || blobKeys.isEmpty()) {
+    //   res.sendRedirect("/");
+    // } else {
+    //   res.sendRedirect("/serve?blob-key=" + blobKeys.get(0).getKeyString());
+    // }
   }
 
-  private String getServingUrl(BlobKey blobKey) {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+//   private String getServingUrl(BlobKey blobKey) {
+//     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
-    if (blobKey == null) {
-      return null;
-    }
+//     if (blobKey == null) {
+//       return null;
+//     }
 
-    // If the user did not select a file, we cannot generate a URL.
-    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-    if (blobInfo.getSize() == 0) {
-      blobstoreService.delete(blobKey);
-      return null;
-    }
+//     // If the user did not select a file, we cannot generate a URL.
+//     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+//     if (blobInfo.getSize() == 0) {
+//       blobstoreService.delete(blobKey);
+//       return null;
+//     }
 
-    // Use ImagesService to get a URL that points to the uploaded file.
-    ImagesService imagesService = ImagesServiceFactory.getImagesService();
-    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-    return imagesService.getServingUrl(options);
-  }
+//     // Use ImagesService to get a URL that points to the uploaded file.
+//     ImagesService imagesService = ImagesServiceFactory.getImagesService();
+//     ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+//     try {
+//       URL url = new URL(imagesService.getServingUrl(options));
+//       return url.getPath();
+//     } catch (MalformedURLException e) {
+//       return imagesService.getServingUrl(options);
+//     }
+//     // return imagesService.getServingUrl(options);
+//   }
 
   /* Class Getters. */
   public String getOrganizationName() {
