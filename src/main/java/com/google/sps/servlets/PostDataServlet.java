@@ -57,7 +57,7 @@ public class PostDataServlet extends HttpServlet {
 
     // Queries Datastore with the college ID and receives posts such that the soonest events are shown first.
     Filter collegeIdFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, collegeId);
-    Query query = new Query(entityKind).addSort("timeSort", SortDirection.ASCENDING).setFilter(collegeIdFilter);
+    Query query = new Query(entityKind).setFilter(collegeIdFilter).addSort("timeSort", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     ArrayList<Post> posts = Post.queryToPosts(results, datastore);
 
