@@ -197,9 +197,6 @@ async function onLoad() {
   modalTypeFood.addEventListener('keydown', limitCharacterInput);
   modalDescription.addEventListener('keydown', limitCharacterInput);
 
-  // Populate post modal time slots with 'smart' values
-  populatePostModalTime();
-
   // Get the college id from the query string parameters.
   const collegeId = (new URLSearchParams(window.location.search)).get('collegeid');
 
@@ -688,6 +685,9 @@ function removePosts() {
  */
 function showModal() {
   if (modal) {
+    // Populate post modal datetime slots with 'smart' values
+    populatePostModalDateTime();
+
     modal.style.display = 'block';
     modalCard.focus();
     submitModalButton.disabled = false;
@@ -1237,16 +1237,21 @@ function limitCharacterInput(e) {
 }
 
 /**
- * Populates the post modal's time slots with 'smart' values
- * based on the current time.
+ * Populates the post modal's datetime slots with 'smart' values
+ * based on the current datetime.
  */
-function populatePostModalTime() {
+function populatePostModalDateTime() {
+  const modalMonth = document.getElementById('modal-month');
+  const modalDay = document.getElementById('modal-day');
   const modalStartHour = document.getElementById('modal-start-hour');
   const modalStartMinute = document.getElementById('modal-start-minute');
   const startAmOrPm = document.getElementById('start-am-or-pm');
   const modalEndHour = document.getElementById('modal-end-hour');
   const modalEndMinute = document.getElementById('modal-end-minute');
   const endAmOrPm = document.getElementById('end-am-or-pm');
+
+  modalMonth.value = new Date().getMonth() + 1; // Months are indexed at 0
+  modalDay.value = new Date().getDate();
 
   const nowHours = parseInt(new Date().getHours());
   modalStartHour.value = nowHours > 12 ? nowHours - 12 : (nowHours !== 0 ? nowHours : 12);
