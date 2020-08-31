@@ -710,7 +710,7 @@ async function addPosts(posts) {
  * @return {String}
  */
 async function getImageUrl(blobKey) {
-  const url = '/serve?blob-key=' + blobKey;
+  const url = '/serve?blobKey=' + blobKey;
   const response = await fetch(url, {
     method: 'GET',
   });
