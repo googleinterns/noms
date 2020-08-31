@@ -14,43 +14,18 @@
 
 package com.google.sps.servlets;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.validateMockitoUsage;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+import static org.junit.Assert.assertEquals;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.sps.api.GmailConfiguration;
-import com.google.sps.data.Email;
-import com.google.sps.servlets.DailyDigestServlet;
+import com.google.sps.data.Post;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -58,12 +33,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
 
+/** Tests ranking posts for the Daily Digest. */
 @RunWith(JUnit4.class)
-public final class UserDataServletTest {
+public class DailyDigestServletTest {
 
   private static final String ORGANIZATION_NAME = "TEST ORGANIZATION NAME";
   private static final String DESCRIPTION = "TEST DESCRIPTION";
@@ -78,40 +51,31 @@ public final class UserDataServletTest {
   Post todayHighRankTestPost = new Post(ORGANIZATION_NAME, 8, 31, 5, 0, 5, 45, LOCATION, LAT, LNG, 
                             100, TYPE_OF_FOOD, DESCRIPTION, COLLEGE_ID);
   Post futureTestPost = new Post(ORGANIZATION_NAME, 9, 15, 5, 0, 5, 30, LOCATION, LAT, LNG, 
-                            50, TYPE_OF_FOOD, DESCRIPTION, COLLEGE_ID);
+                            50, TYPE_OF_FOOD, DESCRIPTION, COLLEGE_ID);                      
   Post pastTestPost = new Post(ORGANIZATION_NAME, 8, 15, 5, 0, 5, 30, LOCATION, LAT, LNG, 
                             50, TYPE_OF_FOOD, DESCRIPTION, COLLEGE_ID);
 
-  private static DailyDigestServlet dailyDigestServlet;
-  private static LocalServiceTestHelper helper =
+  private final LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-  private static DatastoreService datastore;
+  private static DailyDigestServlet dailyDigestServlet;
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     helper.setUp();
     dailyDigestServlet = new DailyDigestServlet();
-    datastore = DatastoreServiceFactory.getDatastoreService();
-    MockitoAnnotations.initMocks(this);
   }
 
   @After
   public void tearDown() {
-    memoryAppender.reset();
-    memoryAppender.stop();
     helper.tearDown();
-  }
-
-  @After
-  public void validate() {
-    validateMockitoUsage();
   }
 
   @Test
   public void testRankPostsFromToday() throws Exception {
 
-    datastore.put(todayLowRankTestPost);
-    datastore.put(todayHighRankTestPost);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(todayLowRankTestPost.postToEntity());
+    datastore.put(todayHighRankTestPost.postToEntity());
 
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
 
@@ -123,8 +87,9 @@ public final class UserDataServletTest {
   @Test
   public void testRankPostsFromAnotherDay() throws Exception {
 
-    datastore.put(futureTestPost);
-    datastore.put(pastTestPost);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(futureTestPost.postToEntity());
+    datastore.put(pastTestPost.postToEntity());
 
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
 
@@ -134,10 +99,11 @@ public final class UserDataServletTest {
   @Test
   public void testRankManyPosts() throws Exception {
 
-    datastore.put(todayLowRankTestPost);
-    datastore.put(todayHighRankTestPost);
-    datastore.put(futureTestPost);
-    datastore.put(pastTestPost);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(todayLowRankTestPost.postToEntity());
+    datastore.put(todayHighRankTestPost.postToEntity());
+    datastore.put(futureTestPost.postToEntity());
+    datastore.put(pastTestPost.postToEntity());
 
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
 

@@ -86,6 +86,7 @@ public class Post implements Comparable<Post> {
     this.description = description;
     this.collegeId = collegeId;
     this.rank = this.numberOfPeopleItFeeds + getDuration();
+    timeSort = startHour * 60 + startMinute;
   }
 
   public Post() {}
@@ -237,8 +238,7 @@ public class Post implements Comparable<Post> {
   /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
   public Entity postToEntity() {
 
-    Key key = KeyFactory.createKey("College", collegeId);
-    Entity newPost = new Entity(collegeId, key);
+    Entity newPost = new Entity(collegeId);
 
     newPost.setProperty("organizationName", organizationName);
 
