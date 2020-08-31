@@ -1249,12 +1249,13 @@ function populatePostModalTime() {
   const endAmOrPm = document.getElementById('end-am-or-pm');
 
   const nowHours = parseInt(new Date().getHours());
-  modalStartHour.value = nowHours > 12 ? nowHours - 12 : nowHours;
+  modalStartHour.value = nowHours > 12 ? nowHours - 12 : (nowHours !== 0 ? nowHours : 12);
   modalStartMinute.value = '00';
   startAmOrPm.value = nowHours >= 12 ? 'pm' : 'am';
 
   const anHourFromNow = (nowHours + 1) % 24;
-  modalEndHour.value = anHourFromNow > 12 ? anHourFromNow - 12 : anHourFromNow;
+  modalEndHour.value = anHourFromNow > 12 ?
+    anHourFromNow - 12 : (anHourFromNow !== 0 ? anHourFromNow : 12);
   modalEndMinute.value = '00';
   endAmOrPm.value = anHourFromNow >= 12 ? 'pm' : 'am';
 }
