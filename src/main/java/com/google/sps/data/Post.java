@@ -30,7 +30,6 @@ Holds the information in the cards
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Key;
@@ -67,6 +66,29 @@ public class Post implements Comparable<Post> {
   private int rank = 0;
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
+
+  /* Constructor for Post testing */
+  public Post(String organizationName, int month, int day, int startHour, 
+              int startMinute, int endHour, int endMinute, String location,
+              double lat, double lng, int numberOfPeopleItFeeds, String typeOfFood,
+              String description, String collegeId) {
+    this.organizationName = organizationName;
+    this.month = month;
+    this.day = day;
+    this.startHour = startHour;
+    this.startMinute = startMinute;
+    this.endHour = endHour;
+    this.location = location;
+    this.lat = lat;
+    this.lng = lng;
+    this.numberOfPeopleItFeeds = numberOfPeopleItFeeds;
+    this.typeOfFood = typeOfFood;
+    this.description = description;
+    this.collegeId = collegeId;
+    this.rank = this.numberOfPeopleItFeeds + getDuration();
+  }
+
+  public Post() {}
 
   /* Fill in the important Post details from the POST request. */
   public void requestToPost(HttpServletRequest request, String collegeId) {
