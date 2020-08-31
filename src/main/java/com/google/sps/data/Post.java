@@ -36,10 +36,6 @@ import java.util.regex.Matcher;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.appengine.api.images.ImagesServiceFailureException;
-import java.net.URL;
-import java.net.MalformedURLException;
-
 public class Post {
 
   private static final Logger log = Logger.getLogger(Post.class.getName());
