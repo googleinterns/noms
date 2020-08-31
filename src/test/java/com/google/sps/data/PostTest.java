@@ -34,10 +34,11 @@ public final class PostTest {
     when(request.getParameter("numberOfPeopleItFeeds")).thenReturn(Integer.toString(numberOfPeopleItFeeds));
     when(request.getParameter("typeOfFood")).thenReturn(typeOfFood);
     when(request.getParameter("description")).thenReturn(description);
+    when(request.getParameter("collegeId")).thenReturn(collegeId);
 
     // Run requestToPost() on the Mock HTTP Request.
     Post testPost = new Post();
-    testPost.requestToPost(request, collegeId);
+    testPost.requestToPost(request);
 
     // Check if requestToPost() delivered expected results.
     Assert.assertEquals(testPost.getOrganizationName(), organizationName);
@@ -50,6 +51,7 @@ public final class PostTest {
     Assert.assertEquals(testPost.getNumberOfPeopleItFeeds(), numberOfPeopleItFeeds);
     Assert.assertEquals(testPost.getTypeOfFood(), typeOfFood);
     Assert.assertEquals(testPost.getDescription(), description);
+    Assert.assertEquals(testPost.getCollegeId(), collegeId);
 
     return testPost;
   }
@@ -78,10 +80,11 @@ public final class PostTest {
     when(request.getParameter("numberOfPeopleItFeeds")).thenReturn(numberOfPeopleItFeeds);
     when(request.getParameter("typeOfFood")).thenReturn(typeOfFood);
     when(request.getParameter("description")).thenReturn(description);
+    when(request.getParameter("collegeId")).thenReturn(collegeId);
 
     // Run requestToPost() on the Mock HTTP Request.
     Post testPost = new Post();
-    testPost.requestToPost(request, collegeId);
+    testPost.requestToPost(request);
 
     return testPost;
   }
