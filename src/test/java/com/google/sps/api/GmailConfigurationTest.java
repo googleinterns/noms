@@ -78,7 +78,7 @@ public final class GmailConfigurationTest {
   private static final String COLLEGE_A = "000000";
   private static final String COLLEGE_B = "000001";
 
-  private static final String SUCCESS_MSG = "Successfully sent a new post email to: ";
+  private static final String SUCCESS_MSG = "Successfully sent an email to: ";
   private static final String LOGGER_NAME = "com.google.sps.api";
 
   @Mock private static Gmail mockGmail;

@@ -576,7 +576,7 @@ public final class PostTest {
   }
 
   @Test
-  public void testSortingOnePost() {
+  public void testSorting() {
 
     String collegeId = "122931";
     String organizationName = "Bread Club";

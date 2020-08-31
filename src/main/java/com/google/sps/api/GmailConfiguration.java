@@ -141,7 +141,7 @@ public class GmailConfiguration {
       MimeMessage Mimemessage = createEmail(to, subject, content);	
       Message message = createMessageWithEmail(Mimemessage);	
       message = service.users().messages().send(FROM, message).execute();	
-      LOGGER.info("Successfully sent a new post email to: " + to);
+      LOGGER.info("Successfully sent an email to: " + to);
 
     } catch (Exception e) {
 

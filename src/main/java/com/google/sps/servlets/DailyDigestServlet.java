@@ -38,6 +38,7 @@ import com.google.sps.data.Post;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;   
@@ -87,10 +88,7 @@ public class DailyDigestServlet extends HttpServlet {
     ArrayList<Post> posts = new ArrayList<Post>();
     
     // Filters for given college and today's date.
-    Filter collegeFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, collegeId);
-    CompositeFilter todayAndCollegeFilter = CompositeFilterOperator.and(collegeFilter, getTodayFilter());
-
-    Query q = new Query("Post").setFilter(todayAndCollegeFilter);
+    Query q = new Query("Post").setFilter(getFilters(collegeId));
     PreparedQuery pq = datastore.prepare(q);
     for (Entity entity: pq.asIterable()) {
       Post newPost = new Post();
@@ -99,7 +97,7 @@ public class DailyDigestServlet extends HttpServlet {
     }
 
     // Get top 3 ranked posts by sorting the posts.
-    Collections.sort(posts);
+    Collections.sort(posts, Collections.reverseOrder());
     int size = posts.size() >= 3 ? 3 : posts.size();
     ArrayList<Post> rankedPosts = new ArrayList<Post>();
     for(int i = 0; i < size; i++) {
@@ -110,11 +108,11 @@ public class DailyDigestServlet extends HttpServlet {
   }
 
   /**
-    * Create a filter that limits results to today's posts.
+    * Create a filter that limits results to today's posts and to a college.
     *
-    * @return month AND day filter
+    * @return month AND day AND college filter
     */
-  public static CompositeFilter getTodayFilter() {
+  public static CompositeFilter getFilters(String collegeId) {
     
     // Get today's date.
     Calendar today = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
@@ -124,8 +122,11 @@ public class DailyDigestServlet extends HttpServlet {
     // Filter through a college to find posts that happen today.
     Filter monthFilter = new FilterPredicate("month", FilterOperator.EQUAL, month);
     Filter dayFilter = new FilterPredicate("day", FilterOperator.EQUAL, day);
-    CompositeFilter monthAndDayFilter = CompositeFilterOperator.and(monthFilter, dayFilter);
+    Filter collegeFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, collegeId);
 
-    return monthAndDayFilter;
+    CompositeFilter filters = new CompositeFilter(CompositeFilterOperator.AND, 
+      Arrays.<Filter>asList(monthFilter, dayFilter, collegeFilter));
+
+    return filters;
   }
 }

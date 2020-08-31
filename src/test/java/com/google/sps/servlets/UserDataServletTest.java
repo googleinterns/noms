@@ -71,7 +71,7 @@ public final class UserDataServletTest {
   private static final String UNSUB_FAIL_MSG = 
     "User was unable to unsubscribe but was never subscribed.";
   private static final String EMAIL_SUCCESS = 
-    "Successfully sent a new post email to: ";
+    "Successfully sent an email to: ";
 
   private static final String NAME = "test";
   private static final String EMAIL_A = "testa@google.com";

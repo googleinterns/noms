@@ -95,32 +95,28 @@ public class DailyDigestServletTest {
   public void testRankPostsFromToday() {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(todayLowRankTestPost.postToEntity(COLLEGE_ID));
-    datastore.put(todayHighRankTestPost.postToEntity(COLLEGE_ID));
-    
-    Filter collegeFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, COLLEGE_ID);
-    CompositeFilter todayAndCollegeFilter = CompositeFilterOperator.and(collegeFilter, dailyDigestServlet.getTodayFilter());
-    Query q = new Query("Post").setFilter(todayAndCollegeFilter);
+    datastore.put(todayLowRankTestPost.postToEntity("Post"));
+    datastore.put(todayHighRankTestPost.postToEntity("Post"));
+  
+    Query q = new Query("Post").setFilter(dailyDigestServlet.getFilters(COLLEGE_ID));
     PreparedQuery pq = datastore.prepare(q);
     when(mockPreparedQuery.asIterable()).thenReturn(pq.asIterable());
 
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
     
     Assert.assertEquals(2, rankedPosts.size());
-    Assert.assertEquals(80, rankedPosts.get(0).getRank());
-    Assert.assertEquals(145, rankedPosts.get(1).getRank());
+    Assert.assertEquals(145, rankedPosts.get(0).getRank());
+    Assert.assertEquals(80, rankedPosts.get(1).getRank());
   }
 
   @Test
   public void testRankPostsFromAnotherDay() throws Exception {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(futureTestPost.postToEntity(COLLEGE_ID));
-    datastore.put(futureTestPost.postToEntity(COLLEGE_ID));
+    datastore.put(futureTestPost.postToEntity("Post"));
+    datastore.put(futureTestPost.postToEntity("Post"));
 
-    Filter collegeFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, COLLEGE_ID);
-    CompositeFilter todayAndCollegeFilter = CompositeFilterOperator.and(collegeFilter, dailyDigestServlet.getTodayFilter());
-    Query q = new Query("Post").setFilter(todayAndCollegeFilter);
+    Query q = new Query("Post").setFilter(dailyDigestServlet.getFilters(COLLEGE_ID));
     PreparedQuery pq = datastore.prepare(q);
     when(mockPreparedQuery.asIterable()).thenReturn(pq.asIterable());
 
@@ -133,25 +129,19 @@ public class DailyDigestServletTest {
   public void testRankManyPosts() throws Exception {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(todayLowRankTestPost.postToEntity(COLLEGE_ID));
-    datastore.put(todayHighRankTestPost.postToEntity(COLLEGE_ID));
-    datastore.put(futureTestPost.postToEntity(COLLEGE_ID));
-    datastore.put(futureTestPost.postToEntity(COLLEGE_ID));
+    datastore.put(todayLowRankTestPost.postToEntity("Post"));
+    datastore.put(todayHighRankTestPost.postToEntity("Post"));
+    datastore.put(futureTestPost.postToEntity("Post"));
+    datastore.put(futureTestPost.postToEntity("Post"));
 
-    Filter collegeFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, COLLEGE_ID);
-    CompositeFilter todayAndCollegeFilter = CompositeFilterOperator.and(collegeFilter, dailyDigestServlet.getTodayFilter());
-    Query q = new Query("Post").setFilter(todayAndCollegeFilter);
+    Query q = new Query("Post").setFilter(dailyDigestServlet.getFilters(COLLEGE_ID));
     PreparedQuery pq = datastore.prepare(q);
-    for (Entity entity: pq.asIterable()) {
-      System.out.println("hello");
-    }
-
     when(mockPreparedQuery.asIterable()).thenReturn(pq.asIterable());
 
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
 
     Assert.assertEquals(2, rankedPosts.size());
-    Assert.assertEquals(80, rankedPosts.get(0).getRank());
-    Assert.assertEquals(145, rankedPosts.get(1).getRank());
+    Assert.assertEquals(145, rankedPosts.get(0).getRank());
+    Assert.assertEquals(80, rankedPosts.get(1).getRank());
   }
 }

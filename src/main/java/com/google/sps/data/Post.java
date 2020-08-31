@@ -87,7 +87,7 @@ public class Post implements Comparable<Post> {
     this.description = description;
     this.collegeId = collegeId;
     this.rank = this.numberOfPeopleItFeeds + getDuration();
-    timeSort = startHour * 60 + startMinute;
+    this.timeSort = startHour * 60 + startMinute;
   }
 
   public Post() {}
