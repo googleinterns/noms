@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import static java.lang.Math;
+
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -64,7 +66,7 @@ public class DailyDigestServlet extends HttpServlet {
     // Query all colleges from Datastore.
     Query q = new Query("College");
     PreparedQuery pq = datastore.prepare(q);
-    for (Entity college: pq.asIterable()) {
+    for (Entity college : pq.asIterable()) {
 
       // Send users a daily digest email about the top ranked 3 posts.
       String collegeId = college.getKey().getName().toString();
@@ -88,7 +90,7 @@ public class DailyDigestServlet extends HttpServlet {
     // Filters for given college and today's date.
     Query q = new Query("Post").setFilter(getFilters(collegeId));
     PreparedQuery pq = datastore.prepare(q);
-    for (Entity entity: pq.asIterable()) {
+    for (Entity entity : pq.asIterable()) {
       Post newPost = new Post();
       newPost.entityToPost(entity);
       posts.add(newPost);
@@ -96,7 +98,7 @@ public class DailyDigestServlet extends HttpServlet {
 
     // Get top 3 ranked posts by sorting the posts.
     Collections.sort(posts, Collections.reverseOrder());
-    int size = posts.size() >= 3 ? 3 : posts.size();
+    int size = Math.max(3, posts.size());
     ArrayList<Post> rankedPosts = new ArrayList<Post>();
     for(int i = 0; i < size; i++) {
       rankedPosts.add(posts.get(i));
