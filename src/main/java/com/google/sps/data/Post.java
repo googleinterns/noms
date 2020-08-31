@@ -246,8 +246,8 @@ public class Post implements Comparable<Post> {
   /* Set sorting by the rank of event. */
   @Override     
   public int compareTo(Post post) {          
-    return (this.getRank() < post.getRank() ? -1 : 
-      (this.getRank() == post.getRank() ? 0 : 1));     
+    return (this.getRank() > post.getRank() ? 1 : 
+      (this.getRank() == post.getRank() ? 0 : -1));     
   }     
 
   /* Get duration of an event in minutes.*/

@@ -581,18 +581,25 @@ public final class PostTest {
     String day = "31";
     String startHour = "4";
     String startMinute = "30";
-    String startAMorPM = "am";
-    String endHour = "4";
+    String startAMorPM = "pm";
+    String endHour = "9";
     String endMinute = "30";
     String endAMorPM = "pm";
     String location = "Benson Memorial Center";
     String lat = "37.3476132";
     String lng = "-121.9394005";
-    String numberOfPeopleItFeeds = "50";
+    String numberOfPeopleItFeeds = "100";
     String typeOfFood = "Bread";
     String description = "Bread Club is officially giving away free bread!";
 
-    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    Post testPost1 = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    String numberOfPeopleItFeeds2 = "50";
+
+    Post testPost2 = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds2, typeOfFood, description);
+
+    Assert.assertEquals(1, testPost1.compareTo(testPost2));
   }
 }
