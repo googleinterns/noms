@@ -4,6 +4,7 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +17,13 @@ public class CreateBlobstoreUrlServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Creates an upload URL for sending the form submission.
-    String uploadUrl;
+    String uploadUrl = "";
 
     try {
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       uploadUrl = blobstoreService.createUploadUrl("/postData");
     } catch (Exception e) {
-      log.error(e.toString());
+      log.severe(e.toString());
     }
 
     response.setContentType("text/html");

@@ -452,7 +452,6 @@ async function fetchPosts(collegeId) {
       numOfPeopleFoodWillFeed: message[i]['numberOfPeopleItFeeds'],
       foodType: message[i]['typeOfFood'],
       description: message[i]['description'],
-    //   imageServingUrl: message[i]['imageServingUrl'],
       blobKey: message[i]['blobKey'],
     };
     posts.push(post);
@@ -664,7 +663,7 @@ async function addPosts(posts) {
     const cardImage = document.createElement('img');
     cardImage.setAttribute('class', 'card-image');
     const errorSource = './assets/svg/foodcartoon.svg';
-    let imageSource = await getServingUrl(post.blobKey);
+    let imageSource = await getImageUrl(post.blobKey);
     if (!imageSource) {
       imageSource = errorSource;
     }
@@ -705,7 +704,12 @@ async function addPosts(posts) {
   }
 }
 
-async function getServingUrl(blobKey) {
+/**
+ * Given a post's blobKey, gets the URL to the image.
+ * @param {String} blobKey
+ * @return {String}
+ */
+async function getImageUrl(blobKey) {
   const url = '/serve?blob-key=' + blobKey;
   const response = await fetch(url, {
     method: 'GET',
@@ -765,7 +769,7 @@ function closeModal() {
  * @return {void}
  */
 function displayUploadedFile() {
-  const fileName = modalFileUpload.value.split('(\)').pop();
+  const fileName = modalFileUpload.value.split('\\').pop();
   if (fileName) {
     modalUploadLabel.innerText = fileName;
   } else {
@@ -1119,6 +1123,13 @@ async function checkLocationAndSubmit() {
   }
 }
 
+/**
+ * Adds the collegeId, lat, and lng to the form request.
+ * @param {String} collegeId
+ * @param {String} lat
+ * @param {String} lng
+ * @return {void}
+ */
 function addAdditionalParameters(collegeId, lat, lng) {
   const collegeIdInput = document.createElement('input');
   collegeIdInput.setAttribute('name', 'collegeId');
