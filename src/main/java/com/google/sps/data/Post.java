@@ -78,7 +78,8 @@ public class Post {
         !InputPattern.POSITIVE_INTEGER.matcher(numberOfPeopleItFeedsUnparsed).matches() ||
         !InputPattern.TEXT.matcher(typeOfFoodUnparsed).matches() || typeOfFoodUnparsed.length() > 25 ||
         !InputPattern.TEXT.matcher(descriptionUnparsed).matches() || descriptionUnparsed.length() > 500 ||
-        descriptionUnparsed.length() < 15) {
+        descriptionUnparsed.length() < 15 ||
+        !InputPattern.TEXT.matcher(collegeIdUnparsed).matches() || collegeIdUnparsed.length() > 6) {
       valid = false;
       return;
     }
