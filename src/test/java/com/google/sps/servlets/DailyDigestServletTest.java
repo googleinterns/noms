@@ -93,7 +93,6 @@ public class DailyDigestServletTest {
 
   @Test
   public void testRankPostsFromToday() {
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(todayLowRankTestPost.postToEntity("Post"));
     datastore.put(todayHighRankTestPost.postToEntity("Post"));
@@ -111,7 +110,6 @@ public class DailyDigestServletTest {
 
   @Test
   public void testRankPostsFromAnotherDay() throws Exception {
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(futureTestPost.postToEntity("Post"));
     datastore.put(futureTestPost.postToEntity("Post"));
@@ -127,7 +125,6 @@ public class DailyDigestServletTest {
 
   @Test
   public void testRankManyPosts() throws Exception {
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(todayLowRankTestPost.postToEntity("Post"));
     datastore.put(todayHighRankTestPost.postToEntity("Post"));

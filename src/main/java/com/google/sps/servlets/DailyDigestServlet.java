@@ -61,7 +61,6 @@ public class DailyDigestServlet extends HttpServlet {
   /** GETs information about users to send daily digest emails. */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     // Query all colleges from Datastore.
     Query q = new Query("College");
     PreparedQuery pq = datastore.prepare(q);
@@ -84,7 +83,6 @@ public class DailyDigestServlet extends HttpServlet {
     * @return 3 max of the most highly ranked posts
     */
   public static ArrayList<Post> rankPosts(String collegeId) throws TooManyResultsException {
-
     ArrayList<Post> posts = new ArrayList<Post>();
     
     // Filters for given college and today's date.
@@ -113,7 +111,6 @@ public class DailyDigestServlet extends HttpServlet {
     * @return month AND day AND college filter
     */
   public static CompositeFilter getFilters(String collegeId) {
-    
     // Get today's date.
     Calendar today = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     int month = today.get(Calendar.MONTH);

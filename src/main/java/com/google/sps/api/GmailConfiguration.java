@@ -73,7 +73,6 @@ public class GmailConfiguration {
     */
   private static MimeMessage createEmail(String to, String subject, String bodyText) 
       throws MessagingException {
-
     Properties props = new Properties();
     Session session = Session.getDefaultInstance(props, null);
     MimeMessage email = new MimeMessage(session);
@@ -96,7 +95,6 @@ public class GmailConfiguration {
     */
   private static Message createMessageWithEmail(MimeMessage emailContent)
       throws MessagingException, IOException {
-
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     emailContent.writeTo(buffer);
     byte[] bytes = buffer.toByteArray();
@@ -119,7 +117,6 @@ public class GmailConfiguration {
     */
   private static Message sendMessage(Gmail service, MimeMessage emailContent)
       throws MessagingException, IOException {
-    
     Message message = createMessageWithEmail(emailContent);
     message = service.users().messages().send(FROM, message).execute();
 
@@ -136,15 +133,12 @@ public class GmailConfiguration {
   public static void sendEmail(String to, String subject, String content) {
 
     try {
-      
       Gmail service = GmailAPI.getGmailService();	
       MimeMessage Mimemessage = createEmail(to, subject, content);	
       Message message = createMessageWithEmail(Mimemessage);	
       message = service.users().messages().send(FROM, message).execute();	
       LOGGER.info("Successfully sent an email to: " + to);
-
     } catch (Exception e) {
-
       LOGGER.error("Unable to send messsage due to: " + e.toString());
     }
   }	
@@ -156,7 +150,6 @@ public class GmailConfiguration {
     * @throws IOException
     */
   public static void notifyUsers(String collegeId, Post newPost) throws IOException {
-    
     // Email the users to notify them that a new post has been added.
     for (Entity user : getAllUsersForACollege(collegeId)) {
       String email = user.getKey().getName().toString();
@@ -171,7 +164,6 @@ public class GmailConfiguration {
     * @throws IOException
     */
   public static void notifyUsers(String collegeId, ArrayList<Post> rankedPosts) throws IOException {
-    
     // Email the users to notify them with ranked posts for the day.
     for (Entity user : getAllUsersForACollege(collegeId)) {
       String email = user.getKey().getName().toString();
@@ -186,7 +178,6 @@ public class GmailConfiguration {
     * @return iterable of user entities
     */
   private static Iterable<Entity> getAllUsersForACollege(String collegeId) {
-    
     Filter collegeFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
     Query q = new Query("User").setFilter(collegeFilter);
     PreparedQuery pq = datastore.prepare(q);

@@ -39,7 +39,6 @@ public class Email {
     * @throws IOException
     */
   public static String getStringFromHTML(String path) throws IOException {
-
     ClassLoader classLoader = Email.class.getClassLoader();
     File HTMLfile = new File(classLoader.getResource(path).getFile());
     String str = FileUtils.readFileToString(HTMLfile, "utf-8");
@@ -53,7 +52,6 @@ public class Email {
     * @throws IOException
     */
   public static String getWelcomeString() throws IOException {
-
     return getStringFromHTML(welcomeContentPath);
   }
 
@@ -65,7 +63,6 @@ public class Email {
     * @throws IOException
     */
   public static String addNewPost(Post post) throws IOException {
-
     String emailContent = getStringFromHTML(newPostPath);
     emailContent = emailContent.replace("[organizationName]", post.getOrganizationName());
     emailContent = emailContent.replace("[location]", post.getLocation());
@@ -85,7 +82,6 @@ public class Email {
     * @throws IOException
     */
   public static String addRankedPosts(ArrayList<Post> rankedPosts) throws IOException {
-
     String emailContent = getStringFromHTML(dailyDigestPath);
 
     // Split up email content to inject multiple posts in between.
@@ -113,7 +109,6 @@ public class Email {
     * @return string of time in XX:XX PM/AM or X:XX PM/AM format.
     */
   private static String getFormattedTime(int hour, int minute) {
-
     String formattedTime = "";
     String amOrPm = "";
 
