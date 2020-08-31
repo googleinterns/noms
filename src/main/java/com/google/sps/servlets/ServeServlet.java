@@ -23,27 +23,5 @@ public class ServeServlet extends HttpServlet {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     BlobKey blobKey = new BlobKey(request.getParameter("blob-key"));
     blobstoreService.serve(blobKey, response);
-
-    // BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    // BlobKey blobKey = new BlobKey(request.getParameter("blob-key"));
-
-    // if (blobKey == null) {
-    //   return;
-    // }
-
-    // // If the user did not select a file, we cannot generate a URL.
-    // BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-    // if (blobInfo.getSize() == 0) {
-    //   blobstoreService.delete(blobKey);
-    //   return;
-    // }
-
-    // // Use ImagesService to get a URL that points to the uploaded file.
-    // ImagesService imagesService = ImagesServiceFactory.getImagesService();
-    // ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-    // String url = imagesService.getServingUrl(options);
-
-    // response.setContentType("text/html");
-    // response.getWriter().println(url);
   }
 }
