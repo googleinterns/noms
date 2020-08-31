@@ -62,9 +62,9 @@ public class DailyDigestServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Query all colleges from Datastore.
-    Query collegesQ = new Query("College");
-    PreparedQuery collegesPQ = datastore.prepare(collegesQ);
-    for (Entity college: collegesPQ.asIterable()) {
+    Query q = new Query("College");
+    PreparedQuery pq = datastore.prepare(q);
+    for (Entity college: pq.asIterable()) {
 
       // Send users a daily digest email about the top ranked 3 posts.
       String collegeId = college.getKey().getName().toString();

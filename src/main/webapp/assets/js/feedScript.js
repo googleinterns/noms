@@ -1229,7 +1229,7 @@ function showDateTipOnModal(e, show = null) {
  * @param {KeyboardEvent} e - The keypress event.
  */
 function limitCharacterInput(e) {
-  const regex = RegExp('[a-zA-Z0-9 .,\\n!]');
+  const regex = RegExp('[a-zA-Z0-9 .,\\n\'!]');
 
   if (!regex.test(e.key) && e.key != 'backspace' && e.key.length == 1) {
     e.preventDefault();
