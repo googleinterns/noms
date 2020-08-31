@@ -47,7 +47,7 @@ public class Post {
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
 
   /* Fill in the important Post details from the POST request. */
-  public void requestToPost(HttpServletRequest request, String collegeId) {
+  public void requestToPost(HttpServletRequest request) {
     String orgNameUnparsed = request.getParameter("organizationName");
     String monthUnparsed = request.getParameter("month");
     String dayUnparsed = request.getParameter("day");
@@ -61,6 +61,7 @@ public class Post {
     String numberOfPeopleItFeedsUnparsed = request.getParameter("numberOfPeopleItFeeds");
     String typeOfFoodUnparsed = request.getParameter("typeOfFood");
     String descriptionUnparsed = request.getParameter("description");
+    String collegeIdUnparsed = request.getParameter("collegeId");
 
     // Perform input validation before we attempt to parse the inputs, as things like integers
     // might be invalid and would cause parseInt() to throw an exception.
@@ -96,7 +97,7 @@ public class Post {
     numberOfPeopleItFeeds = Integer.parseInt(numberOfPeopleItFeedsUnparsed);
     typeOfFood = typeOfFoodUnparsed;
     description = descriptionUnparsed;
-    this.collegeId = collegeId;
+    collegeId = collegeIdUnparsed;
 
     // Adjust the start and end hour based on whether the hour is AM or PM.
     startHour = startHour % 12;
@@ -184,13 +185,13 @@ public class Post {
     typeOfFood = (String) entity.getProperty("typeOfFood");
     description = (String) entity.getProperty("description");
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
-    collegeId = (String) entity.getKind();
+    collegeId = (String) entity.getProperty("collegeId");
     postId = entity.getKey().toString();
   }
 
   /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
-  public Entity postToEntity() {
-    Entity newPost = new Entity(collegeId);
+  public Entity postToEntity(String entityKind) {
+    Entity newPost = new Entity(entityKind);
 
     newPost.setProperty("organizationName", organizationName);
 
@@ -212,6 +213,7 @@ public class Post {
     newPost.setProperty("description", description);
 
     newPost.setProperty("timeSort", timeSort);
+    newPost.setProperty("collegeId", collegeId);
 
     return newPost;
   }
