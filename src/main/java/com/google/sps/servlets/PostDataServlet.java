@@ -75,6 +75,10 @@ public class PostDataServlet extends HttpServlet {
     newPost.requestToPost(request, collegeId);
 
     if (newPost.valid) {
+
+      Entity collegeEntity = new Entity("College", collegeId);
+      datastore.put(collegeEntity);
+
       Entity newPostEntity = newPost.postToEntity();
       datastore.put(newPostEntity);
 
