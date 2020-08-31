@@ -11,7 +11,6 @@ Holds the information in the cards
   - Description
   - College Id
   - BlobKey
-  - Image Serving URL
 */
 
 package com.google.sps.data;
@@ -31,6 +30,7 @@ import com.google.sps.data.InputPattern;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.TimeZone;
@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 
 public class Post {
 
+  private static final Logger log = Logger.getLogger(Post.class.getName());
   private String postId = "";
   private String organizationName = "";
   private int month = 0;
@@ -59,7 +60,6 @@ public class Post {
   private String description = "";
   private String collegeId = "";
   private int timeSort = 0;
-//   private String imageServingUrl = "";
   private String blobKey;
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
@@ -76,8 +76,6 @@ public class Post {
     String locationUnparsed = request.getParameter("location");
     String latUnparsed = request.getParameter("lat");
     String lngUnparsed = request.getParameter("lng");
-    // String latUnparsed = "0";
-    // String lngUnparsed = "0";
     String numberOfPeopleItFeedsUnparsed = request.getParameter("numberOfPeopleItFeeds");
     String typeOfFoodUnparsed = request.getParameter("typeOfFood");
     String descriptionUnparsed = request.getParameter("description");
@@ -150,30 +148,12 @@ public class Post {
     // Set the year. Right now time zone is set to "America/Los_Angeles".
     Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     year = nowTime.get(Calendar.YEAR);
-
-    // // Implements a try-catch statement in case the Servlet is accessed directly, instead of through Blob Upload URL.
-    // try {
-      // If there is an image uploaded, set the Blob Key and Serving Url.
-    blobKey = getBlobKey(request, "foodImage");
-    //   imageServingUrl = getServingUrl(blobKey);
-    // }
-    // catch (Exception e) {
-    //   // In the case the Blob Upload URL is not used, set the servingUrl and blobKey to default values.
-    //   System.out.println(e);
-    //   imageServingUrl = e.getMessage();
-    //   blobKey = null;
-    // }
-
-    // blobKey = getBlobKey(request, "foodImage");
-    // // Implements a try-catch statement in case the Servlet is accessed directly, instead of through Blob Upload URL.
-    // try {
-    //   // If there is an image uploaded, set the Blob Key and Serving Url.
-    //   imageServingUrl = getServingUrl(blobKey);
-    // }
-    // catch (Exception e) {
-    //   // In the case the Blob Upload URL is not used, set the servingUrl and blobKey to default values.
-    //   imageServingUrl = e.getCause().toString();
-    // }
+    
+    try {
+      blobKey = getBlobKey(request, "foodImage");
+    } catch (Exception e) {
+      log.warning(e.toString());
+    }
   }
 
   /* Create a new entity with the college ID and the Post information. Sets all the properties. */
@@ -200,7 +180,6 @@ public class Post {
     newPost.setProperty("description", description);
 
     newPost.setProperty("timeSort", timeSort);
-    // newPost.setProperty("imageServingUrl", imageServingUrl);
     newPost.setProperty("blobKey", blobKey);
 
     return newPost;
@@ -228,18 +207,16 @@ public class Post {
  
       // If the post time is before the current time, delete the post from storage.
       if (postTime.before(nowTime)) {
-        // Delete the blob from Blobstore.
+        // Delete the blob and entity from Blobstore.
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
         String blobKey = (String) (entity.getProperty("blobKey"));
         if (blobKey != null) {
           BlobKey blobKeyToDelete = new BlobKey(blobKey);
           blobstoreService.delete(blobKeyToDelete);
         }
-        // Delete the entity from Datastore.
         datastore.delete(entity.getKey());
-      }
-      // Only add the post to result if it is on the same day.
-      else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
+      } else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
+        // Only add the post to result if it is on the same day.
         Post newPost = new Post();
         newPost.entityToPost(entity);
         currentPosts.add(newPost);
@@ -267,79 +244,16 @@ public class Post {
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
     collegeId = (String) entity.getKind();
     postId = entity.getKey().toString();
-    // imageServingUrl = (String) entity.getProperty("imageServingUrl");
-    blobKey = (String) entity.getProperty("blobKey"); // Does not set the blobKey. It can be used to change the blob, so it should not be sent to the client side.
+    blobKey = (String) entity.getProperty("blobKey");
   }
 
   private String getBlobKey(HttpServletRequest request, String formInputElementName) {
-    // BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    // Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
-    // List<BlobKey> blobKeys = blobs.get(formInputElementName);
-
-    // // If the user did not select a file, we cannot generate a blobKey.
-    // if(blobKeys == null || blobKeys.isEmpty()) {
-    //   return null;
-    // }
-
-    // // The form only contains a single file input, so get the first index.
-    // BlobKey blobKey = blobKeys.get(0);
-
-    // return blobKey;
-
-
-    // BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    // Map<String, List<BlobInfo>> blobs = blobstoreService.getBlobInfos(request);
-    // List<BlobInfo> blobInfos = blobs.get(formInputElementName);
-
-    // // If the user did not select a file, we cannot generate a blobKey.
-    // if(blobInfos == null || blobInfos.isEmpty()) {
-    //   return null;
-    // }
-
-    // // The form only contains a single file input, so get the first index.
-    // BlobInfo blobInfo = blobInfos.get(0);
-    // BlobKey blobKey = blobInfo.getBlobKey();
-
-    // return blobKey;
-
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
 
     return blobKeys.get(0).getKeyString();
-
-    // if (blobKeys == null || blobKeys.isEmpty()) {
-    //   res.sendRedirect("/");
-    // } else {
-    //   res.sendRedirect("/serve?blob-key=" + blobKeys.get(0).getKeyString());
-    // }
   }
-
-//   private String getServingUrl(BlobKey blobKey) {
-//     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-
-//     if (blobKey == null) {
-//       return null;
-//     }
-
-//     // If the user did not select a file, we cannot generate a URL.
-//     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-//     if (blobInfo.getSize() == 0) {
-//       blobstoreService.delete(blobKey);
-//       return null;
-//     }
-
-//     // Use ImagesService to get a URL that points to the uploaded file.
-//     ImagesService imagesService = ImagesServiceFactory.getImagesService();
-//     ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-//     try {
-//       URL url = new URL(imagesService.getServingUrl(options));
-//       return url.getPath();
-//     } catch (MalformedURLException e) {
-//       return imagesService.getServingUrl(options);
-//     }
-//     // return imagesService.getServingUrl(options);
-//   }
 
   /* Class Getters. */
   public String getOrganizationName() {

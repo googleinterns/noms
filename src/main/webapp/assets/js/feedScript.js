@@ -639,25 +639,6 @@ function applyLogisticFunction(xValue, bounds) {
       (Math.exp(-((xValue - 28)/6)) + 1) + bounds.min);
 }
 
-function base64EncodeUnicode(str) {
-    // // First we escape the string using encodeURIComponent to get the UTF-8 encoding of the characters, 
-    // // then we convert the percent encodings into raw bytes, and finally feed it to btoa() function.
-    // utf8Bytes = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-    //         return String.fromCharCode('0x' + p1);
-    // });
-
-    // return btoa(utf8Bytes);
-    const array8Bit = [];
-    for (let i = 0; i < str.length; i++) {
-      const currentChar = str.charCodeAt(i);
-      const bottomHalf = String.fromCharCode(currentChar & 0xFF);
-      const topHalf = String.fromCharCode((currentChar >> 8) & 0xFF);
-      array8Bit.push(bottomHalf);
-      array8Bit.push(topHalf);
-    }
-    return array8Bit;
-}
-
 /**
  * Adds posts to the page.
  * @param {array} posts
@@ -678,39 +659,20 @@ async function addPosts(posts) {
     postCard.setAttribute('id', post.id);
     postCard.setAttribute('tabindex', '0');
 
-    // Adds the image from the image serving URL.
-    // If there is not a valid URL, then display the stock SVG.
+    // Adds the image from the served blob.
+    // If there is not a valid image source, then display the stock SVG.
     const cardImage = document.createElement('img');
     cardImage.setAttribute('class', 'card-image');
+    const errorSource = './assets/svg/foodcartoon.svg';
     let imageSource = await getServingUrl(post.blobKey);
     if (!imageSource) {
-      imageSource = './assets/svg/forkandknife.svg';
+      imageSource = errorSource;
     }
-    // imageSource = './assets/svg/forkandknife.svg';
-    // let bit8array = base64EncodeUnicode(imageSource);
-    // let bit8arrayString = bit8array.join('');
-    // console.log(bit8arrayString);
-    // let imgsrc = btoa(bit8arrayString);
-    // base64 = btoa(imageSource.replace(/[\u00A0-\u2666]/g, function(c) {
-    //   return '&#' + c.charCodeAt(0) + ';';
-    // }));
-
-    // const byteArray = new Uint8Array(imageSource);
-    // console.log(byteArray);
-    // const str = String.fromCharCode.apply(null, byteArray);
-    // imgsrc = 'data:image/*;base64,' + imgsrc;
-
-    // console.log(imgsrc);
-
-    // console.log(imageSource);
-    // const imageSourceBase64 = 'data:image/*;base64,' + btoa(unescape(encodeURIComponent((imageSource))));
-    // console.log(imageSourceBase64);
     cardImage.setAttribute('src', imageSource);
-    // // Catches unexpected errors with the image source.
-    // cardImage.onerror = function() {
-    //   cardImage.setAttribute('src', './assets/svg/forkandknife.svg');
-    // };
-    // const url = await getServingUrl(post.blobKey);
+    // Catches unexpected errors with the image source.
+    cardImage.onerror = function() {
+      cardImage.setAttribute('src', errorSource);
+    };
 
     // Add a div for all the post card text.
     const postText = document.createElement('div');
@@ -749,29 +711,16 @@ async function getServingUrl(blobKey) {
     method: 'GET',
   });
   const responseStatus = await response.status;
-//   const message = await response.text();
   const blob = await response.blob();
+
   // Only return a URL if there is a successful response.
   if (responseStatus === 200) {
     const URLCreator = window.URL;
-    // create a URL for accessing the Blob.
     const imageURL = URLCreator.createObjectURL(blob);
     return imageURL;
   } else {
     return;
   }
-
-  const getBlob = async (blobstoreKey) => {
-  const response = await fetch(`<YOUR_SERVLET>/?blob-key=${blobstoreKey}`);
-  // parse the body of the response as a Blob.
-  // see: https://developer.mozilla.org/en-US/docs/Web/API/Blob
-  const blob = await response.blob();
-  const URLCreator = window.URL;
-  // create a URL for accessing the Blob.
-  const imageURL = URLCreator.createObjectURL(blob);
-  return imageURL;
-}
-
 }
 
 /**
@@ -816,7 +765,7 @@ function closeModal() {
  * @return {void}
  */
 function displayUploadedFile() {
-  const fileName = modalFileUpload.value.split( '\\' ).pop();
+  const fileName = modalFileUpload.value.split('(\)').pop();
   if (fileName) {
     modalUploadLabel.innerText = fileName;
   } else {
@@ -909,9 +858,9 @@ function resetMarks(formElements) {
 function markInvalidInputs(invalidIds, errorMessages, formElements) {
   resetMarks(formElements);
   invalidIds.forEach((id) => {
-    const elt = document.getElementById(id);
-    if (elt) {
-      elt.style.backgroundColor = '#ff999966';
+    const element = document.getElementById(id);
+    if (element) {
+      element.style.backgroundColor = '#ff999966';
     }
   });
   if (errorMessages.length > 0) {
@@ -938,7 +887,7 @@ function validateModalFile(invalidIds, errorMessages) {
   const file = modalFileUpload.files[0];
   if (file) {
     if (file.type.includes('image')) {
-      const largestFileSize = 4000000;
+      const largestFileSize = 4000000; // 4 MB
       if (file.size > largestFileSize) {
         invalidIds.push('modal-upload-label');
         errorMessages.push('image is too large');
@@ -1140,22 +1089,15 @@ async function checkLocationAndSubmit() {
       const lat = latLngResult ? latLngResult.lat : 0;
       const lng = latLngResult ? latLngResult.long : 0;
 
-      const baseUrl = await getBlobstoreUrl();
-      if (!baseUrl) {
+      const blobstoreUploadURL = await getBlobstoreUrl();
+      if (!blobstoreUploadURL) {
         alert('Server Error. Try again later.');
         submitModalButton.disabled = false;
         return;
       }
-      const url = baseUrl;
-    //   url = baseUrl + '?collegeId=' + collegeId + '&lat=' + lat + '&lng=' + lng;
-      modalForm.action = url;
 
+      modalForm.action = blobstoreUploadURL;
       addAdditionalParameters(collegeId, lat, lng);
-
-    //   const modalFormElements = modalForm.elements;
-    //   const modalFormElementsType = type(modalFormElements);
-    //   const body = JSON.stringify(modalForm.elements)
-    //   console.log(body);
 
       const subtitle = document.getElementById('modal-submitted-subtitle');
       if (dateIsInTheFuture(modalMonth.value, modalDay.value)) {
@@ -1171,7 +1113,6 @@ async function checkLocationAndSubmit() {
       // Closes the submit modal after 2000 ms, and submits the form.
       setTimeout(function() {
         closeSubmit();
-        // postForm(url);
         modalForm.submit();
       }, 2000);
     }
@@ -1198,44 +1139,6 @@ function addAdditionalParameters(collegeId, lat, lng) {
   modalForm.appendChild(lngInput);
 }
 
-async function postForm(url) {
-  const postBody = {
-      collegeId: '122931',
-      organizationName: 'hello',
-      month: '8',
-      day: '29',
-      startHour: '9',
-      startMinute: '29',
-      startAMorPM: 'pm',
-      endHour: '10',
-      endMinute: '20',
-      endAMorPM: 'pm',
-      location: 'kenna',
-      lat: '0',
-      lng: '0',
-      numOfPeopleFoodWillFeed: '20',
-      foodType: 'pizza',
-      description: 'yummmmmmmmmmmmmmmmmmm',
-      foodImage: modalFileUpload.files[0],
-  }
-
-  const response = await fetch(url, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    // mode: 'cors', // no-cors, *cors, same-origin
-    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'include', // include, *same-origin, omit
-    headers: {
-    //   'Content-Type': 'application/json'
-      'Content-Type': 'multipart/form-data',
-    },
-    // redirect: 'follow', // manual, *follow, error
-    // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    // body: modalForm.elements, // body data type must match "Content-Type" header
-    body: postBody,
-  });
-//   return response.json(); // parses JSON response into native JavaScript objects
-}
-
 /**
  * Closes the submit modal.
  * @return {void}
@@ -1258,6 +1161,7 @@ window.onclick = function(event) {
   }
 };
 
+// Adds a listener for the space button to click the file upload input when the label is clicked.
 document.addEventListener('keydown', function(e) {
   const isSpacePressed = e.keyCode === 32;
   if (isSpacePressed && document.activeElement === modalUploadLabel) {

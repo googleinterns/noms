@@ -578,6 +578,7 @@ ul {
 .card-description {
   color: black;
   margin-top: 1.25rem;
+  word-break: break-word;
 }
 
 .card-title:focus,
