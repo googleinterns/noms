@@ -687,10 +687,10 @@ async function addPosts(posts) {
       imageSource = './assets/svg/forkandknife.svg';
     }
     // imageSource = './assets/svg/forkandknife.svg';
-    let bit8array = base64EncodeUnicode(imageSource);
-    let bit8arrayString = bit8array.join('');
-    console.log(bit8arrayString);
-    let imgsrc = btoa(bit8arrayString);
+    // let bit8array = base64EncodeUnicode(imageSource);
+    // let bit8arrayString = bit8array.join('');
+    // console.log(bit8arrayString);
+    // let imgsrc = btoa(bit8arrayString);
     // base64 = btoa(imageSource.replace(/[\u00A0-\u2666]/g, function(c) {
     //   return '&#' + c.charCodeAt(0) + ';';
     // }));
@@ -698,15 +698,14 @@ async function addPosts(posts) {
     // const byteArray = new Uint8Array(imageSource);
     // console.log(byteArray);
     // const str = String.fromCharCode.apply(null, byteArray);
-    imgsrc = 'data:image/*;base64,' + imgsrc;
+    // imgsrc = 'data:image/*;base64,' + imgsrc;
 
-    console.log(imgsrc);
+    // console.log(imgsrc);
 
     // console.log(imageSource);
     // const imageSourceBase64 = 'data:image/*;base64,' + btoa(unescape(encodeURIComponent((imageSource))));
     // console.log(imageSourceBase64);
-    cardImage.setAttribute('src', imgsrc);
-    cardImage.setAttribute('alt', 'ayy lmao');
+    cardImage.setAttribute('src', imageSource);
     // // Catches unexpected errors with the image source.
     // cardImage.onerror = function() {
     //   cardImage.setAttribute('src', './assets/svg/forkandknife.svg');
@@ -750,13 +749,29 @@ async function getServingUrl(blobKey) {
     method: 'GET',
   });
   const responseStatus = await response.status;
-  const message = await response.text();
+//   const message = await response.text();
+  const blob = await response.blob();
   // Only return a URL if there is a successful response.
   if (responseStatus === 200) {
-    return message;
+    const URLCreator = window.URL;
+    // create a URL for accessing the Blob.
+    const imageURL = URLCreator.createObjectURL(blob);
+    return imageURL;
   } else {
     return;
   }
+
+  const getBlob = async (blobstoreKey) => {
+  const response = await fetch(`<YOUR_SERVLET>/?blob-key=${blobstoreKey}`);
+  // parse the body of the response as a Blob.
+  // see: https://developer.mozilla.org/en-US/docs/Web/API/Blob
+  const blob = await response.blob();
+  const URLCreator = window.URL;
+  // create a URL for accessing the Blob.
+  const imageURL = URLCreator.createObjectURL(blob);
+  return imageURL;
+}
+
 }
 
 /**
