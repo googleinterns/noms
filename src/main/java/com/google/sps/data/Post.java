@@ -93,7 +93,7 @@ public class Post implements Comparable<Post> {
   public Post() {}
 
   /* Fill in the important Post details from the POST request. */
-  public void requestToPost(HttpServletRequest request, String collegeId) {
+  public void requestToPost(HttpServletRequest request) {
     String orgNameUnparsed = request.getParameter("organizationName");
     String monthUnparsed = request.getParameter("month");
     String dayUnparsed = request.getParameter("day");
@@ -107,6 +107,7 @@ public class Post implements Comparable<Post> {
     String numberOfPeopleItFeedsUnparsed = request.getParameter("numberOfPeopleItFeeds");
     String typeOfFoodUnparsed = request.getParameter("typeOfFood");
     String descriptionUnparsed = request.getParameter("description");
+    String collegeIdUnparsed = request.getParameter("collegeId");
 
     // Perform input validation before we attempt to parse the inputs, as things like integers
     // might be invalid and would cause parseInt() to throw an exception.
@@ -123,7 +124,8 @@ public class Post implements Comparable<Post> {
         !InputPattern.POSITIVE_INTEGER.matcher(numberOfPeopleItFeedsUnparsed).matches() ||
         !InputPattern.TEXT.matcher(typeOfFoodUnparsed).matches() || typeOfFoodUnparsed.length() > 25 ||
         !InputPattern.TEXT.matcher(descriptionUnparsed).matches() || descriptionUnparsed.length() > 500 ||
-        descriptionUnparsed.length() < 15) {
+        descriptionUnparsed.length() < 15 ||
+        !InputPattern.TEXT.matcher(collegeIdUnparsed).matches() || collegeIdUnparsed.length() > 6) {
       valid = false;
       return;
     }
@@ -142,8 +144,8 @@ public class Post implements Comparable<Post> {
     numberOfPeopleItFeeds = Integer.parseInt(numberOfPeopleItFeedsUnparsed);
     typeOfFood = typeOfFoodUnparsed;
     description = descriptionUnparsed;
-    this.collegeId = collegeId;
     rank = numberOfPeopleItFeeds + getDuration();
+    collegeId = collegeIdUnparsed;
 
     // Adjust the start and end hour based on whether the hour is AM or PM.
     startHour = startHour % 12;
@@ -231,15 +233,14 @@ public class Post implements Comparable<Post> {
     typeOfFood = (String) entity.getProperty("typeOfFood");
     description = (String) entity.getProperty("description");
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
-    collegeId = (String) entity.getKind();
+    collegeId = (String) entity.getProperty("collegeId");
     postId = entity.getKey().toString();
     rank = Integer.parseInt(entity.getProperty("rank").toString());
   }
 
   /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
-  public Entity postToEntity() {
-
-    Entity newPost = new Entity(collegeId);
+  public Entity postToEntity(String entityKind) {
+    Entity newPost = new Entity(entityKind);
 
     newPost.setProperty("organizationName", organizationName);
 
@@ -262,6 +263,7 @@ public class Post implements Comparable<Post> {
     newPost.setProperty("rank", rank);
 
     newPost.setProperty("timeSort", timeSort);
+    newPost.setProperty("collegeId", collegeId);
 
     return newPost;
   }
@@ -275,7 +277,6 @@ public class Post implements Comparable<Post> {
 
   /* Get duration of an event in minutes.*/
   public int getDuration() {
-
     LocalTime start = LocalTime.of(startHour, startMinute, 0);
     LocalTime end = LocalTime.of(endHour, endMinute, 0);
     int duration = (int) ChronoUnit.MINUTES.between(start, end);  

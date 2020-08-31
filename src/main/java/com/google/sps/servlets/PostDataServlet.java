@@ -42,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PostDataServlet extends HttpServlet {
   
   public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  public static final String ENTITY_KIND = "Post";
 
   /* Convert an ArrayList of Post objects to JSON. */
   private String listToJson(ArrayList<Post> alist) {
@@ -55,7 +56,8 @@ public class PostDataServlet extends HttpServlet {
     String collegeId = request.getParameter("collegeId");
 
     // Queries Datastore with the college ID and receives posts such that the soonest events are shown first.
-    Query query = new Query(collegeId).addSort("timeSort", SortDirection.ASCENDING);
+    Filter collegeIdFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, collegeId);
+    Query query = new Query(ENTITY_KIND).setFilter(collegeIdFilter).addSort("timeSort", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     ArrayList<Post> posts = Post.queryToPosts(results, datastore);
 
@@ -69,17 +71,17 @@ public class PostDataServlet extends HttpServlet {
    * stores the post as entity in Datastore.
    */
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String collegeId = request.getParameter("collegeId");
+
     Post newPost = new Post();
-    newPost.requestToPost(request, collegeId);
+    newPost.requestToPost(request);
 
     if (newPost.valid) {
-
       Entity collegeEntity = new Entity("College", collegeId);
       datastore.put(collegeEntity);
 
-      Entity newPostEntity = newPost.postToEntity();
+      Entity newPostEntity = newPost.postToEntity(ENTITY_KIND);
       datastore.put(newPostEntity);
 
       GmailConfiguration.notifyUsers(collegeId, newPost);

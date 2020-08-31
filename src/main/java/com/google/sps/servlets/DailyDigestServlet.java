@@ -86,8 +86,11 @@ public class DailyDigestServlet extends HttpServlet {
 
     ArrayList<Post> posts = new ArrayList<Post>();
     
-    // Get all posts that happens today.
-    Query q = new Query(collegeId).setFilter(getTodayFilter());
+    // Filters for given college and today's date.
+    Filter collegeFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, collegeId);
+    CompositeFilter todayAndCollegeFilter = CompositeFilterOperator.and(collegeFilter, getTodayFilter());
+
+    Query q = new Query("Post").setFilter(todayAndCollegeFilter);
     PreparedQuery pq = datastore.prepare(q);
     for (Entity entity: pq.asIterable()) {
       Post newPost = new Post();

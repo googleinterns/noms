@@ -187,8 +187,8 @@ public class GmailConfiguration {
     */
   private static Iterable<Entity> getAllUsersForACollege(String collegeId) {
     
-    Filter universityFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
-    Query q = new Query("User").setFilter(universityFilter);
+    Filter collegeFilter = new FilterPredicate("college", FilterOperator.EQUAL, collegeId);
+    Query q = new Query("User").setFilter(collegeFilter);
     PreparedQuery pq = datastore.prepare(q);
     return pq.asIterable();
   }
