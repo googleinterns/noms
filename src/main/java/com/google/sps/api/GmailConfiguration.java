@@ -164,7 +164,7 @@ public class GmailConfiguration {
     }
   }
 
-  /**s
+  /**
     * Send emails to all users associated with the specific college with ranked posts.
     *
     * @param collegeId unique id of a college
