@@ -111,7 +111,7 @@ public class DailyDigestServlet extends HttpServlet {
     *
     * @return month AND day filter
     */
-  private static CompositeFilter getTodayFilter() {
+  public static CompositeFilter getTodayFilter() {
     
     // Get today's date.
     Calendar today = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));

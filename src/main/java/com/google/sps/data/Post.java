@@ -78,6 +78,7 @@ public class Post implements Comparable<Post> {
     this.startHour = startHour;
     this.startMinute = startMinute;
     this.endHour = endHour;
+    this.endMinute = endMinute;
     this.location = location;
     this.lat = lat;
     this.lng = lng;

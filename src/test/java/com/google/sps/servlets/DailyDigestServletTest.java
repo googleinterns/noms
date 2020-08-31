@@ -14,18 +14,23 @@
 
 package com.google.sps.servlets;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Post;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;   
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -33,6 +38,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /** Tests ranking posts for the Daily Digest. */
 @RunWith(JUnit4.class)
@@ -46,9 +53,13 @@ public class DailyDigestServletTest {
   private static final String TYPE_OF_FOOD = "TEST TYPE OF FOOD";
   private static final String COLLEGE_ID = "TEST COLLEGE ID";
 
-  Post todayLowRankTestPost = new Post(ORGANIZATION_NAME, 8, 31, 5, 0, 5, 30, LOCATION, LAT, LNG, 
+  private static Calendar TODAY = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
+  private static int MONTH = TODAY.get(Calendar.MONTH);
+  private static int DAY = TODAY.get(Calendar.DATE);
+
+  Post todayLowRankTestPost = new Post(ORGANIZATION_NAME, MONTH, DAY, 5, 0, 5, 30, LOCATION, LAT, LNG, 
                             50, TYPE_OF_FOOD, DESCRIPTION, COLLEGE_ID);
-  Post todayHighRankTestPost = new Post(ORGANIZATION_NAME, 8, 31, 5, 0, 5, 45, LOCATION, LAT, LNG, 
+  Post todayHighRankTestPost = new Post(ORGANIZATION_NAME, MONTH, DAY, 5, 0, 5, 45, LOCATION, LAT, LNG, 
                             100, TYPE_OF_FOOD, DESCRIPTION, COLLEGE_ID);
   Post futureTestPost = new Post(ORGANIZATION_NAME, 9, 15, 5, 0, 5, 30, LOCATION, LAT, LNG, 
                             50, TYPE_OF_FOOD, DESCRIPTION, COLLEGE_ID);                      
@@ -58,11 +69,16 @@ public class DailyDigestServletTest {
   private final LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private static DailyDigestServlet dailyDigestServlet;
+  private static DatastoreService datastore;
+
+  @Mock private static PreparedQuery mockPreparedQuery;
 
   @Before
   public void setUp() throws Exception {
     helper.setUp();
     dailyDigestServlet = new DailyDigestServlet();
+    datastore = DatastoreServiceFactory.getDatastoreService();
+    MockitoAnnotations.initMocks(this);
   }
 
   @After
@@ -71,17 +87,19 @@ public class DailyDigestServletTest {
   }
 
   @Test
-  public void testRankPostsFromToday() throws Exception {
+  public void testRankPostsFromToday() {
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(todayLowRankTestPost.postToEntity());
     datastore.put(todayHighRankTestPost.postToEntity());
+    Query q = new Query(COLLEGE_ID).setFilter(dailyDigestServlet.getTodayFilter());
+    PreparedQuery pq = datastore.prepare(q);
+    when(mockPreparedQuery.asIterable()).thenReturn(pq.asIterable());
 
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
-
+    
     Assert.assertEquals(2, rankedPosts.size());
-    Assert.assertEquals(todayHighRankTestPost, rankedPosts.get(0));
-    Assert.assertEquals(todayLowRankTestPost, rankedPosts.get(1));
+    Assert.assertEquals(80, rankedPosts.get(0).getRank());
+    Assert.assertEquals(145, rankedPosts.get(1).getRank());
   }
 
   @Test
@@ -90,6 +108,9 @@ public class DailyDigestServletTest {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(futureTestPost.postToEntity());
     datastore.put(pastTestPost.postToEntity());
+    Query q = new Query(COLLEGE_ID).setFilter(dailyDigestServlet.getTodayFilter());
+    PreparedQuery pq = datastore.prepare(q);
+    when(mockPreparedQuery.asIterable()).thenReturn(pq.asIterable());
 
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
 
@@ -104,11 +125,14 @@ public class DailyDigestServletTest {
     datastore.put(todayHighRankTestPost.postToEntity());
     datastore.put(futureTestPost.postToEntity());
     datastore.put(pastTestPost.postToEntity());
+    Query q = new Query(COLLEGE_ID).setFilter(dailyDigestServlet.getTodayFilter());
+    PreparedQuery pq = datastore.prepare(q);
+    when(mockPreparedQuery.asIterable()).thenReturn(pq.asIterable());
 
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
 
     Assert.assertEquals(2, rankedPosts.size());
-    Assert.assertEquals(todayHighRankTestPost, rankedPosts.get(0));
-    Assert.assertEquals(todayLowRankTestPost, rankedPosts.get(1));
+    Assert.assertEquals(80, rankedPosts.get(0).getRank());
+    Assert.assertEquals(145, rankedPosts.get(1).getRank());
   }
 }
