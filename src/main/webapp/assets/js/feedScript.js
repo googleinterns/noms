@@ -662,12 +662,16 @@ async function addPosts(posts) {
     // If there is not a valid image source, then display the stock SVG.
     const cardImage = document.createElement('img');
     cardImage.setAttribute('class', 'card-image');
+    cardImage.setAttribute('tabindex', '0');
     const errorSource = './assets/svg/foodcartoon.svg';
     let imageSource = await getImageUrl(post.blobKey);
+    let altText = 'image of food';
     if (!imageSource) {
       imageSource = errorSource;
+      altText = 'stock image of food';
     }
     cardImage.setAttribute('src', imageSource);
+    cardImage.alt = altText;
     // Catches unexpected errors with the image source.
     cardImage.onerror = function() {
       cardImage.setAttribute('src', errorSource);
