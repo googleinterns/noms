@@ -23,13 +23,15 @@ import java.util.ArrayList;
 /** Creates and converts HTML templates for email sending. */
 public class Email {
 
-  public static final String welcomeSubject = "⭐ noms: welcome to your free food finder!";
-  public static final String newPostSubject = "⭐ noms: new free food near you!";
-  public static final String dailyDigestSubject = "⭐ noms: daily digest of free food";
+  public static final String WELCOME_SUBJECT = "⭐ noms: welcome to your free food finder!";
+  public static final String NEW_POST_SUBJECT = "⭐ noms: new free food near you!";
+  public static final String DAILY_DIGEST_SUBJECT = "⭐ noms: daily digest of free food";
 
-  private static final String welcomeContentPath = "WelcomeEmail.html";
-  private static final String newPostPath = "NewPost.html";
-  private static final String dailyDigestPath = "DailyDigest.html";
+  private static final String WELCOME_PATH = "WelcomeEmail.html";
+  private static final String NEW_POST_PATH = "NewPost.html";
+  private static final String DAILY_DIGEST_PATH = "DailyDigest.html";
+
+  private static final int PARAGRAPH_ELEMENT_LENGTH = 4;
 
   /**
     * Convert HTML to String for MimeMessage to configure it into emails.
@@ -52,7 +54,7 @@ public class Email {
     * @throws IOException
     */
   public static String getWelcomeString() throws IOException {
-    return getStringFromHTML(welcomeContentPath);
+    return getStringFromHTML(WELCOME_PATH);
   }
 
   /**
@@ -63,7 +65,7 @@ public class Email {
     * @throws IOException
     */
   public static String addNewPost(Post post) throws IOException {
-    String emailContent = getStringFromHTML(newPostPath);
+    String emailContent = getStringFromHTML(NEW_POST_PATH);
     emailContent = emailContent.replace("[organizationName]", post.getOrganizationName());
     emailContent = emailContent.replace("[location]", post.getLocation());
     emailContent = emailContent.replace("[month]",  Integer.toString(post.getMonth()));
@@ -82,10 +84,11 @@ public class Email {
     * @throws IOException
     */
   public static String addRankedPosts(ArrayList<Post> rankedPosts) throws IOException {
-    String emailContent = getStringFromHTML(dailyDigestPath);
+    String emailContent = getStringFromHTML(DAILY_DIGEST_PATH);
 
     // Split up email content to inject multiple posts in between.
-    int split = emailContent.indexOf("</p>") + 4;
+
+    int split = emailContent.indexOf("</p>") + PARAGRAPH_ELEMENT_LENGTH;
     String firstPartOfEmail = emailContent.substring(0, split);
     String lastPartOfEmail = emailContent.substring(split);
     

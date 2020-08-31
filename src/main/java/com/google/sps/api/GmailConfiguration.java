@@ -153,7 +153,7 @@ public class GmailConfiguration {
     // Email the users to notify them that a new post has been added.
     for (Entity user : getAllUsersForACollege(collegeId)) {
       String email = user.getKey().getName().toString();
-      sendEmail(email, Email.newPostSubject, Email.addNewPost(newPost));	
+      sendEmail(email, Email.NEW_POST_SUBJECT, Email.addNewPost(newPost));	
     }
   }
 
@@ -167,7 +167,7 @@ public class GmailConfiguration {
     // Email the users to notify them with ranked posts for the day.
     for (Entity user : getAllUsersForACollege(collegeId)) {
       String email = user.getKey().getName().toString();
-      sendEmail(email, Email.dailyDigestSubject, Email.addRankedPosts(rankedPosts));	
+      sendEmail(email, Email.DAILY_DIGEST_SUBJECT, Email.addRankedPosts(rankedPosts));	
     }
   }
 
