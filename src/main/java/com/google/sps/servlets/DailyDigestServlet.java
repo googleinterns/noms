@@ -84,22 +84,24 @@ public class DailyDigestServlet extends HttpServlet {
     */
   public static ArrayList<Post> rankPosts(String collegeId) throws TooManyResultsException {
 
-    ArrayList<Post> rankedPosts = new ArrayList<Post>();
+    ArrayList<Post> posts = new ArrayList<Post>();
     
-    // Use amount of people an event can feed as most impactful rank element to sort.
-    Query q = new Query(collegeId).setFilter(getTodayFilter())
-      .addSort("numberOfPeopleItFeeds", SortDirection.DESCENDING);
+    // Get all posts that happens today.
+    Query q = new Query(collegeId).setFilter(getTodayFilter());
     PreparedQuery pq = datastore.prepare(q);
-
-    // Add the posts to return our ranked elemetns.
-    for (Entity entity: pq.asIterable(FetchOptions.Builder.withLimit(3))) {
+    for (Entity entity: pq.asIterable()) {
       Post newPost = new Post();
       newPost.entityToPost(entity);
-      rankedPosts.add(newPost);
+      posts.add(newPost);
     }
 
-    // Rank posts by the duration of each event.
-    Collections.sort(rankedPosts);
+    // Get top 3 ranked posts by sorting the posts.
+    Collections.sort(posts);
+    int size = posts.size() >= 3 ? 3 : posts.size();
+    ArrayList<Post> rankedPosts = new ArrayList<Post>();
+    for(int i = 0; i < size; i++) {
+      rankedPosts.add(posts.get(i));
+    }
 
     return rankedPosts;
   }

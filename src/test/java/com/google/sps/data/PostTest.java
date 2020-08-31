@@ -468,4 +468,131 @@ public final class PostTest {
     Assert.assertFalse(testPost.valid);
   }
 
+  @Test
+  public void testGetShortDuration() {
+
+    String collegeId = "122931";
+    String organizationName = "Bread Club";
+    String month = "12";
+    String day = "31";
+    String startHour = "4";
+    String startMinute = "30";
+    String startAMorPM = "am";
+    String endHour = "4";
+    String endMinute = "31";
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    String lat = "37.3476132";
+    String lng = "-121.9394005";
+    String numberOfPeopleItFeeds = "3";
+    String typeOfFood = "Bread";
+    String description = "Bread Club is officially giving away free bread!";
+
+    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    Assert.assertEquals(1, testPost.getDuration());
+  }
+
+  @Test
+  public void testGetLongDuration() {
+
+    String collegeId = "122931";
+    String organizationName = "Bread Club";
+    String month = "12";
+    String day = "31";
+    String startHour = "4";
+    String startMinute = "30";
+    String startAMorPM = "am";
+    String endHour = "4";
+    String endMinute = "30";
+    String endAMorPM = "pm";
+    String location = "Benson Memorial Center";
+    String lat = "37.3476132";
+    String lng = "-121.9394005";
+    String numberOfPeopleItFeeds = "3";
+    String typeOfFood = "Bread";
+    String description = "Bread Club is officially giving away free bread!";
+
+    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    Assert.assertEquals(720, testPost.getDuration());
+  }
+
+  @Test
+  public void testLowRank() {
+
+    String collegeId = "122931";
+    String organizationName = "Bread Club";
+    String month = "12";
+    String day = "31";
+    String startHour = "4";
+    String startMinute = "30";
+    String startAMorPM = "am";
+    String endHour = "4";
+    String endMinute = "35";
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    String lat = "37.3476132";
+    String lng = "-121.9394005";
+    String numberOfPeopleItFeeds = "10";
+    String typeOfFood = "Bread";
+    String description = "Bread Club is officially giving away free bread!";
+
+    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    Assert.assertEquals(15, testPost.getRank());
+  }
+
+  @Test
+  public void testHighRank() {
+
+    String collegeId = "122931";
+    String organizationName = "Bread Club";
+    String month = "12";
+    String day = "31";
+    String startHour = "4";
+    String startMinute = "30";
+    String startAMorPM = "am";
+    String endHour = "4";
+    String endMinute = "35";
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    String lat = "37.3476132";
+    String lng = "-121.9394005";
+    String numberOfPeopleItFeeds = "100";
+    String typeOfFood = "Bread";
+    String description = "Bread Club is officially giving away free bread!";
+
+    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    Assert.assertEquals(105, testPost.getRank());
+  }
+
+  @Test
+  public void testSortingOnePost() {
+
+    String collegeId = "122931";
+    String organizationName = "Bread Club";
+    String month = "12";
+    String day = "31";
+    String startHour = "4";
+    String startMinute = "30";
+    String startAMorPM = "am";
+    String endHour = "4";
+    String endMinute = "30";
+    String endAMorPM = "pm";
+    String location = "Benson Memorial Center";
+    String lat = "37.3476132";
+    String lng = "-121.9394005";
+    String numberOfPeopleItFeeds = "50";
+    String typeOfFood = "Bread";
+    String description = "Bread Club is officially giving away free bread!";
+
+    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+  }
 }

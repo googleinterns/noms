@@ -24,6 +24,7 @@ Holds the information in the cards
   - Type of food
   - Description
   - College Id
+  - Rank
 */
 
 package com.google.sps.data;
@@ -63,13 +64,9 @@ public class Post implements Comparable<Post> {
   private String description = "";
   private String collegeId = "";
   private int timeSort = 0;
+  private int rank = 0;
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
-
-  public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static final String PROJECTID = "step186-2020";
-  private static final String VERSIONID = "latest";
-
 
   /* Fill in the important Post details from the POST request. */
   public void requestToPost(HttpServletRequest request, String collegeId) {
@@ -122,6 +119,7 @@ public class Post implements Comparable<Post> {
     typeOfFood = typeOfFoodUnparsed;
     description = descriptionUnparsed;
     this.collegeId = collegeId;
+    rank = numberOfPeopleItFeeds + getDuration();
 
     // Adjust the start and end hour based on whether the hour is AM or PM.
     startHour = startHour % 12;
@@ -211,6 +209,7 @@ public class Post implements Comparable<Post> {
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
     collegeId = (String) entity.getKind();
     postId = entity.getKey().toString();
+    rank = Integer.parseInt(entity.getProperty("rank").toString());
   }
 
   /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
@@ -237,21 +236,22 @@ public class Post implements Comparable<Post> {
     newPost.setProperty("typeOfFood", typeOfFood);
     newPost.setProperty("numberOfPeopleItFeeds", numberOfPeopleItFeeds);
     newPost.setProperty("description", description);
+    newPost.setProperty("rank", rank);
 
     newPost.setProperty("timeSort", timeSort);
 
     return newPost;
   }
 
-  /* Set sorting by duration of event. */
+  /* Set sorting by the rank of event. */
   @Override     
   public int compareTo(Post post) {          
-    return (this.getDuration() < post.getDuration() ? -1 : 
-      (this.getDuration() == post.getDuration() ? 0 : 1));     
+    return (this.getRank() < post.getRank() ? -1 : 
+      (this.getRank() == post.getRank() ? 0 : 1));     
   }     
 
-  /* Get duration of an event in seconds.*/
-  private int getDuration() {
+  /* Get duration of an event in minutes.*/
+  public int getDuration() {
 
     LocalTime start = LocalTime.of(startHour, startMinute, 0);
     LocalTime end = LocalTime.of(endHour, endMinute, 0);
@@ -315,5 +315,9 @@ public class Post implements Comparable<Post> {
 
   public String getCollegeId() {
     return collegeId;
+  }
+
+  public int getRank() {
+    return rank;
   }
 }
