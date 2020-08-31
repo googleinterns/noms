@@ -1254,11 +1254,13 @@ function populatePostModalDateTime() {
   modalDay.value = new Date().getDate();
 
   const nowHours = parseInt(new Date().getHours());
+  // Turn 0-23 hours values into 1-12 hours
   modalStartHour.value = nowHours > 12 ? nowHours - 12 : (nowHours !== 0 ? nowHours : 12);
   modalStartMinute.value = '00';
   startAmOrPm.value = nowHours >= 12 ? 'pm' : 'am';
 
   const anHourFromNow = (nowHours + 1) % 24;
+  // Turn 0-23 hours values into 1-12 hours
   modalEndHour.value = anHourFromNow > 12 ?
     anHourFromNow - 12 : (anHourFromNow !== 0 ? anHourFromNow : 12);
   modalEndMinute.value = '00';
