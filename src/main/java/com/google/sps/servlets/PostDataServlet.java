@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PostDataServlet extends HttpServlet {
   
   public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  String entityKind = "College";
+  public static final String ENTITY_KIND = "Post";
 
   /* Convert an ArrayList of Post objects to JSON. */
   private String listToJson(ArrayList<Post> alist) {
@@ -57,7 +57,7 @@ public class PostDataServlet extends HttpServlet {
 
     // Queries Datastore with the college ID and receives posts such that the soonest events are shown first.
     Filter collegeIdFilter = new FilterPredicate("collegeId", FilterOperator.EQUAL, collegeId);
-    Query query = new Query(entityKind).setFilter(collegeIdFilter).addSort("timeSort", SortDirection.ASCENDING);
+    Query query = new Query(ENTITY_KIND).setFilter(collegeIdFilter).addSort("timeSort", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     ArrayList<Post> posts = Post.queryToPosts(results, datastore);
 
@@ -78,7 +78,7 @@ public class PostDataServlet extends HttpServlet {
     newPost.requestToPost(request);
 
     if (newPost.valid) {
-      Entity newPostEntity = newPost.postToEntity(entityKind);
+      Entity newPostEntity = newPost.postToEntity(ENTITY_KIND);
       datastore.put(newPostEntity);
 
       GmailConfiguration.notifyUsers(collegeId, newPost);
