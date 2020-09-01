@@ -603,6 +603,6 @@ public final class PostTest {
     Post testPost2 = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds2, typeOfFood, description);
 
-    Assert.assertEquals(1, testPost1.compareTo(testPost2));
+    Assert.assertEquals(testPost1.getRank() - testPost2.getRank(), testPost1.compareTo(testPost2));
   }
 }

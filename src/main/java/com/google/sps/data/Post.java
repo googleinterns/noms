@@ -67,31 +67,6 @@ public class Post implements Comparable<Post> {
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
 
-  /* Constructor for Post testing */
-  public Post(String organizationName, int month, int day, int startHour, 
-              int startMinute, int endHour, int endMinute, String location,
-              double lat, double lng, int numberOfPeopleItFeeds, String typeOfFood,
-              String description, String collegeId) {
-    this.organizationName = organizationName;
-    this.month = month;
-    this.day = day;
-    this.startHour = startHour;
-    this.startMinute = startMinute;
-    this.endHour = endHour;
-    this.endMinute = endMinute;
-    this.location = location;
-    this.lat = lat;
-    this.lng = lng;
-    this.numberOfPeopleItFeeds = numberOfPeopleItFeeds;
-    this.typeOfFood = typeOfFood;
-    this.description = description;
-    this.collegeId = collegeId;
-    this.rank = this.numberOfPeopleItFeeds + getDuration();
-    this.timeSort = startHour * 60 + startMinute;
-  }
-
-  public Post() {}
-
   /* Fill in the important Post details from the POST request. */
   public void requestToPost(HttpServletRequest request) {
     String orgNameUnparsed = request.getParameter("organizationName");
@@ -271,8 +246,7 @@ public class Post implements Comparable<Post> {
   /* Set sorting by the rank of event. */
   @Override     
   public int compareTo(Post post) {          
-    return (this.getRank() > post.getRank() ? 1 : 
-      (this.getRank() == post.getRank() ? 0 : -1));     
+    return this.getRank() - post.getRank();
   }     
 
   /* Get duration of an event in minutes.*/

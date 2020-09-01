@@ -87,12 +87,13 @@ public class Email {
     String emailContent = getStringFromHTML(DAILY_DIGEST_PATH);
 
     // Split up email content to inject multiple posts in between.
-
     int split = emailContent.indexOf("</p>") + PARAGRAPH_ELEMENT_LENGTH;
     String firstPartOfEmail = emailContent.substring(0, split);
     String lastPartOfEmail = emailContent.substring(split);
     
     // Add all ranked posts information to email content.
+    // Example: Blueprint at UCI @ UCI Classroom Technology Support | 5:00PM - 6:00PM
+    //          description: Come get free breakfast items, Coffee and Bagels! We overbought!
     for (Post post : rankedPosts) {
       firstPartOfEmail += "\n<p>" + post.getOrganizationName() +
         " @ " + post.getLocation() + 

@@ -14,8 +14,6 @@
 
 package com.google.sps.servlets;
 
-import static java.lang.Math;
-
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -38,6 +36,7 @@ import com.google.sps.data.Email;
 import com.google.sps.api.GmailConfiguration;
 import com.google.sps.data.Post;
 
+import java.lang.Math;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -98,7 +97,7 @@ public class DailyDigestServlet extends HttpServlet {
 
     // Get top 3 ranked posts by sorting the posts.
     Collections.sort(posts, Collections.reverseOrder());
-    int size = Math.max(3, posts.size());
+    int size = Math.min(3, posts.size());
     ArrayList<Post> rankedPosts = new ArrayList<Post>();
     for(int i = 0; i < size; i++) {
       rankedPosts.add(posts.get(i));
@@ -113,7 +112,7 @@ public class DailyDigestServlet extends HttpServlet {
     * @return month AND day AND college filter
     */
   public static CompositeFilter getFilters(String collegeId) {
-    // Get today's date.
+    // Get today's date (no need to index because Post automatically index to start from montn 0).
     Calendar today = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     int month = today.get(Calendar.MONTH);
     int day = today.get(Calendar.DATE);
