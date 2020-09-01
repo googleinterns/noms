@@ -119,7 +119,6 @@ public class Post implements Comparable<Post> {
     numberOfPeopleItFeeds = Integer.parseInt(numberOfPeopleItFeedsUnparsed);
     typeOfFood = typeOfFoodUnparsed;
     description = descriptionUnparsed;
-    rank = numberOfPeopleItFeeds + getDuration();
     collegeId = collegeIdUnparsed;
 
     // Adjust the start and end hour based on whether the hour is AM or PM.
@@ -132,7 +131,9 @@ public class Post implements Comparable<Post> {
     String endAMorPM = request.getParameter("endAMorPM");
     if (endAMorPM.equals("pm")) {
       endHour += 12;
-    }     
+    }
+
+    rank = numberOfPeopleItFeeds + getDuration();
 
     // Check that values are within expected ranges.
     if (month < 0 || month > 11 ||
@@ -154,7 +155,6 @@ public class Post implements Comparable<Post> {
     // Set the year. Right now time zone is set to "America/Los_Angeles".
     Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     year = nowTime.get(Calendar.YEAR);
-
   }
 
   /* Translate the entities from the Datastore query to Post objects and return in an array. */
@@ -252,7 +252,10 @@ public class Post implements Comparable<Post> {
   /* Get duration of an event in minutes.*/
   public int getDuration() {
     LocalTime start = LocalTime.of(startHour, startMinute, 0);
+    System.out.println(startHour + " start " + startMinute);
     LocalTime end = LocalTime.of(endHour, endMinute, 0);
+    System.out.println(endHour + " end " + endMinute);
+
     int duration = (int) ChronoUnit.MINUTES.between(start, end);  
 
     return duration;

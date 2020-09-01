@@ -560,8 +560,8 @@ public final class PostTest {
     String startMinute = "30";
     String startAMorPM = "am";
     String endHour = "4";
-    String endMinute = "35";
-    String endAMorPM = "am";
+    String endMinute = "30";
+    String endAMorPM = "pm";
     String location = "Benson Memorial Center";
     String lat = "37.3476132";
     String lng = "-121.9394005";
@@ -572,7 +572,7 @@ public final class PostTest {
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    Assert.assertEquals(105, testPost.getRank());
+    Assert.assertEquals(820, testPost.getRank());
   }
 
   @Test
