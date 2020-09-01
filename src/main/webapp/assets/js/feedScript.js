@@ -934,6 +934,9 @@ function validateModalNumber(invalidIds, errorMessages, formElements) {
   } else if (modalNumPeople.value <= 0) {
     invalidIds.push('modal-num-people');
     errorMessages.push('number of people the event can feed must be greater than 0');
+  } else if (modalNumPeople.value > 10000) {
+    invalidIds.push('modal-num-people');
+    errorMessages.push('number of people the event can feed cannot be greater than 10000');
   }
 }
 

@@ -118,6 +118,7 @@ public class Post {
       endHour < 0 || endHour > 23 ||
       endMinute < 0 || endMinute > 59 ||
       numberOfPeopleItFeeds <= 0 ||
+      numberOfPeopleItFeeds > 10000 ||
       startHour > endHour ||
       (startHour == endHour && startMinute > endMinute)) {
       valid = false;
