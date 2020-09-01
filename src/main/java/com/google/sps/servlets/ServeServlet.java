@@ -12,16 +12,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
-
 @WebServlet("/serve")
 public class ServeServlet extends HttpServlet {
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    serveImage(request, response, blobstoreService);
+  }
+
+  public void serveImage(HttpServletRequest request, HttpServletResponse response, BlobstoreService blobstoreService) throws IOException {
     BlobKey blobKey = new BlobKey(request.getParameter("blobKey"));
     blobstoreService.serve(blobKey, response);
   }
+  
 }
