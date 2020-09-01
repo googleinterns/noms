@@ -166,19 +166,20 @@ function getRepresentativeCollegeSample(collegeLocations) {
 
   // Cycling through every college, we check if it's at least MINIMUM_DEGREES_SEPARATION
   // away from all other previously chosen colleges, and only select it if it is.
-  for (const college of collegeLocations) {
+  while (representativeColleges.length < 30) {
+    const randomCollege = collegeLocations[Math.floor(Math.random() * collegeLocations.length)];
     let collegeFarAwayEnough = true;
 
     for (const comparisonCollege of representativeColleges) {
-      if (Math.abs(college.LAT - comparisonCollege.LAT) < MINIMUM_DEGREES_SEPARATION &&
-        Math.abs(college.LON - comparisonCollege.LON) < MINIMUM_DEGREES_SEPARATION) {
+      if (Math.abs(randomCollege.LAT - comparisonCollege.LAT) < MINIMUM_DEGREES_SEPARATION &&
+        Math.abs(randomCollege.LON - comparisonCollege.LON) < MINIMUM_DEGREES_SEPARATION) {
         collegeFarAwayEnough = false;
         break;
       }
     }
 
     if (collegeFarAwayEnough) {
-      representativeColleges.push(college);
+      representativeColleges.push(randomCollege);
     }
   }
 
