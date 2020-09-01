@@ -3,8 +3,6 @@ package com.google.sps.servlets;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.blobstore.BlobInfo;
-import com.google.appengine.api.blobstore.BlobInfoFactory;
 import java.io.IOException;
 import java.net.URL;
 import javax.servlet.annotation.WebServlet;
