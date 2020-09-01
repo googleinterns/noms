@@ -931,6 +931,9 @@ function validateModalNumber(invalidIds, errorMessages, formElements) {
   if (!modalNumPeople.value) {
     invalidIds.push('modal-num-people');
     errorMessages.push('number of people the event can feed is blank');
+  } else if (modalNumPeople.value <= 0) {
+    invalidIds.push('modal-num-people');
+    errorMessages.push('number of people the event can feed must be greater than 0');
   }
 }
 
@@ -1250,17 +1253,17 @@ function populatePostModalDateTime() {
   const modalEndMinute = document.getElementById('modal-end-minute');
   const endAmOrPm = document.getElementById('end-am-or-pm');
 
-  modalMonth.value = new Date().getMonth() + 1; // Months are indexed at 0
+  modalMonth.value = new Date().getMonth() + 1; // Months are indexed at 0.
   modalDay.value = new Date().getDate();
 
   const nowHours = parseInt(new Date().getHours());
-  // Turn 0-23 hours values into 1-12 hours
+  // Turn 0-23 hours values into 1-12 hours.
   modalStartHour.value = nowHours > 12 ? nowHours - 12 : (nowHours !== 0 ? nowHours : 12);
   modalStartMinute.value = '00';
   startAmOrPm.value = nowHours >= 12 ? 'pm' : 'am';
 
   const anHourFromNow = (nowHours + 1) % 24;
-  // Turn 0-23 hours values into 1-12 hours
+  // Turn 0-23 hours values into 1-12 hours.
   modalEndHour.value = anHourFromNow > 12 ?
     anHourFromNow - 12 : (anHourFromNow !== 0 ? anHourFromNow : 12);
   modalEndMinute.value = '00';
