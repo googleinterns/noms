@@ -17,16 +17,20 @@ public class CreateBlobstoreUrlServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Creates an upload URL for sending the form submission.
-    String uploadUrl = "";
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    String uploadUrl = getUploadUrl(blobstoreService);
 
+    response.setContentType("text/html");
+    response.getWriter().println(uploadUrl);
+  }
+
+  public String getUploadUrl(BlobstoreService blobstoreService) {
+    String uploadUrl = "";
     try {
-      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       uploadUrl = blobstoreService.createUploadUrl("/postData");
     } catch (Exception e) {
       log.severe(e.toString());
     }
-
-    response.setContentType("text/html");
-    response.getWriter().println(uploadUrl);
+    return uploadUrl;
   }
 }
