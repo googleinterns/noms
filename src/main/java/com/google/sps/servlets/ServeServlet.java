@@ -21,9 +21,11 @@ public class ServeServlet extends HttpServlet {
     serveImage(request, response, blobstoreService);
   }
 
+  // Adds helper function to provide visibility for testing.
   public void serveImage(HttpServletRequest request, HttpServletResponse response, BlobstoreService blobstoreService) throws IOException {
-    BlobKey blobKey = new BlobKey(request.getParameter("blobKey"));
-    blobstoreService.serve(blobKey, response);
+    if (request.getParameter("blobKey") != null) {
+      BlobKey blobKey = new BlobKey(request.getParameter("blobKey"));
+      blobstoreService.serve(blobKey, response);
+    }
   }
-  
 }
