@@ -14,26 +14,26 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public final class CreateBlobstoreUrlServletTest {
   CreateBlobstoreUrlServlet createBlobstoreUrlServlet = new CreateBlobstoreUrlServlet();
+  static final String SUCCESS_SERVLET = "/postData";
   
   public BlobstoreService mockBlobstore(String uploadUrl) {
     BlobstoreService blobstoreService = mock(BlobstoreService.class);
-    when(blobstoreService.createUploadUrl("/postData")).thenReturn(uploadUrl);
+    when(blobstoreService.createUploadUrl(SUCCESS_SERVLET)).thenReturn(uploadUrl);
     return blobstoreService;
   }
 
   public BlobstoreService mockBlobstoreArgumentError() {
     BlobstoreService blobstoreService = mock(BlobstoreService.class);
-    when(blobstoreService.createUploadUrl("/postData")).thenThrow(IllegalArgumentException.class);
+    when(blobstoreService.createUploadUrl(SUCCESS_SERVLET)).thenThrow(IllegalArgumentException.class);
     return blobstoreService;
   }
 
   public BlobstoreService mockBlobstoreError() {
     BlobstoreService blobstoreService = mock(BlobstoreService.class);
-    when(blobstoreService.createUploadUrl("/postData")).thenThrow(BlobstoreFailureException.class);
+    when(blobstoreService.createUploadUrl(SUCCESS_SERVLET)).thenThrow(BlobstoreFailureException.class);
     return blobstoreService;
   }
 
-  // Test that the getUploadUrl() returns the expected URL.
   @Test
   public void testValidUploadUrl() {
     String fakeUploadUrl = "www.fakeuploadurl.com";
@@ -43,7 +43,6 @@ public final class CreateBlobstoreUrlServletTest {
     Assert.assertEquals(resultUrl, fakeUploadUrl);
   }
 
-  // Test that the getUploadUrl() returns an empty URL when there is a path error.
   @Test
   public void testPathError() {
     BlobstoreService mockBlobstoreService = mockBlobstoreArgumentError();
@@ -52,7 +51,6 @@ public final class CreateBlobstoreUrlServletTest {
     Assert.assertEquals(resultUrl, "");
   }
 
-  // Test that the getUploadUrl() returns an empty URL when there is an internal Blobstore error.
   @Test
   public void testBlobstoreError() {
     BlobstoreService mockBlobstoreService = mockBlobstoreError();

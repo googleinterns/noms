@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 public final class ServeServletTest {
   ServeServlet serveServlet = new ServeServlet();
   @Mock HttpServletResponse mockResponse;
+  static final String FAKE_BLOB_KEY = "fakeBlobKey";
   
   // Mock an HTTP Servlet Request with the given string as a parameter.
   public HttpServletRequest mockRequest(String blobKey) {
@@ -64,17 +65,15 @@ public final class ServeServletTest {
     return blobstoreService;
   }
 
-  // Test when a valid request parameter and functioning Blobstore is passed.
   @Test
   public void testValidServe() throws IOException {
-    HttpServletRequest mockRequest = mockRequest("fakeBlobKey");
+    HttpServletRequest mockRequest = mockRequest(FAKE_BLOB_KEY);
     BlobstoreService mockBlobstoreService = mockBlobstoreServe();
 
     serveServlet.serveImage(mockRequest, mockResponse, mockBlobstoreService);
     verify(mockBlobstoreService).serve(any(BlobKey.class), eq(mockResponse));
   }
 
-  // Test when blobKey parameter is empty.
   @Test
   public void testEmptyRequest() throws IOException {
     HttpServletRequest mockRequest = emptyRequest();
@@ -84,19 +83,17 @@ public final class ServeServletTest {
     verify(mockBlobstoreService, never()).serve(any(BlobKey.class), eq(mockResponse));
   }
 
-  // Test serve() error: java.io.IOException.
   @Test (expected = IOException.class)
   public void testIOException() throws IOException {
-    HttpServletRequest mockRequest = mockRequest("fakeBlobKey");
+    HttpServletRequest mockRequest = mockRequest(FAKE_BLOB_KEY);
     BlobstoreService mockBlobstoreService = mockBlobstoreIOException();
 
     serveServlet.serveImage(mockRequest, mockResponse, mockBlobstoreService);
   }
 
-  // Test serve() error: java.lang.IllegalStateException.
   @Test (expected = IllegalStateException.class)
   public void testIllegalState() throws IOException {
-    HttpServletRequest mockRequest = mockRequest("fakeBlobKey");
+    HttpServletRequest mockRequest = mockRequest(FAKE_BLOB_KEY);
     BlobstoreService mockBlobstoreService = mockBlobstoreError();
 
     serveServlet.serveImage(mockRequest, mockResponse, mockBlobstoreService);

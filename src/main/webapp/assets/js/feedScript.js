@@ -706,7 +706,7 @@ async function addPosts(posts) {
 }
 
 /**
- * Given a post's blobKey, gets the URL to the image.
+ * Given a post's blobKey, creates a local URL for the image.
  * @param {String} blobKey
  * @return {String}
  */
@@ -881,7 +881,7 @@ function markInvalidInputs(invalidIds, errorMessages, formElements) {
     });
     errorHTMLString += '</ul>';
     modalError.innerHTML = errorHTMLString;
-    modalButtonDiv.insertBefore(modalError, submitModalButton);
+    modalButtonDiv.insertBefore(modalError, modalUploadLabel);
   }
 }
 
@@ -1083,7 +1083,7 @@ async function checkLocationAndSubmit() {
         `We couldn't find address '${modalLocation}'. ` +
         'Please check your address for errors. ' +
         'If you wish to submit anyway, no pin will be added to the map.';
-      modalButtonDiv.insertBefore(modalError, document.getElementById('modal-submit'));
+      modalButtonDiv.insertBefore(modalError, modalUploadLabel);
       submitModalButton.disabled = false;
     // Else, if the invalid address is the same as we last checked
     // or the address is just plain valid, then add the post to the Datastore.
@@ -1176,16 +1176,15 @@ window.onclick = function(event) {
   }
 };
 
-// Adds a listener for the space button to click the file upload input when the label is clicked.
-document.addEventListener('keydown', function(e) {
-  const isSpacePressed = e.keyCode === 32;
-  if (isSpacePressed && document.activeElement === modalUploadLabel) {
-    modalFileUpload.click();
-  }
-});
-
 document.addEventListener('keydown', function(e) {
   const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+  const isSpacePressed = e.keyCode === 32;
+
+  // If space is pressed and the file upload label is focused on, click the file upload button.
+  if (isSpacePressed && document.activeElement === modalUploadLabel) {
+    modalFileUpload.click();
+    return;
+  }
   if (!isTabPressed) {
     return;
   }
