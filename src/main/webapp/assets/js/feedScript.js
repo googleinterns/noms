@@ -114,6 +114,15 @@ let toggleLegendButton;
 let toggleFiltersButton;
 
 /** @type {HTMLElement} */
+let modalFileUpload;
+
+/** @type {HTMLElement} */
+let modalUploadLabel;
+
+/** @type {HTMLElement} */
+let modalButtonDiv;
+
+/** @type {HTMLElement} */
 let modalMonth;
 
 /** @type {HTMLElement} */
@@ -166,6 +175,9 @@ async function onLoad() {
   modalForm = document.getElementById('modal-form');
   toggleLegendButton = document.getElementById('toggle-legend-button');
   modalCard = document.getElementById('modal-create-post');
+  modalFileUpload = document.getElementById('modal-upload-image');
+  modalUploadLabel = document.getElementById('modal-upload-label');
+  modalButtonDiv = document.getElementById('button-holder');
   modalSubmitted = document.getElementById('modal-submitted');
   modalSubmittedTitle = document.getElementById('modal-submitted-title');
   toggleFiltersButton = document.getElementById('toggle-filters-button');
@@ -190,6 +202,7 @@ async function onLoad() {
   happeningNowCheckbox.addEventListener('change', filterAndUpdatePagePosts);
   distanceSlider.addEventListener('change', filterAndUpdatePagePosts);
   keywordsInput.addEventListener('input', filterAndUpdatePagePosts);
+  modalFileUpload.addEventListener('change', displayUploadedFile);
   modalMonth.addEventListener('input', showDateTipOnModal);
   modalDay.addEventListener('input', showDateTipOnModal);
   modalOrganizationName.addEventListener('keydown', limitCharacterInput);
@@ -436,6 +449,7 @@ async function fetchPosts(collegeId) {
       numOfPeopleFoodWillFeed: message[i]['numberOfPeopleItFeeds'],
       foodType: message[i]['typeOfFood'],
       description: message[i]['description'],
+      blobKey: message[i]['blobKey'],
     };
     posts.push(post);
   }
@@ -641,29 +655,76 @@ async function addPosts(posts) {
     postCard.setAttribute('id', post.id);
     postCard.setAttribute('tabindex', '0');
 
+    // Adds the image from the served blob.
+    // If there is not a valid image source, then display the stock SVG.
+    const cardImage = document.createElement('img');
+    cardImage.setAttribute('class', 'card-image');
+    cardImage.setAttribute('tabindex', '0');
+    const errorSource = './assets/svg/foodcartoon.svg';
+    let imageSource = await getImageUrl(post.blobKey);
+    let altText = 'image of food';
+    if (!imageSource) {
+      imageSource = errorSource;
+      altText = 'stock image of food';
+    }
+    cardImage.setAttribute('src', imageSource);
+    cardImage.alt = altText;
+    // Catches unexpected errors with the image source.
+    cardImage.onerror = function() {
+      cardImage.setAttribute('src', errorSource);
+    };
+
+    // Add a div for all the post card text.
+    const postText = document.createElement('div');
+
     // Create and add title.
     const title = document.createElement('h2');
     title.setAttribute('class', 'card-title');
     title.setAttribute('tabindex', '0');
     title.innerText = titleText;
-    postCard.appendChild(title);
+    postText.appendChild(title);
 
     // Create and add subtitle.
     const subtitle = document.createElement('h3');
     subtitle.setAttribute('class', 'card-subtitle');
     subtitle.setAttribute('tabindex', '0');
     subtitle.innerText = subtitleText;
-    postCard.appendChild(subtitle);
+    postText.appendChild(subtitle);
 
     // Create and add description.
     const description = document.createElement('p');
     description.setAttribute('class', 'card-description');
     description.setAttribute('tabindex', '0');
     description.innerText = descriptionText;
-    postCard.appendChild(description);
+    postText.appendChild(description);
 
-    // Add card to the page.
+    // Add the text to the card and card to the page.
+    postCard.appendChild(cardImage);
+    postCard.appendChild(postText);
     allPosts.append(postCard);
+  }
+}
+
+/**
+ * Given a post's blobKey, creates a local URL for the image.
+ * @param {String} blobKey
+ * @return {String}
+ */
+async function getImageUrl(blobKey) {
+  const url = '/serve?blobKey=' + blobKey;
+  const response = await fetch(url, {
+    method: 'GET',
+  });
+  const responseStatus = await response.status;
+  const blob = await response.blob();
+
+  // Only return a URL if there is a successful response.
+  if (responseStatus === 200) {
+    const URLCreator = window.URL;
+    const imageURL = URLCreator.createObjectURL(blob);
+    return imageURL;
+  } else {
+    return;
   }
 }
 
@@ -702,7 +763,21 @@ function closeModal() {
   if (modal) {
     modal.style.display = 'none';
     modalForm.reset();
+    resetMarks(modalForm.elements);
     createPostButton.focus();
+  }
+}
+
+/**
+ * Updates the text of the upload button to the uploaded file's name.
+ * @return {void}
+ */
+function displayUploadedFile() {
+  const fileName = modalFileUpload.value.split('\\').pop();
+  if (fileName) {
+    modalUploadLabel.innerText = fileName;
+  } else {
+    modalUploadLabel.innerText = 'upload an image';
   }
 }
 
@@ -718,6 +793,10 @@ async function submitModal() {
     checkLocationAndSubmit();
   } else {
     submitModalButton.disabled = false;
+    const errorMessage = document.getElementById('modal-input-error');
+    if (errorMessage) {
+      errorMessage.focus();
+    }
   }
 }
 
@@ -735,6 +814,7 @@ function validateModal() {
   validateModalText(invalidIds, errorMessages, formElements);
   validateModalDate(invalidIds, errorMessages, formElements);
   validateModalTime(invalidIds, errorMessages, formElements);
+  validateModalFile(invalidIds, errorMessages);
   validateModalNumber(invalidIds, errorMessages, formElements);
   markInvalidInputs(invalidIds, errorMessages, formElements);
 
@@ -768,9 +848,10 @@ function resetMarks(formElements) {
     const element = formElements[i];
     element.style.background = '#1b18181a';
   }
+  modalUploadLabel.style.background = 'white';
   const modalError = document.getElementById('modal-input-error');
   if (modalError) {
-    modalForm.removeChild(modalError);
+    modalButtonDiv.removeChild(modalError);
   }
 }
 
@@ -785,21 +866,44 @@ function resetMarks(formElements) {
 function markInvalidInputs(invalidIds, errorMessages, formElements) {
   resetMarks(formElements);
   invalidIds.forEach((id) => {
-    const elt = formElements.namedItem(id);
-    if (elt) {
-      elt.style.background = '#ff999966';
+    const element = document.getElementById(id);
+    if (element) {
+      element.style.backgroundColor = '#ff999966';
     }
   });
   if (errorMessages.length > 0) {
     const modalError = document.createElement('div');
     modalError.setAttribute('id', 'modal-input-error');
     modalError.setAttribute('tabindex', '0');
-    modalError.innerHTML += '<ul>';
+    let errorHTMLString = '<ul>';
     errorMessages.forEach((message) => {
-      modalError.innerHTML += '<li>' + message + '</li>';
+      errorHTMLString += '<li>' + message + '</li>';
     });
-    modalError.innerHTML += '</ul>';
-    modalForm.insertBefore(modalError, submitModalButton);
+    errorHTMLString += '</ul>';
+    modalError.innerHTML = errorHTMLString;
+    modalButtonDiv.insertBefore(modalError, modalUploadLabel);
+  }
+}
+
+/**
+ * Adds an error message if the file is larger than 4MB or is not an image.
+ * @param {array} invalidIds
+ * @param {array} errorMessages
+ * @return {void}
+ */
+function validateModalFile(invalidIds, errorMessages) {
+  const file = modalFileUpload.files[0];
+  if (file) {
+    if (file.type.includes('image')) {
+      const largestFileSize = 4000000; // 4 MB
+      if (file.size > largestFileSize) {
+        invalidIds.push('modal-upload-label');
+        errorMessages.push('image is too large');
+      }
+    } else {
+      invalidIds.push('modal-upload-label');
+      errorMessages.push('please upload an image');
+    }
   }
 }
 
@@ -921,6 +1025,26 @@ function validateModalText(invalidIds, errorMessages, formElements) {
 }
 
 /**
+ * Requests a Blobstore Upload URL from the CreateBlobstoreUrlServlet.
+ * This URL is used for form submission.
+ * @return {String}
+ */
+async function getBlobstoreUrl() {
+  const url = '/createBlobstoreUrl';
+  const response = await fetch(url, {
+    method: 'GET',
+  });
+  const responseStatus = await response.status;
+  const message = await response.text();
+  // Only return a URL if there is a successful response.
+  if (responseStatus === 200) {
+    return message;
+  } else {
+    return;
+  }
+}
+
+/**
  * Validates number inputs that aren't date/time.
  * @param {array} invalidIds
  * @param {array} errorMessages
@@ -965,21 +1089,29 @@ async function checkLocationAndSubmit() {
         `We couldn't find address '${modalLocation}'. ` +
         'Please check your address for errors. ' +
         'If you wish to submit anyway, no pin will be added to the map.';
-      modalForm.insertBefore(modalError, document.getElementById('modal-submit'));
+      modalButtonDiv.insertBefore(modalError, modalUploadLabel);
       submitModalButton.disabled = false;
     // Else, if the invalid address is the same as we last checked
     // or the address is just plain valid, then add the post to the Datastore.
     } else {
       const modalError = document.getElementById('modal-map-error');
       if (modalError) {
-        modalForm.removeChild(modalError);
+        modalButtonDiv.removeChild(modalError);
       }
 
       // (0,0) denotes a nonexistent lat/long, since it's a location in the ocean + is falsy.
       const lat = latLngResult ? latLngResult.lat : 0;
       const lng = latLngResult ? latLngResult.long : 0;
-      url = `/postData?collegeId=${collegeId}&lat=${lat}&lng=${lng}`;
-      modalForm.action = url;
+
+      const blobstoreUploadURL = await getBlobstoreUrl();
+      if (!blobstoreUploadURL) {
+        alert('Server Error. Try again later.');
+        submitModalButton.disabled = false;
+        return;
+      }
+
+      modalForm.action = blobstoreUploadURL;
+      addAdditionalParameters(collegeId, lat, lng);
 
       const subtitle = document.getElementById('modal-submitted-subtitle');
       if (dateIsInTheFuture(modalMonth.value, modalDay.value)) {
@@ -999,6 +1131,33 @@ async function checkLocationAndSubmit() {
       }, 2000);
     }
   }
+}
+
+/**
+ * Adds the collegeId, lat, and lng to the form request.
+ * @param {String} collegeId
+ * @param {String} lat
+ * @param {String} lng
+ * @return {void}
+ */
+function addAdditionalParameters(collegeId, lat, lng) {
+  const collegeIdInput = document.createElement('input');
+  collegeIdInput.setAttribute('name', 'collegeId');
+  collegeIdInput.setAttribute('value', collegeId);
+  collegeIdInput.setAttribute('type', 'hidden');
+  modalForm.appendChild(collegeIdInput);
+
+  const latInput = document.createElement('input');
+  latInput.setAttribute('name', 'lat');
+  latInput.setAttribute('value', lat);
+  latInput.setAttribute('type', 'hidden');
+  modalForm.appendChild(latInput);
+
+  const lngInput = document.createElement('input');
+  lngInput.setAttribute('name', 'lng');
+  lngInput.setAttribute('value', lng);
+  lngInput.setAttribute('type', 'hidden');
+  modalForm.appendChild(lngInput);
 }
 
 /**
@@ -1025,7 +1184,13 @@ window.onclick = function(event) {
 
 document.addEventListener('keydown', function(e) {
   const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+  const isSpacePressed = e.keyCode === 32;
 
+  // If space is pressed and the file upload label is focused on, click the file upload button.
+  if (isSpacePressed && document.activeElement === modalUploadLabel) {
+    modalFileUpload.click();
+    return;
+  }
   if (!isTabPressed) {
     return;
   }

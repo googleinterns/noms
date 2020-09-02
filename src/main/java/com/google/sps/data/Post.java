@@ -10,22 +10,30 @@ Holds the information in the cards
   - Type of food
   - Description
   - College Id
+  - BlobKey
 */
 
 package com.google.sps.data;
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.sps.data.InputPattern;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 public class Post {
 
+  private static final Logger log = Logger.getLogger(Post.class.getName());
   private String postId = "";
   private String organizationName = "";
   private int month = 0;
@@ -43,6 +51,7 @@ public class Post {
   private String description = "";
   private String collegeId = "";
   private int timeSort = 0;
+  private String blobKey;
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
 
@@ -133,7 +142,42 @@ public class Post {
     // Set the year. Right now time zone is set to "America/Los_Angeles".
     Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     year = nowTime.get(Calendar.YEAR);
+    
+    try {
+      blobKey = getBlobKey(request, "foodImage");
+    } catch (Exception e) {
+      log.warning(e.toString());
+    }
+  }
 
+  /* Create a new entity with the college ID and the Post information. Sets all the properties. */
+  public Entity postToEntity(String entityKind) {
+    Entity newPost = new Entity(entityKind);
+
+    newPost.setProperty("organizationName", organizationName);
+
+    newPost.setProperty("month", month);
+    newPost.setProperty("day", day);
+    newPost.setProperty("year", year);
+
+    newPost.setProperty("startHour", startHour);
+    newPost.setProperty("startMinute", startMinute);
+    newPost.setProperty("endHour", endHour);
+    newPost.setProperty("endMinute", endMinute);
+
+    newPost.setProperty("location", location);
+    newPost.setProperty("lat", lat);
+    newPost.setProperty("lng", lng);
+
+    newPost.setProperty("typeOfFood", typeOfFood);
+    newPost.setProperty("numberOfPeopleItFeeds", numberOfPeopleItFeeds);
+    newPost.setProperty("description", description);
+
+    newPost.setProperty("timeSort", timeSort);
+    newPost.setProperty("collegeId", collegeId);
+    newPost.setProperty("blobKey", blobKey);
+
+    return newPost;
   }
 
   /* Translate the entities from the Datastore query to Post objects and return in an array. */
@@ -155,13 +199,19 @@ public class Post {
       int postHour = Integer.parseInt(entity.getProperty("endHour").toString());
       int postMinute = Integer.parseInt(entity.getProperty("endMinute").toString());
       postTime.set(postYear, postMonth, postDay, postHour, postMinute);
-      
-      // If the post time is before the current time, delete from Datastore.
+ 
+      // If the post time is before the current time, delete the post from storage.
       if (postTime.before(nowTime)) {
+        // Delete the blob and entity from Blobstore.
+        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+        String blobKey = (String) (entity.getProperty("blobKey"));
+        if (blobKey != null) {
+          BlobKey blobKeyToDelete = new BlobKey(blobKey);
+          blobstoreService.delete(blobKeyToDelete);
+        }
         datastore.delete(entity.getKey());
-      }
-      // Only add the post to result if it is on the same day.
-      else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
+      } else if (postYear == nowTime.get(Calendar.YEAR) && postMonth == nowTime.get(Calendar.MONTH) && postDay == nowTime.get(Calendar.DATE)) {
+        // Only add the post to result if it is on the same day.
         Post newPost = new Post();
         newPost.entityToPost(entity);
         currentPosts.add(newPost);
@@ -189,35 +239,15 @@ public class Post {
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
     collegeId = (String) entity.getProperty("collegeId");
     postId = entity.getKey().toString();
+    blobKey = (String) entity.getProperty("blobKey");
   }
 
-  /* Creates a new entity with the college ID and the Post information. Sets all the properties. */
-  public Entity postToEntity(String entityKind) {
-    Entity newPost = new Entity(entityKind);
+  private String getBlobKey(HttpServletRequest request, String formInputElementName) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(formInputElementName);
 
-    newPost.setProperty("organizationName", organizationName);
-
-    newPost.setProperty("month", month);
-    newPost.setProperty("day", day);
-    newPost.setProperty("year", year);
-
-    newPost.setProperty("startHour", startHour);
-    newPost.setProperty("startMinute", startMinute);
-    newPost.setProperty("endHour", endHour);
-    newPost.setProperty("endMinute", endMinute);
-
-    newPost.setProperty("location", location);
-    newPost.setProperty("lat", lat);
-    newPost.setProperty("lng", lng);
-
-    newPost.setProperty("typeOfFood", typeOfFood);
-    newPost.setProperty("numberOfPeopleItFeeds", numberOfPeopleItFeeds);
-    newPost.setProperty("description", description);
-
-    newPost.setProperty("timeSort", timeSort);
-    newPost.setProperty("collegeId", collegeId);
-
-    return newPost;
+    return blobKeys.get(0).getKeyString();
   }
 
   /* Class Getters. */
