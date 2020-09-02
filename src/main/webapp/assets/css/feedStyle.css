@@ -145,7 +145,7 @@ select {
   box-sizing: border-box;
   font: 400 1rem Arial, sans-serif;
   font-size: 1rem;
-  margin-bottom: 0;
+  margin-bottom: 15px;
   margin-top: 0;
   outline: none;
   padding: 12px 20px;
@@ -172,20 +172,51 @@ select {
   white-space: nowrap;
 }
 
+#button-holder {
+  display: flex;
+  flex-flow: column wrap;
+}
+
+#modal-upload-image {
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0.1px;
+  z-index: 0;
+}
+
+#modal-upload-label {
+  align-self: flex-end;
+  background: white;
+  border: 1px solid var(--dark-grey);
+  border-radius: 50px;
+  color: var(--dark-grey);
+  cursor: pointer;
+  font: 400 13.3333px Arial, sans-serif;
+  margin-bottom: 15px;
+  outline: none;
+  padding: 10px 20px;
+  width: fit-content;
+}
+
+#modal-upload-label:hover {
+  background-color: var(--modal-grey);
+}
+
 #modal-submit {
+  align-self: flex-end;
   background: var(--dark-green);
   border: none;
   border-radius: 50px;
   color: white;
   height: 35px;
   margin-bottom: 15px;
-  margin-top: 15px;
   outline: none;
-  position: absolute;
-  right: 30px;
   width: 80px;
 }
 
+#modal-upload-label:focus,
 #modal-submit:focus {
   background-color: var(--light-teal);
 }
@@ -278,10 +309,14 @@ select {
   }
 }
 
+ul {
+  margin: 0;
+}
+
 #modal-map-error,
 #modal-input-error {
   color: #b60000;
-  margin: 1rem 1rem 0 1rem;
+  margin: 0 1rem;
 }
 
 /*
@@ -503,19 +538,27 @@ select {
   background: white;
   border-radius: 15px;
   box-shadow: 0 1px 10px lightgrey, 0 -1px 10px lightgrey;
+  display: flex;
+  flex-flow: row;
   margin-bottom: 5px;
   margin-top: 20px;
   min-height: 100px;
   min-width: 100px;
-  padding: 10px;
-  padding-right: 30px;
-  padding-left: 30px;
+  padding: 20px 30px;
   transition: box-shadow 0.5s;
 }
 
 .post-card:focus {
   box-shadow: 0 1px 10px var(--light-teal), 0 -1px 10px var(--light-teal);
   outline: none;
+}
+
+.card-image {
+  align-self: center;
+  height: 20vh;
+  margin-right: 30px;
+  object-fit: cover;
+  width: 20vh;
 }
 
 .card-title {
@@ -535,6 +578,7 @@ select {
 .card-description {
   color: black;
   margin-top: 1.25rem;
+  word-break: break-word;
 }
 
 .card-title:focus,
@@ -549,6 +593,10 @@ select {
     margin-left: 5%;
     margin-right: 5%;
     width: 90%;
+  }
+
+  .post-card {
+    flex-flow: row wrap;
   }
 
   #map-container {

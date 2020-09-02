@@ -102,7 +102,7 @@
       <div aria-label="create a post modal" id="modal-create-post" tabindex="0">
         <button aria-label="close modal" id="modal-close" tabindex="0" type="button">&#10005;</button>
         <h1 id="modal-title" tabindex="0">Create a Post</h1>
-        <form id="modal-form" method="post">
+        <form enctype="multipart/form-data" id="modal-form" method="post">
           <input aria-label="organization name" id="modal-org-name" maxlength="75" name="organizationName" placeholder="organization name" tabindex="0" type="text" onpaste="return false" required><br>
 
           <span class="modal-span">
@@ -139,7 +139,11 @@
           <input aria-label="how many people can it feed"  id="modal-num-people" maxlength="3" min="1" max="999" name="numberOfPeopleItFeeds" placeholder="how many people can it feed?" tabindex="0" type="number" required><br>
           <textarea aria-label="description" id="modal-description" maxlength="500" name="description" placeholder="description" rows="3" tabindex="0" onpaste="return false"></textarea><br>
           
-          <button id="modal-submit" tabindex="0" type="button">submit</button>
+          <div id="button-holder">
+            <label for="modal-upload-image" id="modal-upload-label" role="button" tabindex="0"> upload an image </label>
+            <input aria-label="upload an image" id="modal-upload-image" name="foodImage" tabindex="-1" type="file">
+            <button id="modal-submit" tabindex="0" type="button">submit</button>
+          </div>
         <form>
       </div>
       <div aria-label="post submitted" id="modal-submitted" tabindex="0">
