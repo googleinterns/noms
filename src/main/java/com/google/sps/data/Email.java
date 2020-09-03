@@ -118,6 +118,9 @@ public class Email {
 
     // Account for 24-hour period.
     if (hour <= 12) {
+      if (hour == 0) {
+        hour = 12;
+      }
       formattedTime = Integer.toString(hour) + ":";
       amOrPm = "AM";
     } else {

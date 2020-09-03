@@ -284,8 +284,8 @@ public class Post implements Comparable<Post> {
   }
 
   /* 
-   * Calculate rank based on number of people an event can feed
-   * and the duration of an event.
+   * Calculate rank based on number of people an event can feed and the 
+   * duration of an event by normalizing both scales using a logistic function.
    */
   public double calculateRank() {
     int peopleMax = 10000;
@@ -295,10 +295,10 @@ public class Post implements Comparable<Post> {
     double durationWeight = 0.5;
 
     // Normalize duration and people can feed variables by using
-    // a logistics regression formula: 
+    // a logistics function: 
     // y = (range / e ^ (- (value - midpoint) / slope) + 1)) + min.
-    // Slope represents the span of the domain of numbers and how steep the change is.
-    // Midpoint represents where the slope starts and where the numbers start increasing rapidly.
+    // Slope represents the span of the domain of numbers.
+    // Midpoint represents where the slope starts increasing.
     double normalizedPeople =
       ((peopleMax - min) / (Math.exp(-((numberOfPeopleItFeeds - 300) / 15)) + 1)) + min;
     double normalizedDuration = 
