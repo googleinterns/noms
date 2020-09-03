@@ -68,7 +68,6 @@ import org.slf4j.LoggerFactory;
 /** Tests querying users and sending emails from an authorized account.*/
 @RunWith(JUnit4.class)
 public final class GmailConfigurationTest {
-
   private static final String TO = "test@google.com";
   private static final String SUBJECT = "test";
   private static final String CONTENT = "<h1>test</h1>";

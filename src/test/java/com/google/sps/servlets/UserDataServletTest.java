@@ -60,7 +60,6 @@ import org.slf4j.LoggerFactory;
 
 @RunWith(JUnit4.class)
 public final class UserDataServletTest {
-
   private static final String USER_LOGGER_NAME = "com.google.sps.servlets";
   private static final String EMAIL_LOGGER_NAME = "com.google.sps.api";
 

@@ -50,7 +50,6 @@ import org.mockito.MockitoAnnotations;
 /** Tests ranking posts for the Daily Digest. */
 @RunWith(JUnit4.class)
 public class DailyDigestServletTest {
-
   private static final String ORGANIZATION_NAME = "TEST ORGANIZATION NAME";
   private static final String DESCRIPTION = "TEST DESCRIPTION";
   private static final String LOCATION = "TEST LOCATION";
