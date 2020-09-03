@@ -87,9 +87,9 @@ public class DailyDigestServletTest {
 
   /* Get a post created from requestToPost() by mocking a request. */
   private Post requestToPostHelper(String collegeId, String organizationName, int month, int day, 
-                                  int startHour, int startMinute, String startAMorPM, int endHour, 
-                                  int endMinute, String endAMorPM, String location, double lat, double lng, 
-                                  int numberOfPeopleItFeeds, String typeOfFood, String description) {
+      int startHour, int startMinute, String startAMorPM, int endHour, 
+        int endMinute, String endAMorPM, String location, double lat, double lng, 
+          int numberOfPeopleItFeeds, String typeOfFood, String description) {
     when(mockRequest.getParameter("organizationName")).thenReturn(organizationName);
     when(mockRequest.getParameter("month")).thenReturn(Integer.toString(month));
     when(mockRequest.getParameter("day")).thenReturn(Integer.toString(day));
@@ -115,12 +115,12 @@ public class DailyDigestServletTest {
   public void testRankPostsFromToday() {
     Post todayLowRankTestPost = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
-                        5, 00, "am", 5, 30, "pm", LOCATION, LAT, LNG, 
-                        50, TYPE_OF_FOOD, DESCRIPTION);
+        5, 00, "am", 5, 30, "pm", LOCATION, LAT, LNG, 
+        50, TYPE_OF_FOOD, DESCRIPTION);
     Post todayHighRankTestPost = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
-                          5, 00, "pm", 5, 45, "pm", LOCATION, LAT, LNG, 
-                          100, TYPE_OF_FOOD, DESCRIPTION);
+        5, 00, "pm", 5, 45, "pm", LOCATION, LAT, LNG, 
+        100, TYPE_OF_FOOD, DESCRIPTION);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(todayLowRankTestPost.postToEntity("Post"));
@@ -133,20 +133,20 @@ public class DailyDigestServletTest {
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
     
     Assert.assertEquals(2, rankedPosts.size());
-    Assert.assertEquals(0.5, rankedPosts.get(0).getRank(), 0.05);
-    Assert.assertEquals(0.1, rankedPosts.get(1).getRank(), 0.05);
+    Assert.assertEquals(0.55, rankedPosts.get(0).getRank(), 0.05);
+    Assert.assertEquals(0.25, rankedPosts.get(1).getRank(), 0.05);
   }
 
   @Test
   public void testRankPostsFromAnotherDay() throws Exception {
     Post futureTestPost = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, 9, 15, 
-                          5, 00, "pm", 5, 30, "pm", LOCATION, LAT, LNG, 
-                          50, TYPE_OF_FOOD, DESCRIPTION);       
+        5, 00, "pm", 5, 30, "pm", LOCATION, LAT, LNG, 
+        50, TYPE_OF_FOOD, DESCRIPTION);       
     Post pastTestPost = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, 8, 15, 
-                          5, 00, "pm", 5, 30, "pm", LOCATION, LAT, LNG, 
-                          100, TYPE_OF_FOOD, DESCRIPTION);
+        5, 00, "pm", 5, 30, "pm", LOCATION, LAT, LNG, 
+        100, TYPE_OF_FOOD, DESCRIPTION);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(futureTestPost.postToEntity("Post"));
@@ -165,20 +165,20 @@ public class DailyDigestServletTest {
   public void testRankManyPosts() throws Exception {
     Post testPost1 = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
-                        5, 00, "pm", 7, 30, "pm", LOCATION, LAT, LNG, 
-                        20, TYPE_OF_FOOD, DESCRIPTION);
+        5, 00, "pm", 9, 30, "pm", LOCATION, LAT, LNG, 
+        150, TYPE_OF_FOOD, DESCRIPTION);
     Post testPost2 = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
-                          3, 00, "pm", 5, 00, "pm", LOCATION, LAT, LNG, 
-                          100, TYPE_OF_FOOD, DESCRIPTION);
+        3, 00, "pm", 4, 00, "pm", LOCATION, LAT, LNG, 
+        200, TYPE_OF_FOOD, DESCRIPTION);
     Post testPost3 = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
-                          5, 00, "pm", 5, 01, "pm", LOCATION, LAT, LNG, 
-                          10, TYPE_OF_FOOD, DESCRIPTION);
+        5, 00, "pm", 5, 01, "pm", LOCATION, LAT, LNG, 
+        10, TYPE_OF_FOOD, DESCRIPTION);
     Post testPost4 = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
-                          5, 00, "pm", 5, 45, "pm", LOCATION, LAT, LNG, 
-                          70, TYPE_OF_FOOD, DESCRIPTION);
+        5, 00, "pm", 5, 45, "pm", LOCATION, LAT, LNG, 
+        70, TYPE_OF_FOOD, DESCRIPTION);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(testPost1.postToEntity("Post"));
@@ -193,8 +193,8 @@ public class DailyDigestServletTest {
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
 
     Assert.assertEquals(3, rankedPosts.size());
-    Assert.assertEquals(0.25, rankedPosts.get(0).getRank(), 0.05);
-    Assert.assertEquals(0.1, rankedPosts.get(1).getRank(), 0.05);
-    Assert.assertEquals(0.05, rankedPosts.get(2).getRank(), 0.05);
+    Assert.assertEquals(0.5, rankedPosts.get(0).getRank(), 0.05);
+    Assert.assertEquals(0.38, rankedPosts.get(1).getRank(), 0.05);
+    Assert.assertEquals(0.26, rankedPosts.get(2).getRank(), 0.05);
   }
 }

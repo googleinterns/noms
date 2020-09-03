@@ -111,7 +111,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(testPost.getStartHour(), startHour);
     Assert.assertEquals(testPost.getEndHour(), endHour);
@@ -139,7 +139,7 @@ public final class PostTest {
     String description = "We ordered too much pizza! Drop by during our workshop to pick it up";
 
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(testPost.getStartHour(), startHour);
     Assert.assertEquals(testPost.getEndHour(), (endHour + 12));
@@ -167,7 +167,7 @@ public final class PostTest {
     String description = "We have some popcorn left after our weekly Duck watching meeting, come pick some up!";
 
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(testPost.getStartHour(), (startHour + 12));
     Assert.assertEquals(testPost.getEndHour(), (endHour + 12));
@@ -195,7 +195,7 @@ public final class PostTest {
     String description = "We have some popcorn left after our weekly Duck watching meeting, come pick some up!";
 
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(testPost.getStartHour(), 0);
     Assert.assertEquals(testPost.getEndHour(), 12);
@@ -223,7 +223,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(testPost.getMonth(), (month - 1));
   }
@@ -250,7 +250,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = testRequestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(testPost.getMonth(), (month - 1));
   }
@@ -277,7 +277,7 @@ public final class PostTest {
     String description = "</h3><a href='badsite.com'>I am malicious</a>";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertFalse(testPost.valid);
   }
@@ -304,7 +304,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertFalse(testPost.valid);
   }
@@ -331,7 +331,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertFalse(testPost.valid);
   }
@@ -358,7 +358,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertFalse(testPost.valid);
   }
@@ -385,7 +385,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertFalse(testPost.valid);
   }
@@ -412,7 +412,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertFalse(testPost.valid);
   }
@@ -439,7 +439,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertFalse(testPost.valid);
   }
@@ -466,7 +466,7 @@ public final class PostTest {
     String description = "Birthday Party!!!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertFalse(testPost.valid);
   }
@@ -492,7 +492,7 @@ public final class PostTest {
     String description = "Bread Club is officially giving away free bread!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(1, testPost.getDuration());
   }
@@ -518,7 +518,7 @@ public final class PostTest {
     String description = "Bread Club is officially giving away free bread!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(720, testPost.getDuration());
   }
@@ -544,9 +544,9 @@ public final class PostTest {
     String description = "Bread Club is officially giving away free bread!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    Assert.assertEquals(0.05, testPost.getRank(), 0.02);
+    Assert.assertEquals(0.1, testPost.getRank(), 0.02);
   }
 
   @Test
@@ -570,9 +570,9 @@ public final class PostTest {
     String description = "Bread Club is officially giving away free bread!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    Assert.assertEquals(0.1, testPost.getRank(), 0.05);
+    Assert.assertEquals(0.4, testPost.getRank(), 0.03);
   }
 
   @Test
@@ -596,9 +596,9 @@ public final class PostTest {
     String description = "Bread Club is officially giving away free bread!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    Assert.assertEquals(0.4, testPost.getRank(), 0.05);
+    Assert.assertEquals(0.5, testPost.getRank(), 0.03);
   }
 
   @Test
@@ -622,7 +622,7 @@ public final class PostTest {
     String description = "Bread Club is officially giving away free bread!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
     Assert.assertEquals(1, testPost.getRank(), 0.02);
   }
@@ -637,7 +637,7 @@ public final class PostTest {
     String startHour = "4";
     String startMinute = "30";
     String startAMorPM = "pm";
-    String endHour = "9";
+    String endHour = "5";
     String endMinute = "30";
     String endAMorPM = "pm";
     String location = "Benson Memorial Center";
@@ -648,12 +648,12 @@ public final class PostTest {
     String description = "Bread Club is officially giving away free bread!";
 
     Post testPost1 = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    String numberOfPeopleItFeeds2 = "50";
+    String numberOfPeopleItFeeds2 = "10";
 
     Post testPost2 = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
-    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds2, typeOfFood, description);
+      endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds2, typeOfFood, description);
 
     Assert.assertEquals(1, testPost1.compareTo(testPost2));
   }

@@ -280,12 +280,13 @@ public class Post implements Comparable<Post> {
   /* Set sorting by the rank of event. */
   @Override     
   public int compareTo(Post post) {          
-    return this.getRank() > post.getRank() ? 1 : 0;
+    return this.getRank() > post.getRank() ? 1 : -1;
   }
 
   /* 
    * Calculate rank based on number of people an event can feed and the 
-   * duration of an event by normalizing both scales using a logistic function.
+   * duration of an event by normalizing both scales using a logistic function of
+   * y = (range / e ^ (- (value - midpoint) / slope) + 1)) + min.
    */
   public double calculateRank() {
     int peopleMax = 10000;
@@ -294,13 +295,13 @@ public class Post implements Comparable<Post> {
     double peopleWeight = 0.5;
     double durationWeight = 0.5;
 
-    // Normalize duration and people can feed variables by using
-    // a logistics function: 
-    // y = (range / e ^ (- (value - midpoint) / slope) + 1)) + min.
-    // Slope represents the span of the domain of numbers.
-    // Midpoint represents where the slope starts increasing.
+    // Over 1000 people will be treated as the max since most large free food
+    // events host a lot of people already.
     double normalizedPeople =
-      ((peopleMax - min) / (Math.exp(-((numberOfPeopleItFeeds - 300) / 15)) + 1)) + min;
+      ((peopleMax - min) / (Math.exp(-((numberOfPeopleItFeeds - 190) / 70)) + 1)) + min;
+    
+    // Over 500 minutes will be trated as the max since most long free food events
+    // won't be the entire day.
     double normalizedDuration = 
       ((durationMax - min) / (1 + Math.exp(-((getDuration() - 230) / 100)))) + min;
 
