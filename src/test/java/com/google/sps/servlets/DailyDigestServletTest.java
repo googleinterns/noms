@@ -91,7 +91,6 @@ public class DailyDigestServletTest {
                                   int startHour, int startMinute, String startAMorPM, int endHour, 
                                   int endMinute, String endAMorPM, String location, double lat, double lng, 
                                   int numberOfPeopleItFeeds, String typeOfFood, String description) {
-
     when(mockRequest.getParameter("organizationName")).thenReturn(organizationName);
     when(mockRequest.getParameter("month")).thenReturn(Integer.toString(month));
     when(mockRequest.getParameter("day")).thenReturn(Integer.toString(day));
@@ -115,7 +114,6 @@ public class DailyDigestServletTest {
 
   @Test
   public void testRankPostsFromToday() {
-
     Post todayLowRankTestPost = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
                         5, 00, "am", 5, 30, "pm", LOCATION, LAT, LNG, 
@@ -142,7 +140,6 @@ public class DailyDigestServletTest {
 
   @Test
   public void testRankPostsFromAnotherDay() throws Exception {
-
     Post futureTestPost = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, 9, 15, 
                           5, 00, "pm", 5, 30, "pm", LOCATION, LAT, LNG, 
@@ -167,7 +164,6 @@ public class DailyDigestServletTest {
 
   @Test
   public void testRankManyPosts() throws Exception {
-
     Post testPost1 = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
                         5, 00, "pm", 7, 30, "pm", LOCATION, LAT, LNG, 
