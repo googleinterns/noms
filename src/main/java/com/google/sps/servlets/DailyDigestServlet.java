@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory;
 /** Servlet that sends daily digest emails to all users. */
 @WebServlet("/dailyDigest")
 public class DailyDigestServlet extends HttpServlet {
-
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   /** GETs information about users to send daily digest emails. */
