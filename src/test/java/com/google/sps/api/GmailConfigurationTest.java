@@ -28,7 +28,6 @@ import ch.qos.logback.classic.LoggerContext;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -69,7 +68,6 @@ import org.slf4j.LoggerFactory;
 /** Tests querying users and sending emails from an authorized account.*/
 @RunWith(JUnit4.class)
 public final class GmailConfigurationTest {
-
   private static final String TO = "test@google.com";
   private static final String SUBJECT = "test";
   private static final String CONTENT = "<h1>test</h1>";
@@ -79,7 +77,7 @@ public final class GmailConfigurationTest {
   private static final String COLLEGE_A = "000000";
   private static final String COLLEGE_B = "000001";
 
-  private static final String SUCCESS_MSG = "Successfully sent a new post email to: ";
+  private static final String SUCCESS_MSG = "Successfully sent an email to: ";
   private static final String LOGGER_NAME = "com.google.sps.api";
 
   @Mock private static Gmail mockGmail;
@@ -149,13 +147,10 @@ public final class GmailConfigurationTest {
     Assert.assertTrue(memoryAppender.contains(SUCCESS_MSG + TO, Level.INFO));    
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void sendEmailWithUnauthorizedService() throws Exception {
-    when(mockGmailAPI.getGmailService()).thenReturn(mockGmail);
-
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
 
-    verify(mockGmailAPI, times(1)).getGmailService();
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 }

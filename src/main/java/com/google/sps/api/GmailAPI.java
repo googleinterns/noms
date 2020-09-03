@@ -70,7 +70,6 @@ public class GmailAPI {
     * @throws GeneralSecurityException
     */
   public static Gmail getGmailService() throws IOException, GeneralSecurityException {
-
     // Gather client info from OAuth 2.0 credentials through Secrets Manager.
     CLIENT_ID = getSecret("client-id");
     CLIENT_SECRET = getSecret("client-secret");
@@ -102,7 +101,6 @@ public class GmailAPI {
     */
   private static String getAccessToken()
       throws IOException, MalformedURLException, ProtocolException {
-
     byte[] postDataBytes = buildPOSTRequest();
 
     // Send POST request for new access token.
@@ -132,7 +130,6 @@ public class GmailAPI {
     * @throws UnsupportedEncodingException
     */
   private static byte[] buildPOSTRequest() throws UnsupportedEncodingException {
-
     // Gather POST parameters.
     Map<String, Object> params = new LinkedHashMap<>();
     params.put("grant_type", "refresh_token");
@@ -161,7 +158,6 @@ public class GmailAPI {
     * @throws IOException
     */
   private static String getSecret(String secretId) throws IOException {
-
     // Retrieve the secret key for given ID.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       SecretVersionName secretVersionName = SecretVersionName.of(PROJECTID, secretId, VERSIONID);

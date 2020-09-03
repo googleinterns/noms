@@ -1,3 +1,17 @@
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 /* Post Object:
 Holds the information in the cards
   - Post ID
@@ -10,6 +24,7 @@ Holds the information in the cards
   - Type of food
   - Description
   - College Id
+  - Rank
   - BlobKey
 */
 
@@ -21,9 +36,15 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.InputPattern;
+import java.lang.Math;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;  
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;   
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.Map;
@@ -31,7 +52,7 @@ import java.util.regex.Matcher;
 import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
-public class Post {
+public class Post implements Comparable<Post> {
 
   private static final Logger log = Logger.getLogger(Post.class.getName());
   private String postId = "";
@@ -51,6 +72,7 @@ public class Post {
   private String description = "";
   private String collegeId = "";
   private int timeSort = 0;
+  private double rank = 0;
   private String blobKey;
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
@@ -119,7 +141,9 @@ public class Post {
     String endAMorPM = request.getParameter("endAMorPM");
     if (endAMorPM.equals("pm")) {
       endHour += 12;
-    }     
+    }
+
+    rank = calculateRank();
 
     // Check that values are within expected ranges.
     if (month < 0 || month > 11 ||
@@ -142,7 +166,7 @@ public class Post {
     // Set the year. Right now time zone is set to "America/Los_Angeles".
     Calendar nowTime = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
     year = nowTime.get(Calendar.YEAR);
-    
+
     try {
       blobKey = getBlobKey(request, "foodImage");
     } catch (Exception e) {
@@ -176,6 +200,8 @@ public class Post {
     newPost.setProperty("timeSort", timeSort);
     newPost.setProperty("collegeId", collegeId);
     newPost.setProperty("blobKey", blobKey);
+
+    newPost.setProperty("rank", rank);
 
     return newPost;
   }
@@ -239,6 +265,7 @@ public class Post {
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
     collegeId = (String) entity.getProperty("collegeId");
     postId = entity.getKey().toString();
+    rank = Double.parseDouble(entity.getProperty("rank").toString());
     blobKey = (String) entity.getProperty("blobKey");
   }
 
@@ -248,6 +275,54 @@ public class Post {
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
 
     return blobKeys.get(0).getKeyString();
+  }
+
+  /* Set sorting by the rank of event. */
+  @Override     
+  public int compareTo(Post post) {          
+    return this.getRank() > post.getRank() ? 1 : -1;
+  }
+
+  /* 
+   * Calculate rank based on number of people an event can feed and the 
+   * duration of an event by normalizing both scales using a logistic function of
+   * y = (range / e ^ (- (value - midpoint) / slope) + 1)) + min.
+   */
+  public double calculateRank() {
+    int peopleMax = 10000;
+    int durationMax = 719;
+    int min = 1;
+    double peopleWeight = 0.5;
+    double durationWeight = 0.5;
+
+    // Over 1000 people will be treated as the max since most large free food
+    // events host a lot of people already.
+    double normalizedPeople =
+      ((peopleMax - min) / (Math.exp(-((numberOfPeopleItFeeds - 190) / 70)) + 1)) + min;
+    
+    // Over 500 minutes will be trated as the max since most long free food events
+    // won't be the entire day.
+    double normalizedDuration = 
+      ((durationMax - min) / (1 + Math.exp(-((getDuration() - 230) / 100)))) + min;
+
+    // Convert both scales to have same lower and upper levels of
+    // 0-1 using the formula: Y = ((Xgiven - Xmin) / Xrange).
+    double people = (normalizedPeople - min) / (peopleMax - min);
+    double duration = (normalizedDuration - min) / (durationMax - min);
+
+    // Calculate total ranking using weights.
+    double rank = ((peopleWeight * people) + (durationWeight * duration));
+
+    return rank;
+  }
+
+  /* Get duration of an event in minutes.*/
+  public int getDuration() {
+    LocalTime start = LocalTime.of(startHour, startMinute, 0);
+    LocalTime end = LocalTime.of(endHour, endMinute, 0);
+    int duration = (int) ChronoUnit.MINUTES.between(start, end);  
+
+    return duration;
   }
 
   /* Class Getters. */
@@ -305,5 +380,9 @@ public class Post {
 
   public String getCollegeId() {
     return collegeId;
+  }
+
+  public double getRank() {
+    return rank;
   }
 }

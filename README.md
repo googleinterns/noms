@@ -52,9 +52,10 @@ It is not just students that suffer from leftover food being thrown out; the Ear
 - **APIs**:
   * [Google Cloud Datastore](https://cloud.google.com/datastore)
   * [Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/overview)
-  * [Gmail API](https://developers.google.com/gmail/api/quickstart/java)
+  * [Gmail API](https://developers.google.com/gmail/api)
   * [Google Geocoding Service](https://developers.google.com/maps/documentation/javascript/geocoding)
   * [Google Secret Manager](https://cloud.google.com/secret-manager)
+  * [Google Cloud Scheduler](https://cloud.google.com/scheduler/docs)
   * [Google Blobstore API](https://cloud.google.com/appengine/docs/standard/java/blobstore)
 - **Testing**: JUnit/Mockito (Java), Mocha/Chai (JavaScript)
 - **Assets**: Fontawesome, [Iconixar](https://www.flaticon.com/authors/iconixar) icons

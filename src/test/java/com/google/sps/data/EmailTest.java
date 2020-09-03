@@ -40,11 +40,8 @@ import org.mockito.MockitoAnnotations;
 /** Tests creating and converting HTML for email sending. */
 @RunWith(JUnit4.class)
 public final class EmailTest {
-  
   public static final String PATH = "path_test";
-
   @Mock private static Post mockPost;
-
   private static Email email;
  
   @Before
