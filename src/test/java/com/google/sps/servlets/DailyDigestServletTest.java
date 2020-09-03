@@ -118,7 +118,7 @@ public class DailyDigestServletTest {
 
     Post todayLowRankTestPost = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
-                        5, 00, "pm", 5, 30, "pm", LOCATION, LAT, LNG, 
+                        5, 00, "am", 5, 30, "pm", LOCATION, LAT, LNG, 
                         50, TYPE_OF_FOOD, DESCRIPTION);
     Post todayHighRankTestPost = 
       requestToPostHelper(COLLEGE_ID, ORGANIZATION_NAME, MONTH, DAY, 
@@ -136,8 +136,8 @@ public class DailyDigestServletTest {
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
     
     Assert.assertEquals(2, rankedPosts.size());
-    Assert.assertEquals(145, rankedPosts.get(0).getRank());
-    Assert.assertEquals(80, rankedPosts.get(1).getRank());
+    Assert.assertEquals(0.5, rankedPosts.get(0).getRank(), 0.05);
+    Assert.assertEquals(0.1, rankedPosts.get(1).getRank(), 0.05);
   }
 
   @Test
@@ -198,8 +198,8 @@ public class DailyDigestServletTest {
     ArrayList<Post> rankedPosts = dailyDigestServlet.rankPosts(COLLEGE_ID);
 
     Assert.assertEquals(3, rankedPosts.size());
-    Assert.assertEquals(220, rankedPosts.get(0).getRank());
-    Assert.assertEquals(170, rankedPosts.get(1).getRank());
-    Assert.assertEquals(115, rankedPosts.get(2).getRank());
+    Assert.assertEquals(0.25, rankedPosts.get(0).getRank(), 0.05);
+    Assert.assertEquals(0.1, rankedPosts.get(1).getRank(), 0.05);
+    Assert.assertEquals(0.05, rankedPosts.get(2).getRank(), 0.05);
   }
 }

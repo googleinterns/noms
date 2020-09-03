@@ -30,8 +30,6 @@ Holds the information in the cards
 
 package com.google.sps.data;
 
-import static java.lang.Math;
-
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -41,6 +39,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.InputPattern;
+import java.lang.Math;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;  
 import java.util.ArrayList;
@@ -73,7 +72,7 @@ public class Post implements Comparable<Post> {
   private String description = "";
   private String collegeId = "";
   private int timeSort = 0;
-  private int rank = 0;
+  private double rank = 0;
   private String blobKey;
 
   public boolean valid = true; // If false, the post shouldn't be saved - it might have malicious data.
@@ -266,7 +265,7 @@ public class Post implements Comparable<Post> {
     timeSort = Integer.parseInt(entity.getProperty("timeSort").toString());
     collegeId = (String) entity.getProperty("collegeId");
     postId = entity.getKey().toString();
-    rank = Integer.parseInt(entity.getProperty("rank").toString());
+    rank = Double.parseDouble(entity.getProperty("rank").toString());
     blobKey = (String) entity.getProperty("blobKey");
   }
 
@@ -281,7 +280,7 @@ public class Post implements Comparable<Post> {
   /* Set sorting by the rank of event. */
   @Override     
   public int compareTo(Post post) {          
-    return this.getRank() - post.getRank();
+    return this.getRank() > post.getRank() ? 1 : 0;
   }
 
   /* 
@@ -292,21 +291,24 @@ public class Post implements Comparable<Post> {
     int peopleMax = 10000;
     int durationMax = 719;
     int min = 1;
-    double peopleWeight = 0.6;
-    double durationWeight = 0.4;
+    double peopleWeight = 0.5;
+    double durationWeight = 0.5;
 
     // Normalize duration and people can feed variables by using
-    // a logistics regression formula. Y = C / (1 + ae^(-bx)).
-    double noralizedPeople = 
-      (peopleMax / (1 + Math.exp(-(numberOfPeopleItFeeds / 500) + 1))) - 3500;
-    double noralizedDuration = 
-      (durationMax / (1 + Math.exp(-(getDuration() / 25) + 1))) - 265;
+    // a logistics regression formula: 
+    // y = (range / e ^ (- (value - midpoint) / slope) + 1)) + min.
+    // Slope represents the span of the domain of numbers and how steep the change is.
+    // Midpoint represents where the slope starts and where the numbers start increasing rapidly.
+    double normalizedPeople =
+      ((peopleMax - min) / (Math.exp(-((numberOfPeopleItFeeds - 300) / 15)) + 1)) + min;
+    double normalizedDuration = 
+      ((durationMax - min) / (1 + Math.exp(-((getDuration() - 230) / 100)))) + min;
 
     // Convert both scales to have same lower and upper levels of
-    // 0-1 using the formula: Y = ((Xgiven - Xmin) / Xrange) * nlimit
-    double people = ((noralizedPeople - min) / peopleMax - min) * 1;
-    double duration = ((noralizedDuration - min) / durationMax - min) * 1;
-    
+    // 0-1 using the formula: Y = ((Xgiven - Xmin) / Xrange).
+    double people = (normalizedPeople - min) / (peopleMax - min);
+    double duration = (normalizedDuration - min) / (durationMax - min);
+
     // Calculate total ranking using weights.
     double rank = ((peopleWeight * people) + (durationWeight * duration));
 
@@ -379,7 +381,7 @@ public class Post implements Comparable<Post> {
     return collegeId;
   }
 
-  public int getRank() {
+  public double getRank() {
     return rank;
   }
 }

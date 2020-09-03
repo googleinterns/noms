@@ -148,13 +148,10 @@ public final class GmailConfigurationTest {
     Assert.assertTrue(memoryAppender.contains(SUCCESS_MSG + TO, Level.INFO));    
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void sendEmailWithUnauthorizedService() throws Exception {
-    when(mockGmailAPI.getGmailService()).thenReturn(mockGmail);
-
     GmailConfiguration.sendEmail(TO, SUBJECT, CONTENT);
 
-    verify(mockGmailAPI, times(1)).getGmailService();
     Assert.assertEquals(1, memoryAppender.countEventsForLogger(LOGGER_NAME));
   }
 }

@@ -529,12 +529,12 @@ public final class PostTest {
     String collegeId = "122931";
     String organizationName = "Bread Club";
     String month = "12";
-    String day = "31";
-    String startHour = "4";
-    String startMinute = "30";
+    String day = "30";
+    String startHour = "1";
+    String startMinute = "00";
     String startAMorPM = "am";
-    String endHour = "4";
-    String endMinute = "35";
+    String endHour = "1";
+    String endMinute = "10";
     String endAMorPM = "am";
     String location = "Benson Memorial Center";
     String lat = "37.3476132";
@@ -546,7 +546,59 @@ public final class PostTest {
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    Assert.assertEquals(15, testPost.getRank());
+    Assert.assertEquals(0.05, testPost.getRank(), 0.02);
+  }
+
+  @Test
+  public void testLowAverageRank() {
+
+    String collegeId = "122931";
+    String organizationName = "Bread Club";
+    String month = "12";
+    String day = "30";
+    String startHour = "1";
+    String startMinute = "00";
+    String startAMorPM = "am";
+    String endHour = "2";
+    String endMinute = "00";
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    String lat = "37.3476132";
+    String lng = "-121.9394005";
+    String numberOfPeopleItFeeds = "150";
+    String typeOfFood = "Bread";
+    String description = "Bread Club is officially giving away free bread!";
+
+    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    Assert.assertEquals(0.1, testPost.getRank(), 0.05);
+  }
+
+  @Test
+  public void testHighAverageRank() {
+
+    String collegeId = "122931";
+    String organizationName = "Bread Club";
+    String month = "12";
+    String day = "30";
+    String startHour = "1";
+    String startMinute = "00";
+    String startAMorPM = "am";
+    String endHour = "3";
+    String endMinute = "00";
+    String endAMorPM = "am";
+    String location = "Benson Memorial Center";
+    String lat = "37.3476132";
+    String lng = "-121.9394005";
+    String numberOfPeopleItFeeds = "300";
+    String typeOfFood = "Bread";
+    String description = "Bread Club is officially giving away free bread!";
+
+    Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
+    endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
+
+    Assert.assertEquals(0.4, testPost.getRank(), 0.05);
   }
 
   @Test
@@ -556,23 +608,23 @@ public final class PostTest {
     String organizationName = "Bread Club";
     String month = "12";
     String day = "31";
-    String startHour = "4";
-    String startMinute = "30";
+    String startHour = "12";
+    String startMinute = "00";
     String startAMorPM = "am";
-    String endHour = "4";
-    String endMinute = "30";
+    String endHour = "11";
+    String endMinute = "59";
     String endAMorPM = "pm";
     String location = "Benson Memorial Center";
     String lat = "37.3476132";
     String lng = "-121.9394005";
-    String numberOfPeopleItFeeds = "100";
+    String numberOfPeopleItFeeds = "10000";
     String typeOfFood = "Bread";
     String description = "Bread Club is officially giving away free bread!";
 
     Post testPost = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds, typeOfFood, description);
 
-    Assert.assertEquals(820, testPost.getRank());
+    Assert.assertEquals(1, testPost.getRank(), 0.02);
   }
 
   @Test
@@ -603,6 +655,6 @@ public final class PostTest {
     Post testPost2 = requestToPost(collegeId, organizationName, month, day, startHour, startMinute, startAMorPM, endHour, 
     endMinute, endAMorPM, location, lat, lng, numberOfPeopleItFeeds2, typeOfFood, description);
 
-    Assert.assertEquals(testPost1.getRank() - testPost2.getRank(), testPost1.compareTo(testPost2));
+    Assert.assertEquals(1, testPost1.compareTo(testPost2));
   }
 }
