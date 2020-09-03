@@ -30,6 +30,8 @@ Holds the information in the cards
 
 package com.google.sps.data;
 
+import static java.lang.Math;
+
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -142,7 +144,7 @@ public class Post implements Comparable<Post> {
       endHour += 12;
     }
 
-    rank = numberOfPeopleItFeeds + getDuration();
+    rank = calculateRank();
 
     // Check that values are within expected ranges.
     if (month < 0 || month > 11 ||
@@ -280,7 +282,36 @@ public class Post implements Comparable<Post> {
   @Override     
   public int compareTo(Post post) {          
     return this.getRank() - post.getRank();
-  }     
+  }
+
+  /* 
+   * Calculate rank based on number of people an event can feed
+   * and the duration of an event.
+   */
+  public double calculateRank() {
+    int peopleMax = 10000;
+    int durationMax = 719;
+    int min = 1;
+    double peopleWeight = 0.6;
+    double durationWeight = 0.4;
+
+    // Normalize duration and people can feed variables by using
+    // a logistics regression formula. Y = C / (1 + ae^(-bx)).
+    double noralizedPeople = 
+      (peopleMax / (1 + Math.exp(-(numberOfPeopleItFeeds / 500) + 1))) - 3500;
+    double noralizedDuration = 
+      (durationMax / (1 + Math.exp(-(getDuration() / 25) + 1))) - 265;
+
+    // Convert both scales to have same lower and upper levels of
+    // 0-1 using the formula: Y = ((Xgiven - Xmin) / Xrange) * nlimit
+    double people = ((noralizedPeople - min) / peopleMax - min) * 1;
+    double duration = ((noralizedDuration - min) / durationMax - min) * 1;
+    
+    // Calculate total ranking using weights.
+    double rank = ((peopleWeight * people) + (durationWeight * duration));
+
+    return rank;
+  }
 
   /* Get duration of an event in minutes.*/
   public int getDuration() {

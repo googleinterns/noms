@@ -25,7 +25,7 @@ public class Email {
 
   public static final String WELCOME_SUBJECT = "🍱 noms: welcome to your free food finder!";
   public static final String NEW_POST_SUBJECT = "🍱 noms: new free food near you!";
-  public static final String DAILY_DIGEST_SUBJECT = "🍱 noms: daily digest of free food";
+  public static final String DAILY_DIGEST_SUBJECT = "🍱 noms: daily digest of free food!";
 
   private static final String WELCOME_PATH = "WelcomeEmail.html";
   private static final String NEW_POST_PATH = "NewPost.html";
